@@ -1,18 +1,18 @@
 # Voxe(lmetric)
 
-[![Join the chat at https://gitter.im/richardbiely/Voxelmetric](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/richardbiely/Voxelmetric?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Repo Size](https://reposs.herokuapp.com/?path=richardbiely/Voxelmetric)](https://github.com/richardbiely/Voxelmetric)
-[![License](https://img.shields.io/badge/Licence-GNU-blue.svg)](https://github.com/richardbiely/Voxelmetric/blob/alpha_3/licence)
-
 Voxe(lmetric) is an open source voxel framework for Unity3d. It is meant to be an easy to use, easy to extend solution for voxel games. It is currently in alpha so expect breaking changes and incomplete documentation. Any help with the project is more then welcome. Feel free to create a pull request, ask questions or suggest new features.
 
-This project is a result of mergin my original project Voxe (https://github.com/richardbiely/Voxe) with Voxelmetric (https://github.com/Voxelmetric/Voxelmetric1). It takes the best from both worlds - Voxe's performance and Voxelmetric's features. A lot of work has been put into this project and it barely resembles its predecessors now.
+This project is a fork of the excellent work by [Richard Biely and his version of Voxelmetric](https://github.com/richardbiely/Voxelmetric) with the goal of fixing some things ([described below](https://github.com/Hertzole/Voxelmetric#my-goal)) for my own personal use. 
 
-![alt tag](https://github.com/richardbiely/Voxelmetric/blob/alpha_3/voxelmetric.jpg)
+![Voxelmetric](https://github.com/richardbiely/Voxelmetric/blob/alpha_3/voxelmetric.jpg)
+
+## My Goal
+My goal with Voxelmetric is to remove the dependency on JSON and replace it with ScriptableObjects to make work better with the Unity workflow. Basically completely remove the "Resources" folder and allow everything to be made out of ScriptableObjects. After that, easier ways to configure the asset from the inspector instead of using external files.
+Lastly, do my best to fix [this](https://i.imgur.com/qqwJQW8.png) texture problem.
 
 ## Features
 
-### World management
+### World Management
 
 ##### Terrain Generation
 Generate realistic looking terrain with caves and landmarks like trees.
@@ -26,12 +26,12 @@ Terrain generates around a given object and is removed when you move too far awa
 #### Structures
 Not only terrain but user defined structures are possible with Voxel(metric) as well. There is no limit to their size (although it's recommended to keep them spreading over just a few chunks at most). Be it buildings or clutter only your imagination is the limit.
 
-### Special features
+### Special Features
 
 ##### Threading
 Using a custom threadpool chunks are generated on multiple threads taking full advantage of you hardware. Voxe(lmetric) uses an event-driven model for chunk generation. Upon creation, each chunk registers to its neighbors and from this moment on everything is automatic. The system is build in a way that no synchronization is necessary and can utilize all available CPU cores.
 
-##### Memory pooling
+##### Memory Pooling
 Voxe(lmetric) tries to waste as little memory as possible. It sports a custom memory pool manager that stores and reuses objects as necessary to improve performance.
 
 ##### Ambient Occlusion
@@ -43,8 +43,8 @@ Define new blocks in the scene with your own textures and even your own 3d mesh 
 ##### Pathfinding
 3d voxel aligned pathfinding for units makes it possible for AI to move around the terrain.
 
-## Development note
-Voxel(metric) is in development and still has a log way to go. This means things are liable to change fast without notice or be broken and documentation will struggle to keep up.
+## Development Note
+This project is in heavy development and will be far from stable for quite a while. It's heavily recommended to wait until there's a offical release version available.
 
 ## How to run the project
 There are several ways to open the project.
