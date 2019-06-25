@@ -113,6 +113,7 @@ publish
 [Oo]bj/
 [Tt]emp/
 [Bb]uild/
+[Bb]uilds/
 voxelGameSaves/ 
 VoxelSaves/
 *.txt

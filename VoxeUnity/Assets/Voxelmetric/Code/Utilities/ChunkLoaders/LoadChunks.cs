@@ -14,7 +14,7 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
     /// Running constantly, LoadChunks generates the world as we move.
     /// This script can be attached to any component. The world will be loaded based on its position
     /// </summary>
-    public class LoadChunks: LoadChunksBase
+    public class LoadChunks : LoadChunksBase
     {
         private Clipmap m_clipmap;
 
@@ -36,12 +36,12 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
 
             Profiler.BeginSample("Cull");
 
-            bool isLast = rangeX==1 && rangeY==1 && rangeZ==1;
+            bool isLast = rangeX == 1 && rangeY == 1 && rangeZ == 1;
 
-            int wx = x*Env.ChunkSize;
-            int wy = y*Env.ChunkSize;
-            int wz = z*Env.ChunkSize;
-            
+            int wx = x * Env.ChunkSize;
+            int wy = y * Env.ChunkSize;
+            int wz = z * Env.ChunkSize;
+
             // Stop if there is no further subdivision possible
             if (isLast)
             {
@@ -79,7 +79,7 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
             int rz = rangeZ * Env.ChunkSize;
 
             // Check whether the bouding box lies inside the camera's frustum
-            AABB bounds2 = new AABB(wx, wy, wz, wx+rx, wy+ry, wz+rz);
+            AABB bounds2 = new AABB(wx, wy, wz, wx + rx, wy + ry, wz + rz);
             Planes.TestPlanesResult res = Planes.TestPlanesAABB2(m_cameraPlanes, ref bounds2);
 
             #region Full invisibility            
@@ -95,23 +95,23 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
 
             #region Full visibility            
 
-            if (res==Planes.TestPlanesResult.Inside)
+            if (res == Planes.TestPlanesResult.Inside)
             {
                 Profiler.BeginSample("CullFullInside");
 
                 // Full visibility. All chunks in this area need to be made visible
-                for (int cy = wy; cy<wy+ry; cy += Env.ChunkSize)
+                for (int cy = wy; cy < wy + ry; cy += Env.ChunkSize)
                 {
-                    for (int cz = wz; cz<wz+rz; cz += Env.ChunkSize)
+                    for (int cz = wz; cz < wz + rz; cz += Env.ChunkSize)
                     {
-                        for (int cx = wx; cx<wx+rx; cx += Env.ChunkSize)
+                        for (int cx = wx; cx < wx + rx; cx += Env.ChunkSize)
                         {
                             // Update chunk's visibility information
                             Vector3Int chunkPos = new Vector3Int(cx, cy, cz);
                             Chunk chunk = world.GetChunk(ref chunkPos);
-                            if (chunk==null)
+                            if (chunk == null)
                                 continue;
-                            
+
                             int tx = m_clipmap.TransformX(x);
                             int ty = m_clipmap.TransformY(y);
                             int tz = m_clipmap.TransformZ(z);
@@ -157,22 +157,22 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
 
             // Subdivide if possible
             // TODO: Avoid the recursion
-            UpdateVisibility(x     , y     , z     , offX  , offY  , offZ  );
-            UpdateVisibility(x+offX, y     , z     , rangeX, offY  , offZ  );
-            UpdateVisibility(x     , y     , z+offZ, offX  , offY  , rangeZ);
-            UpdateVisibility(x+offX, y     , z+offZ, rangeX, offY  , rangeZ);
-            UpdateVisibility(x     , y+offY, z     , offX  , rangeY, offZ  );
-            UpdateVisibility(x+offX, y+offY, z     , rangeX, rangeY, offZ  );
-            UpdateVisibility(x     , y+offY, z+offZ, offX  , rangeY, rangeZ);
-            UpdateVisibility(x+offX, y+offY, z+offZ, rangeX, rangeY, rangeZ);
+            UpdateVisibility(x, y, z, offX, offY, offZ);
+            UpdateVisibility(x + offX, y, z, rangeX, offY, offZ);
+            UpdateVisibility(x, y, z + offZ, offX, offY, rangeZ);
+            UpdateVisibility(x + offX, y, z + offZ, rangeX, offY, rangeZ);
+            UpdateVisibility(x, y + offY, z, offX, rangeY, offZ);
+            UpdateVisibility(x + offX, y + offY, z, rangeX, rangeY, offZ);
+            UpdateVisibility(x, y + offY, z + offZ, offX, rangeY, rangeZ);
+            UpdateVisibility(x + offX, y + offY, z + offZ, rangeX, rangeY, rangeZ);
 
             #endregion
         }
-    
+
         protected override void OnProcessChunk(Chunk chunk)
         {
             Profiler.BeginSample("ProcessChunk");
-            
+
             int tx = m_clipmap.TransformX(chunk.Pos.x / Env.ChunkSize);
             int ty = m_clipmap.TransformY(chunk.Pos.y / Env.ChunkSize);
             int tz = m_clipmap.TransformZ(chunk.Pos.z / Env.ChunkSize);
@@ -188,7 +188,7 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
                 int xd = Helpers.Abs((m_viewerPos.x - chunk.Pos.x) / Env.ChunkSize);
                 int yd = Helpers.Abs((m_viewerPos.y - chunk.Pos.y) / Env.ChunkSize);
                 int zd = Helpers.Abs((m_viewerPos.z - chunk.Pos.z) / Env.ChunkSize);
-                chunk.NeedsColliderGeometry = xd <= 1 && yd <= 1 && zd <= 1;
+                chunk.NeedsColliderGeometry = xd <= 1 && zd <= 1;
 
                 if (!UseFrustumCulling)
                 {
@@ -217,33 +217,33 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
             m_clipmap = new Clipmap(
                             HorizontalChunkLoadRadius,
                             VerticalChunkLoadRadius,
-                            VerticalChunkLoadRadius+1
+                            VerticalChunkLoadRadius + 1
                             );
             m_clipmap.Init(0, 0);
         }
-            
+
         private void OnDrawGizmosSelected()
         {
             if (!enabled)
                 return;
 
-            float size = Env.ChunkSize*Env.BlockSize;
-            float halfSize = size*0.5f;
-            float smallSize = size*0.25f;
+            float size = Env.ChunkSize * Env.BlockSize;
+            float halfSize = size * 0.5f;
+            float smallSize = size * 0.25f;
 
-            if (world!=null && (Diag_DrawWorldBounds || Diag_DrawLoadRange))
+            if (world != null && (Diag_DrawWorldBounds || Diag_DrawLoadRange))
             {
                 foreach (Chunk chunk in m_updateRequests)
                 {
                     if (Diag_DrawWorldBounds)
                     {
                         // Make central chunks more apparent by using yellow color
-                        bool isCentral = chunk.Pos.x==m_viewerPos.x || chunk.Pos.y==m_viewerPos.y || chunk.Pos.z==m_viewerPos.z;
+                        bool isCentral = chunk.Pos.x == m_viewerPos.x || chunk.Pos.y == m_viewerPos.y || chunk.Pos.z == m_viewerPos.z;
                         Gizmos.color = isCentral ? Color.yellow : Color.blue;
                         Vector3 chunkCenter = new Vector3(
-                            chunk.Pos.x+(Env.ChunkSize>>1),
-                            chunk.Pos.y+(Env.ChunkSize>>1),
-                            chunk.Pos.z+(Env.ChunkSize>>1)
+                            chunk.Pos.x + (Env.ChunkSize >> 1),
+                            chunk.Pos.y + (Env.ChunkSize >> 1),
+                            chunk.Pos.z + (Env.ChunkSize >> 1)
                             );
                         Vector3 chunkSize = new Vector3(Env.ChunkSize, Env.ChunkSize, Env.ChunkSize);
                         Gizmos.DrawWireCube(chunkCenter, chunkSize);
@@ -253,29 +253,29 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
                     {
                         Vector3Int pos = chunk.Pos;
 
-                        if (chunk.Pos.y==0)
+                        if (chunk.Pos.y == 0)
                         {
                             int tx = m_clipmap.TransformX(pos.x / Env.ChunkSize);
                             int ty = m_clipmap.TransformY(pos.y / Env.ChunkSize);
                             int tz = m_clipmap.TransformZ(pos.z / Env.ChunkSize);
 
-                            if (!m_clipmap.IsInsideBounds_Transformed(tx,ty,tz))
+                            if (!m_clipmap.IsInsideBounds_Transformed(tx, ty, tz))
                             {
                                 Gizmos.color = Color.red;
                                 Gizmos.DrawWireCube(
-                                    new Vector3(pos.x+halfSize, 0, pos.z+halfSize),
-                                    new Vector3(size-1f, 0, size-1f)
+                                    new Vector3(pos.x + halfSize, 0, pos.z + halfSize),
+                                    new Vector3(size - 1f, 0, size - 1f)
                                     );
                             }
                             else
                             {
-                                ClipmapItem item = m_clipmap.Get_Transformed(tx,ty,tz);
+                                ClipmapItem item = m_clipmap.Get_Transformed(tx, ty, tz);
                                 if (item.IsInVisibleRange)
                                 {
                                     Gizmos.color = Color.green;
                                     Gizmos.DrawWireCube(
-                                        new Vector3(pos.x+halfSize, 0, pos.z+halfSize),
-                                        new Vector3(size-1f, 0, size-1f)
+                                        new Vector3(pos.x + halfSize, 0, pos.z + halfSize),
+                                        new Vector3(size - 1f, 0, size - 1f)
                                         );
                                 }
                             }
@@ -286,8 +286,8 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
                         {
                             Gizmos.color = Color.magenta;
                             Gizmos.DrawWireCube(
-                                new Vector3(pos.x+halfSize, pos.y+halfSize, pos.z+halfSize),
-                                new Vector3(smallSize-0.05f, smallSize-0.05f, smallSize-0.05f)
+                                new Vector3(pos.x + halfSize, pos.y + halfSize, pos.z + halfSize),
+                                new Vector3(smallSize - 0.05f, smallSize - 0.05f, smallSize - 0.05f)
                                 );
                         }
                     }
