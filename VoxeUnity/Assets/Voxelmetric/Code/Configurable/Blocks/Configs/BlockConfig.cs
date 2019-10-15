@@ -20,9 +20,9 @@ public class BlockConfig
     #region Parameters read from config
 
     //! Unique identifier of block config
-    public ushort typeInConfig { get; protected set; }
+    public ushort typeInConfig { get; set; }
     //! Unique identifier of block config
-    public string name { get; protected set; }
+    public string name { get; set; }
 
     private string m_className;
     public string className
@@ -35,15 +35,15 @@ public class BlockConfig
         }
     }
 
-    public Type blockClass { get; protected set; }
+    public Type blockClass { get; set; }
 
-    public bool solid { get; protected set; }
-    public bool transparent { get; protected set; }
-    public bool raycastHit { get; protected set; }
-    public bool raycastHitOnRemoval { get; protected set; }
-    public int renderMaterialID { get; protected set; }
-    public int physicMaterialID { get; protected set; }
-    
+    public bool solid { get; set; }
+    public bool transparent { get; set; }
+    public bool raycastHit { get; set; }
+    public bool raycastHitOnRemoval { get; set; }
+    public int renderMaterialID { get; set; }
+    public int physicMaterialID { get; set; }
+
     #endregion
 
     public static BlockConfig CreateAirBlockConfig(World world)
@@ -98,7 +98,7 @@ public class BlockConfig
             }
             typeInConfig = (ushort)(tmpTypeInConfig + BlockProvider.LastReservedType);
         }
-        
+
         // Optional parameters
         {
             className = _GetPropertyFromConfig(config, "blockClass", "Block");
@@ -111,12 +111,14 @@ public class BlockConfig
             {
                 renderMaterialID = 0;
                 string materialName = _GetPropertyFromConfig(config, "material", "");
-                for (int i = 0; i<world.renderMaterials.Length; i++)
+                for (int i = 0; i < world.renderMaterials.Length; i++)
+                {
                     if (world.renderMaterials[i].name.Equals(materialName))
                     {
                         renderMaterialID = i;
                         break;
                     }
+                }
             }
 
             // Try to associate requested physic materials with one of world's materials
@@ -124,11 +126,13 @@ public class BlockConfig
                 physicMaterialID = solid ? 0 : -1; // solid objects will collide by default
                 string materialName = _GetPropertyFromConfig(config, "materialPx", "");
                 for (int i = 0; i < world.physicsMaterials.Length; i++)
+                {
                     if (world.physicsMaterials[i].name.Equals(materialName))
                     {
                         physicMaterialID = i;
                         break;
                     }
+                }
             }
         }
 
@@ -160,7 +164,9 @@ public class BlockConfig
     protected static T _GetPropertyFromConfig<T>(Hashtable config, string key, T defaultValue)
     {
         if (config.ContainsKey(key))
+        {
             return (T)config[key];
+        }
 
         return defaultValue;
     }

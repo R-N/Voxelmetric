@@ -20,7 +20,9 @@ namespace Voxelmetric.Code.Core
             // Return air for chunk that do not exist
             Chunk chunk = GetChunk(ref chunkPos);
             if (chunk == null)
+            {
                 return BlockProvider.AirBlock;
+            }
 
             int xx = Helpers.Mod(pos.x, Env.ChunkSize);
             int yy = Helpers.Mod(pos.y, Env.ChunkSize);
@@ -36,8 +38,10 @@ namespace Voxelmetric.Code.Core
 
             Chunk chunk = GetChunk(ref chunkPos);
             if (chunk == null)
+            {
                 // Return air if the chunk that do not exist
                 return BlockProvider.AirBlock;
+            }
 
             int xx = Helpers.Mod(pos.x, Env.ChunkSize);
             int yy = Helpers.Mod(pos.y, Env.ChunkSize);
@@ -57,8 +61,10 @@ namespace Voxelmetric.Code.Core
 
             Chunk chunk = GetChunk(ref chunkPos);
             if (chunk == null)
+            {
                 // Return air if the chunk that do not exist
                 return blockProvider.BlockTypes[BlockProvider.AirType];
+            }
 
             int xx = Helpers.Mod(pos.x, Env.ChunkSize);
             int yy = Helpers.Mod(pos.y, Env.ChunkSize);
@@ -80,7 +86,9 @@ namespace Voxelmetric.Code.Core
 
             Chunk chunk = GetChunk(ref chunkPos);
             if (chunk == null)
+            {
                 return;
+            }
 
             int xx = Helpers.Mod(pos.x, Env.ChunkSize);
             int yy = Helpers.Mod(pos.y, Env.ChunkSize);
@@ -102,7 +110,9 @@ namespace Voxelmetric.Code.Core
 
             Chunk chunk = GetChunk(ref chunkPos);
             if (chunk == null)
+            {
                 return;
+            }
 
             int xx = Helpers.Mod(pos.x, Env.ChunkSize);
             int yy = Helpers.Mod(pos.y, Env.ChunkSize);
@@ -121,7 +131,9 @@ namespace Voxelmetric.Code.Core
         {
             // Let's make sure that ranges are okay
             if (posFrom.x > posTo.x || posFrom.y > posTo.y || posFrom.z > posTo.z)
+            {
                 return;
+            }
 
             // Transform positions into chunk coordinates
             Vector3Int chunkPosFrom = Helpers.ContainingChunkPos(ref posFrom);
@@ -145,7 +157,9 @@ namespace Voxelmetric.Code.Core
                         Vector3Int chunkPos = new Vector3Int(cx, cy, cz);
                         Chunk chunk = GetChunk(ref chunkPos);
                         if (chunk == null)
+                        {
                             continue;
+                        }
 
                         int maxX = Math.Min(posTo.x - cx, Env.ChunkSize1);
 
@@ -168,7 +182,9 @@ namespace Voxelmetric.Code.Core
         {
             // Let's make sure that ranges are okay
             if (posFrom.x > posTo.x || posFrom.y > posTo.y || posFrom.z > posTo.z)
+            {
                 return;
+            }
 
             // Transform positions into chunk coordinates
             Vector3Int chunkPosFrom = Helpers.ContainingChunkPos(ref posFrom);
@@ -192,7 +208,9 @@ namespace Voxelmetric.Code.Core
                         Vector3Int chunkPos = new Vector3Int(cx, cy, cz);
                         Chunk chunk = GetChunk(ref chunkPos);
                         if (chunk == null)
+                        {
                             continue;
+                        }
 
                         int maxX = Math.Min(posTo.x - cx, Env.ChunkSize1);
 
@@ -220,7 +238,9 @@ namespace Voxelmetric.Code.Core
 
             Chunk chunk = GetChunk(ref chunkPos);
             if (chunk == null)
+            {
                 return;
+            }
 
             int index = Helpers.GetChunkIndex1DFrom3D(
                 Helpers.Mod(pos.x, Env.ChunkSize),
@@ -231,11 +251,15 @@ namespace Voxelmetric.Code.Core
             // Nothing for us to do if the block did not change
             BlockData oldBlockData = chunk.Blocks.Get(index);
             if (oldBlockData.Type == blockData.Type)
+            {
                 return;
+            }
 
             ModifyBlockContext context = null;
             if (onModified != null)
+            {
                 context = new ModifyBlockContext(onModified, this, index, index, blockData, setBlockModified);
+            }
 
             chunk.Modify(new ModifyOpBlock(blockData, index, setBlockModified, context));
         }
@@ -261,10 +285,12 @@ namespace Voxelmetric.Code.Core
 
             ModifyBlockContext context = null;
             if (onModified != null)
+            {
                 context = new ModifyBlockContext(onModified, this,
                                                  Helpers.GetChunkIndex1DFrom3D(posFrom.x, posFrom.y, posFrom.z),
                                                  Helpers.GetChunkIndex1DFrom3D(posTo.x, posTo.y, posTo.z),
                                                  blockData, setBlockModified);
+            }
 
             // Update all chunks in range
             int minY = Helpers.Mod(posFrom.y, Env.ChunkSize);
@@ -284,7 +310,9 @@ namespace Voxelmetric.Code.Core
                         Vector3Int chunkPos = new Vector3Int(cx, cy, cz);
                         Chunk chunk = GetChunk(ref chunkPos);
                         if (chunk == null)
+                        {
                             continue;
+                        }
 
                         int maxX = Math.Min(posTo.x - cx, Env.ChunkSize1);
 

@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Voxelmetric.Code.Load_Resources
 {
+    [System.Obsolete]
     public class ConfigLoader<T>
     {
         private readonly Dictionary<string, T> configs = new Dictionary<string, T>();
@@ -18,12 +19,14 @@ namespace Voxelmetric.Code.Load_Resources
         {
             foreach (string configFolder in configFolders)
             {
-                var configFiles = Resources.LoadAll<TextAsset>(configFolder);
-                foreach (var configFile in configFiles)
+                TextAsset[] configFiles = Resources.LoadAll<TextAsset>(configFolder);
+                foreach (TextAsset configFile in configFiles)
                 {
                     T config = JsonConvert.DeserializeObject<T>(configFile.text);
-                    if(!configs.ContainsKey(config.ToString()))
+                    if (!configs.ContainsKey(config.ToString()))
+                    {
                         configs.Add(config.ToString(), config);
+                    }
                 }
             }
         }
@@ -31,11 +34,15 @@ namespace Voxelmetric.Code.Load_Resources
         public T GetConfig(string configName)
         {
             if (configs.Keys.Count == 0)
+            {
                 LoadConfigs();
+            }
 
             T conf;
             if (configs.TryGetValue(configName, out conf))
+            {
                 return conf;
+            }
 
             Debug.LogError("Config not found for " + configName + ". Using defaults");
             return conf;
@@ -44,7 +51,9 @@ namespace Voxelmetric.Code.Load_Resources
         public T[] AllConfigs()
         {
             if (configs.Keys.Count == 0)
+            {
                 LoadConfigs();
+            }
 
             T[] configValues = new T[configs.Count];
             configs.Values.CopyTo(configValues, 0);
