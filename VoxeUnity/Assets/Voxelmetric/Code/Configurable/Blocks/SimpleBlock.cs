@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Scripting;
 using Voxelmetric.Code;
 using Voxelmetric.Code.Configurable.Blocks;
 using Voxelmetric.Code.Configurable.Blocks.Utilities;
@@ -8,13 +9,16 @@ using Voxelmetric.Code.Geometry.Batchers;
 
 public class SimpleBlock : Block
 {
+    [Preserve]
+    public SimpleBlock() : base() { }
+
     public override void BuildFace(Chunk chunk, Vector3[] vertices, Color32[] palette, ref BlockFace face, bool rotated)
     {
         bool backFace = DirectionUtils.IsBackface(face.side);
 
-        var pools = Globals.WorkPool.GetPool(chunk.ThreadID);
-        var verts = pools.Vector3ArrayPool.PopExact(4);
-        var cols = pools.Color32ArrayPool.PopExact(4);
+        Voxelmetric.Code.Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
+        Vector3[] verts = pools.Vector3ArrayPool.PopExact(4);
+        Color32[] cols = pools.Color32ArrayPool.PopExact(4);
 
         {
             verts[0] = vertices[0];

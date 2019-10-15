@@ -14,7 +14,6 @@ namespace Voxelmetric.Code
 
         public static void SetBlockData(World world, ref Vector3Int pos, BlockData blockData, Action<ModifyBlockContext> onAction = null)
         {
-            UnityEngine.Debug.Log("Set block at " + pos);
             world.ModifyBlockData(ref pos, blockData, true, onAction);
         }
 

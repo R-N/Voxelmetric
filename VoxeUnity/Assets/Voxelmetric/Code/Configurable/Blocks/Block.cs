@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Scripting;
 using Voxelmetric.Code.Configurable.Blocks;
 using Voxelmetric.Code.Core;
 using Voxelmetric.Code.Load_Resources.Blocks;
@@ -19,6 +20,7 @@ public class Block
         get { return PhysicMaterialID >= 0; }
     }
 
+    [Preserve]
     public Block()
     {
         Type = 0;
@@ -37,7 +39,7 @@ public class Block
         Solid = config.solid;
         Custom = false;
     }
-    
+
     public virtual string DisplayName
     {
         get { return Name; }
@@ -53,7 +55,7 @@ public class Block
 
     public bool CanBuildFaceWith(Block adjacentBlock)
     {
-        return adjacentBlock.Solid ? !Solid : (Solid || Type!=adjacentBlock.Type);
+        return adjacentBlock.Solid ? !Solid : (Solid || Type != adjacentBlock.Type);
     }
 
     public virtual void BuildFace(Chunk chunk, Vector3[] vertices, Color32[] palette, ref BlockFace face, bool rotated)

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Scripting;
 using Voxelmetric.Code;
 using Voxelmetric.Code.Configurable.Blocks;
 using Voxelmetric.Code.Configurable.Blocks.Utilities;
@@ -12,6 +13,9 @@ public class CubeBlock : Block
 {
     public TextureCollection[] textures { get; private set; }
     public Color32[] Colors { get; private set; }
+
+    [Preserve]
+    public CubeBlock() : base() { }
 
     public override void OnInit(BlockProvider blockProvider)
     {

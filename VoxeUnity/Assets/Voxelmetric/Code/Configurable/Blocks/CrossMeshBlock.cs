@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Scripting;
 using Voxelmetric.Code;
 using Voxelmetric.Code.Configurable.Blocks.Utilities;
 using Voxelmetric.Code.Core;
@@ -13,6 +14,9 @@ public class CrossMeshBlock : Block
     private static readonly float coef = 1.0f / 64.0f;
 
     public TextureCollection texture { get { return ((CrossMeshBlockConfig)Config).texture; } }
+
+    [Preserve]
+    public CrossMeshBlock() : base() { }
 
     public override void OnInit(BlockProvider blockProvider)
     {
