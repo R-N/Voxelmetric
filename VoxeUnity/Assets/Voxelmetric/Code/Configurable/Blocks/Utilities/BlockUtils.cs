@@ -75,9 +75,9 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
 
         public static void PrepareColors(Chunk chunk, Color32[] data, BlockLightData light)
         {
-            if (chunk.world.config.addAOToMesh)
+            if (chunk.world.config.AddAOToMesh)
             {
-                SetColorsAO(data, light, chunk.world.config.ambientOcclusionStrength);
+                SetColorsAO(data, light, chunk.world.config.AOStrength);
             }
             else
             {
@@ -88,7 +88,7 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
         public static BlockLightData CalculateColors(Chunk chunk, int localPosIndex, Direction direction)
         {
             // With AO turned off, do not generate any fancy data
-            if (!chunk.world.config.addAOToMesh)
+            if (!chunk.world.config.AddAOToMesh)
             {
                 return new BlockLightData();
             }
@@ -197,12 +197,12 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
 
         public static void AdjustColors(Chunk chunk, Color32[] data, BlockLightData light)
         {
-            if (!chunk.world.config.addAOToMesh)
+            if (!chunk.world.config.AddAOToMesh)
             {
                 return;
             }
 
-            AdjustColorsAO(data, light, chunk.world.config.ambientOcclusionStrength);
+            AdjustColorsAO(data, light, chunk.world.config.AOStrength);
         }
 
         private static void PrepareTexture(Vector2[] data, ref Rect texture, bool rotated, bool backface)

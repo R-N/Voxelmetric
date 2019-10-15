@@ -92,10 +92,7 @@ namespace Voxelmetric.Examples
                     Code.Voxelmetric.SetBlockData(world, ref from, ref to, new BlockData(block.Type, block.Solid));
                 }
 
-                VmRaycastHit hit = VmRaycast.Raycast(
-                    new Ray(cam.transform.position, mousePos - cam.transform.position),
-                    world, 100, block.Type == BlockProvider.AirType
-                    );
+                VmRaycastHit hit = VmRaycast.Raycast(new Ray(cam.transform.position, mousePos - cam.transform.position), world, 100, block.Type == BlockProvider.AirType);
 
                 // Display the type of the selected block
                 if (selectedBlockText != null)

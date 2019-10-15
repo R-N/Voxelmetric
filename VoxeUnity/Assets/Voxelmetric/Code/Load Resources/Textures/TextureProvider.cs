@@ -70,12 +70,12 @@ namespace Voxelmetric.Code.Load_Resources.Textures
 
             // Generate atlas
             Texture2D packedTextures = new Texture2D(8192, 8192);
-            Rect[] rects = packedTextures.PackTextures(individualTextures.ToArray(), config.textureAtlasPadding, 8192, false);
+            Rect[] rects = packedTextures.PackTextures(individualTextures.ToArray(), config.AtlasPadding, 8192, false);
 
             // Transfer over the pixels to another texture2d because PackTextures resets the texture format and useMipMaps settings
-            atlas = new Texture2D(packedTextures.width, packedTextures.height, config.textureFormat, config.useMipMaps);
+            atlas = new Texture2D(packedTextures.width, packedTextures.height, config.AtlasFormat, config.UseMipMaps);
             atlas.SetPixels(packedTextures.GetPixels(0, 0, packedTextures.width, packedTextures.height));
-            atlas.filterMode = config.textureAtlasFiltering;
+            atlas.filterMode = config.AtlasFiltering;
 
             List<Rect> repeatingTextures = new List<Rect>();
             List<Rect> nonrepeatingTextures = new List<Rect>();
@@ -131,7 +131,7 @@ namespace Voxelmetric.Code.Load_Resources.Textures
             }
 
             //uPaddingBleed.BleedEdges(atlas, config.textureAtlasPadding, repeatingTextures.ToArray(), true);
-            uPaddingBleed.BleedEdges(atlas, config.textureAtlasPadding, nonrepeatingTextures.ToArray(), false);
+            uPaddingBleed.BleedEdges(atlas, config.AtlasPadding, nonrepeatingTextures.ToArray(), false);
         }
 
         private TextureConfig[] LoadAllTextures()
@@ -196,7 +196,7 @@ namespace Voxelmetric.Code.Load_Resources.Textures
             }
 
             //If theres a width and a height fetch the pixels specified by the rect as a texture
-            Texture2D newTexture = new Texture2D(texture.width, texture.height, config.textureFormat, file.mipmapCount < 1);
+            Texture2D newTexture = new Texture2D(texture.width, texture.height, config.AtlasFormat, file.mipmapCount < 1);
             newTexture.SetPixels(0, 0, texture.width, texture.height, file.GetPixels(texture.x, texture.y, texture.width, texture.height));
             return newTexture;
         }

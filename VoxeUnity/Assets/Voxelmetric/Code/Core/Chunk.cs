@@ -201,7 +201,7 @@ namespace Voxelmetric.Code.Core
 
             if (world!=null)
             {
-                m_logic = world.config.randomUpdateFrequency>0.0f ? new ChunkLogic(this) : null;
+                m_logic = world.config.RandomUpdateFrequency>0.0f ? new ChunkLogic(this) : null;
 
                 if (RenderGeometryHandler==null)
                     RenderGeometryHandler = new ChunkRenderGeometryHandler(this, world.renderMaterials);

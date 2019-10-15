@@ -343,7 +343,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &312836252
 Light:
   m_ObjectHideFlags: 0
@@ -1019,6 +1019,15 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 05cec438366e4ae478ed7826c23585e2,
         type: 2}
+    - target: {fileID: 11498696, guid: 28fc5073d6f2b5b42acaec530dd745cd, type: 3}
+      propertyPath: config
+      value: 
+      objectReference: {fileID: 11400000, guid: bed4bc2f151dbcf4ea816f6ccd8f34bb,
+        type: 2}
+    - target: {fileID: 11498696, guid: 28fc5073d6f2b5b42acaec530dd745cd, type: 3}
+      propertyPath: worldName
+      value: New World
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28fc5073d6f2b5b42acaec530dd745cd, type: 3}
 --- !u!4 &759343523 stripped
@@ -2065,7 +2074,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &1340459964
 Light:
   m_ObjectHideFlags: 0
@@ -2486,7 +2495,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11422472, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
       propertyPath: VerticalChunkLoadRadius
-      value: 3
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 11422472, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
       propertyPath: VerticalChunkDeleteRadius

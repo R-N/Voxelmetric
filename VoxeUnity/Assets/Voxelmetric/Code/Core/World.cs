@@ -16,11 +16,10 @@ namespace Voxelmetric.Code.Core
     {
         public BlockCollection blocks;
         public LayerCollection layers;
-        public string worldConfig = "default";
         public WorldConfig config;
 
         //This world name is used for the save file name and as a seed for random noise
-        public string worldName = "world";
+        public string worldName = "New World";
 
         public VmNetworking networking = new VmNetworking();
 
@@ -48,11 +47,13 @@ namespace Voxelmetric.Code.Core
 
         void Start()
         {
-            StartWorld();
-        }
+            if (config == null)
+            {
+                Debug.LogError(gameObject.name + " needs to have a World Config assigned!");
+                return;
+            }
 
-        void Update()
-        {
+            StartWorld();
         }
 
         void OnApplicationQuit()
@@ -60,9 +61,15 @@ namespace Voxelmetric.Code.Core
             StopWorld();
         }
 
+        private void SetFeatures()
+        {
+            Features.UseThreadPool = config.UseThreadPool;
+            Features.UseThreadedIO = config.UseThreadedIO;
+            Features.UseSerialization = config.UseSerialization;
+        }
+
         public void Configure()
         {
-            config = new ConfigLoader<WorldConfig>(new[] { "Worlds" }).GetConfig(worldConfig);
             VerifyConfig();
 
             //textureProvider = Voxelmetric.resources.GetTextureProvider(this);
@@ -81,59 +88,60 @@ namespace Voxelmetric.Code.Core
         private void VerifyConfig()
         {
             // minX can't be greater then maxX
-            if (config.minX > config.maxX)
+            if (config.MinX > config.MaxX)
             {
-                int tmp = config.minX;
-                config.maxX = config.minX;
-                config.minX = tmp;
+                int tmp = config.MinX;
+                config.MaxX = config.MinX;
+                config.MinX = tmp;
             }
 
-            if (config.minX != config.maxX)
+            if (config.MinX != config.MaxX)
             {
                 // Make sure there is at least one chunk worth of space in the world on the X axis
-                if (config.maxX - config.minX < Env.ChunkSize)
+                if (config.MaxX - config.MinX < Env.ChunkSize)
                 {
-                    config.maxX = config.minX + Env.ChunkSize;
+                    config.MaxX = config.MinX + Env.ChunkSize;
                 }
             }
 
             // minY can't be greater then maxY
-            if (config.minY > config.maxY)
+            if (config.MinY > config.MaxY)
             {
-                int tmp = config.minY;
-                config.maxY = config.minY;
-                config.minY = tmp;
+                int tmp = config.MinY;
+                config.MaxY = config.MinY;
+                config.MinY = tmp;
             }
 
-            if (config.minY != config.maxY)
+            if (config.MinY != config.MaxY)
             {
                 // Make sure there is at least one chunk worth of space in the world on the Y axis
-                if (config.maxY - config.minY < Env.ChunkSize)
+                if (config.MaxY - config.MinY < Env.ChunkSize)
                 {
-                    config.maxY = config.minY + Env.ChunkSize;
+                    config.MaxY = config.MinY + Env.ChunkSize;
                 }
             }
 
             // minZ can't be greater then maxZ
-            if (config.minZ > config.maxZ)
+            if (config.MinZ > config.MaxZ)
             {
-                int tmp = config.minZ;
-                config.maxZ = config.minZ;
-                config.minZ = tmp;
+                int tmp = config.MinZ;
+                config.MaxZ = config.MinZ;
+                config.MinZ = tmp;
             }
 
-            if (config.minZ != config.maxZ)
+            if (config.MinZ != config.MaxZ)
             {
                 // Make sure there is at least one chunk worth of space in the world on the Z axis
-                if (config.maxZ - config.minZ < Env.ChunkSize)
+                if (config.MaxZ - config.MinZ < Env.ChunkSize)
                 {
-                    config.maxZ = config.minZ + Env.ChunkSize;
+                    config.MaxZ = config.MinZ + Env.ChunkSize;
                 }
             }
         }
 
         private void StartWorld()
         {
+            SetFeatures();
             Configure();
 
             networking.StartConnections(this);
@@ -147,37 +155,37 @@ namespace Voxelmetric.Code.Core
 
         public void CapCoordXInsideWorld(ref int minX, ref int maxX)
         {
-            if (config.minX != config.maxX)
+            if (config.MinX != config.MaxX)
             {
-                minX = Mathf.Max(minX, config.minX);
-                maxX = Mathf.Min(maxX, config.maxX);
+                minX = Mathf.Max(minX, config.MinX);
+                maxX = Mathf.Min(maxX, config.MaxX);
             }
         }
 
         public void CapCoordYInsideWorld(ref int minY, ref int maxY)
         {
-            if (config.minY != config.maxY)
+            if (config.MinY != config.MaxY)
             {
-                minY = Mathf.Max(minY, config.minY);
-                maxY = Mathf.Min(maxY, config.maxY);
+                minY = Mathf.Max(minY, config.MinY);
+                maxY = Mathf.Min(maxY, config.MaxY);
             }
         }
 
         public void CapCoordZInsideWorld(ref int minZ, ref int maxZ)
         {
-            if (config.minZ != config.maxZ)
+            if (config.MinZ != config.MaxZ)
             {
-                minZ = Mathf.Max(minZ, config.minZ);
-                maxZ = Mathf.Min(maxZ, config.maxZ);
+                minZ = Mathf.Max(minZ, config.MinZ);
+                maxZ = Mathf.Min(maxZ, config.MaxZ);
             }
         }
 
         public bool IsCoordInsideWorld(ref Vector3Int pos)
         {
             return
-                config.minX == config.maxX || (pos.x >= config.minX && pos.x <= config.maxX) ||
-                config.minY == config.maxY || (pos.y >= config.minY && pos.y <= config.maxY) ||
-                config.minZ == config.maxZ || (pos.z >= config.minZ && pos.z <= config.maxZ);
+                config.MinX == config.MaxX || (pos.x >= config.MinX && pos.x <= config.MaxX) ||
+                config.MinY == config.MaxY || (pos.y >= config.MinY && pos.y <= config.MaxY) ||
+                config.MinZ == config.MaxZ || (pos.z >= config.MinZ && pos.z <= config.MaxZ);
         }
 
         public void RegisterModifyRange(ModifyBlockContext onModified)

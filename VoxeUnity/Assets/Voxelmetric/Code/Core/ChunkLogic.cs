@@ -26,7 +26,7 @@ namespace Voxelmetric.Code.Core
         public void Update()
         {
             randomUpdateTime += Time.deltaTime;
-            if (randomUpdateTime>=chunk.world.config.randomUpdateFrequency)
+            if (randomUpdateTime>=chunk.world.config.RandomUpdateFrequency)
             {
                 randomUpdateTime = 0;
 
@@ -43,7 +43,7 @@ namespace Voxelmetric.Code.Core
                 {
                     scheduledUpdates[i] = new BlockAndTimer(
                         scheduledUpdates[i].pos,
-                        scheduledUpdates[i].time-chunk.world.config.randomUpdateFrequency
+                        scheduledUpdates[i].time-chunk.world.config.RandomUpdateFrequency
                         );
 
                     if (scheduledUpdates[i].time<=0)

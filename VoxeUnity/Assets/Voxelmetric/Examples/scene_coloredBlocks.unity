@@ -2752,7 +2752,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blocks: {fileID: 11400000, guid: 4f48649a9ee3e7a40ae0734df4011da4, type: 2}
-  worldConfig: colored
+  layers: {fileID: 11400000, guid: 05cec438366e4ae478ed7826c23585e2, type: 2}
+  config: {fileID: 11400000, guid: bed4bc2f151dbcf4ea816f6ccd8f34bb, type: 2}
   worldName: world_colored
   networking:
     isServer: 1

@@ -2,34 +2,82 @@
 
 namespace Voxelmetric.Code.Load_Resources
 {
-    public struct WorldConfig
+    [CreateAssetMenu(fileName = "New World Config", menuName = "Voxelmetric/World Config")]
+    public class WorldConfig : ScriptableObject
     {
-        public string name;
-        public string textureFolder;
-        public string layerFolder;
-        public string blockFolder;
-        public string meshFolder;
+#if UNITY_EDITOR
+        [Header("World Size")]
+#endif
+        [SerializeField]
+        private int minX = 0;
+        [SerializeField]
+        private int maxX = 0;
+#if UNITY_EDITOR
+        [Space]
+#endif
+        [SerializeField]
+        private int minY = 0;
+        [SerializeField]
+        private int maxY = 640;
+#if UNITY_EDITOR
+        [Space]
+#endif
+        [SerializeField]
+        private int minZ = 0;
+        [SerializeField]
+        private int maxZ = 0;
 
-        public int minX;
-        public int maxX;
-        public int maxY;
-        public int minY;
-        public int minZ;
-        public int maxZ;
+        public int MinX { get { return minX; } set { minX = value; } }
+        public int MaxX { get { return maxX; } set { maxX = value; } }
+        public int MinY { get { return minY; } set { minY = value; } }
+        public int MaxY { get { return maxY; } set { maxY = value; } }
+        public int MinZ { get { return minZ; } set { minZ = value; } }
+        public int MaxZ { get { return maxZ; } set { maxZ = value; } }
 
-        public float randomUpdateFrequency;
-        
-        public bool addAOToMesh;
-        public float ambientOcclusionStrength;
-        
-        // These variables relate to how the textures are loaded and how the atlas is created.
-        // There is an issue in that texture indexes are created with these variables but if
-        // you create a new world using the same texture folder the new world will use the existing
-        // index with the settings of the world that created it.
-        public int textureAtlasPadding;
-        public FilterMode textureAtlasFiltering;
-        public TextureFormat textureFormat;
-        public bool useMipMaps;
+#if UNITY_EDITOR
+        [Header("Chunk Settings")]
+#endif
+        [SerializeField]
+        private float randomUpdateFrequency = 1f;
+        [SerializeField]
+        private bool addAOToMesh = true;
+        [SerializeField]
+        private float aOStrength = 1f;
+
+        public bool AddAOToMesh { get { return addAOToMesh; } set { addAOToMesh = value; } }
+        public float AOStrength { get { return aOStrength; } set { aOStrength = value; } }
+        public float RandomUpdateFrequency { get { return randomUpdateFrequency; } set { randomUpdateFrequency = value; } }
+
+#if UNITY_EDITOR
+        [Header("Texture Settings")]
+#endif
+        [SerializeField]
+        private int atlasPadding = 32;
+        [SerializeField]
+        private FilterMode atlasFiltering = FilterMode.Point;
+        [SerializeField]
+        private TextureFormat atlasFormat = TextureFormat.ARGB32;
+        [SerializeField]
+        private bool useMipMaps = true;
+
+        public int AtlasPadding { get { return atlasPadding; } set { atlasPadding = value; } }
+        public FilterMode AtlasFiltering { get { return atlasFiltering; } set { atlasFiltering = value; } }
+        public TextureFormat AtlasFormat { get { return atlasFormat; } set { atlasFormat = value; } }
+        public bool UseMipMaps { get { return useMipMaps; } set { useMipMaps = value; } }
+
+#if UNITY_EDITOR
+        [Header("Voxelmetric Features")]
+#endif
+        [SerializeField]
+        private bool useThreadPool = true;
+        [SerializeField]
+        private bool useThreadedIO = true;
+        [SerializeField]
+        private bool useSerialization = true;
+
+        public bool UseThreadPool { get { return useThreadPool; } set { useThreadPool = value; } }
+        public bool UseThreadedIO { get { return useThreadedIO; } set { useThreadedIO = value; } }
+        public bool UseSerialization { get { return useSerialization; } set { useSerialization = value; } }
 
         public override string ToString()
         {

@@ -50,18 +50,18 @@ namespace Voxelmetric.Code
         //! A mask saying which world edges should not have their faces rendered
         public const Side DontRenderWorldEdgesMask = /*Side.up|*/Side.down | Side.north | Side.south | Side.west | Side.east;
 
-        public const bool UseThreadPool = true;
-        public const bool UseThreadedIO = true;
+        public static bool UseThreadPool = true;
+        public static bool UseThreadedIO = true;
 
         //! If true, chunk serialization is enabled
-        public const bool UseSerialization = true;
+        public static bool UseSerialization = true;
         //! If true, chunk will be serialized when it's unloaded
-        public const bool SerializeChunkWhenUnloading = UseSerialization && true;
+        public static readonly bool SerializeChunkWhenUnloading = UseSerialization && true;
         //! If true, only difference form default-generated data will be stored
         //! If there is no change no serialization is performned unless UseDifferentialSerialization_ForceSaveHeaders is enabled
-        public const bool UseDifferentialSerialization = UseSerialization && true;
+        public static readonly bool UseDifferentialSerialization = UseSerialization && true;
         //! If true, even if there is no difference in data, at least basic info about chunk structure is stored
-        public const bool UseDifferentialSerialization_ForceSaveHeaders = UseDifferentialSerialization && false;
+        public static readonly bool UseDifferentialSerialization_ForceSaveHeaders = UseDifferentialSerialization && false;
     }
 
     public static class Directories
