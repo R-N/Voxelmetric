@@ -6,12 +6,12 @@ namespace Voxelmetric.Code.Common.Extensions
     {
         public static ChunkPoolItemState Set(this ChunkPoolItemState state, ChunkPoolItemState flag)
         {
-            return state|flag;
+            return state | flag;
         }
 
         public static ChunkPoolItemState Reset(this ChunkPoolItemState state, ChunkPoolItemState flag)
         {
-            return state&(~flag);
+            return state & (~flag);
         }
 
         public static bool Check(this ChunkPoolItemState state, ChunkPoolItemState flag)
@@ -26,7 +26,7 @@ namespace Voxelmetric.Code.Common.Extensions
 
         public static bool CheckAny(this ChunkPoolItemState state)
         {
-            return state!=ChunkPoolItemState.None;
+            return state != ChunkPoolItemState.None;
         }
     }
 }

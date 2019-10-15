@@ -4,7 +4,7 @@ using Voxelmetric.Code.Data_types;
 
 namespace Voxelmetric.Code.Core.Operations
 {
-    public sealed class ModifyOpBlock: ModifyOp
+    public sealed class ModifyOpBlock : ModifyOp
     {
         private readonly int index;
 
@@ -16,7 +16,7 @@ namespace Voxelmetric.Code.Core.Operations
         /// <param name="setBlockModified">Set to true to mark chunk data as modified</param>
         /// <param name="parentContext">Context of a parent which performed this operation</param>
         public ModifyOpBlock(BlockData blockData, int index, bool setBlockModified,
-            ModifyBlockContext parentContext = null): base(blockData, setBlockModified, parentContext)
+            ModifyBlockContext parentContext = null) : base(blockData, setBlockModified, parentContext)
         {
             this.index = index;
         }
@@ -33,8 +33,10 @@ namespace Voxelmetric.Code.Core.Operations
 
         protected override void OnPostSetBlocks(ChunkBlocks blocks)
         {
-            if (parentContext!=null)
+            if (parentContext != null)
+            {
                 parentContext.ChildActionFinished();
+            }
 
             int x, y, z;
             Helpers.GetChunkIndex3DFrom1D(index, out x, out y, out z);

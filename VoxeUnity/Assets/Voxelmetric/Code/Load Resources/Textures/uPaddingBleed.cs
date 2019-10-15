@@ -12,7 +12,9 @@ namespace Voxelmetric.Code.Load_Resources.Textures
         public static void BleedEdges(Texture2D texture, int padding, Rect[] texturePositions, bool repeatingTextures)
         {
             if (padding == 0)
+            {
                 return;
+            }
 
             padding /= 2;
 
@@ -29,7 +31,7 @@ namespace Voxelmetric.Code.Load_Resources.Textures
 
                 //There are 8 sections in the padding that need to be assigned
 
-                /* 
+                /*
 
              paddingWN  |  paddingN  |  paddingNE
              ___________|____________|___________
@@ -38,7 +40,7 @@ namespace Voxelmetric.Code.Load_Resources.Textures
               paddingW  |    tile    |  paddingE
                         |            |
              ___________|____________|___________
-                        |            |   
+                        |            |
              paddingSW  |  paddingS  |  paddingES
 
             */
@@ -50,40 +52,48 @@ namespace Voxelmetric.Code.Load_Resources.Textures
                 if (repeatingTextures)
                 {
                     paddingWN = texture.GetPixels(OffsetPos(tile.maxX, -padding, texture.width), tile.minY, padding, padding);
-                    paddingN  = texture.GetPixels(tile.minX, tile.minY, tile.width, padding);
+                    paddingN = texture.GetPixels(tile.minX, tile.minY, tile.width, padding);
                     paddingNE = texture.GetPixels(tile.minX, tile.minY, padding, padding);
 
-                    paddingW  = texture.GetPixels(OffsetPos(tile.maxX, -padding, texture.width), tile.minY, padding, tile.height);
-                    paddingE  = texture.GetPixels(tile.minX, tile.minY, padding, tile.height);
+                    paddingW = texture.GetPixels(OffsetPos(tile.maxX, -padding, texture.width), tile.minY, padding, tile.height);
+                    paddingE = texture.GetPixels(tile.minX, tile.minY, padding, tile.height);
 
                     paddingSW = texture.GetPixels(OffsetPos(tile.maxX, -padding, texture.width), OffsetPos(tile.maxY, -padding, texture.height), padding, padding);
-                    paddingS  = texture.GetPixels(tile.minX, OffsetPos(tile.maxY, -padding, texture.height), tile.width, padding);
+                    paddingS = texture.GetPixels(tile.minX, OffsetPos(tile.maxY, -padding, texture.height), tile.width, padding);
                     paddingES = texture.GetPixels(tile.minX, OffsetPos(tile.maxY, -padding, texture.height), padding, padding);
                 }
                 else
                 {
                     paddingN = texture.GetPixels(tile.minX, tile.maxY - 1, tile.width, 1);
                     if (paddingN.Length == 0)
+                    {
                         continue;
+                    }
 
                     paddingN = StretchPaddingH(paddingN, padding, tile);
 
                     paddingS = texture.GetPixels(tile.minX, tile.minY, tile.width, 1);
                     if (paddingS.Length == 0)
+                    {
                         continue;
+                    }
 
                     paddingS = StretchPaddingH(paddingS, padding, tile);
 
                     paddingE = texture.GetPixels(tile.maxX - 1, tile.minY, 1, tile.height);
                     if (paddingE.Length == 0)
+                    {
                         continue;
+                    }
 
                     paddingE = StretchPaddingV(paddingE, padding, tile);
 
                     paddingW = texture.GetPixels(tile.minX, tile.minY, 1, tile.height);
 
                     if (paddingW.Length == 0)
+                    {
                         continue;
+                    }
 
                     paddingW = StretchPaddingV(paddingW, padding, tile);
 
@@ -96,7 +106,7 @@ namespace Voxelmetric.Code.Load_Resources.Textures
                     for (int n = 0; n < padding * padding; n++)
                     {
                         paddingWN[n] = paddingN[0];
-                        paddingNE[n] = paddingN[paddingN.Length-1];
+                        paddingNE[n] = paddingN[paddingN.Length - 1];
                         paddingSW[n] = paddingS[0];
                         paddingES[n] = paddingS[paddingN.Length - 1];
                     }
@@ -137,8 +147,12 @@ namespace Voxelmetric.Code.Load_Resources.Textures
             Color[] paddingArray = new Color[pixels.Length * padding];
 
             for (int n = 0; n < padding; n++)
+            {
                 for (int j = 0; j < pixels.Length; j++)
+                {
                     paddingArray[j + (n * pixels.Length)] = pixels[j];
+                }
+            }
 
             return paddingArray;
         }
@@ -148,8 +162,12 @@ namespace Voxelmetric.Code.Load_Resources.Textures
             Color[] paddingArray = new Color[pixels.Length * padding];
 
             for (int j = 0; j < pixels.Length; j++)
+            {
                 for (int n = 0; n < padding; n++)
-                    paddingArray[n +(j*padding)] = pixels[j];
+                {
+                    paddingArray[n + (j * padding)] = pixels[j];
+                }
+            }
 
             return paddingArray;
         }

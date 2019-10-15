@@ -6,7 +6,7 @@
         ///     Retrieves an array from the top of the pool
         /// </summary>
         T[] Pop();
-        
+
         /// <summary>
         ///     Returns an array back to the pool
         /// </summary>

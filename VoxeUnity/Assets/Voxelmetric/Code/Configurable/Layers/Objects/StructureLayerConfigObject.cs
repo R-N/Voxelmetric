@@ -6,7 +6,7 @@ public class StructureLayerConfigObject : LayerConfigObject
     [SerializeField]
     private float chance = 0;
     [SerializeField]
-    private string structure = "";
+    private string structure = string.Empty;
 
     public string Structure { get { return structure; } }
 

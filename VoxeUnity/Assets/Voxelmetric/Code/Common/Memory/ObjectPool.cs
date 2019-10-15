@@ -5,7 +5,7 @@ using Voxelmetric.Code.Common.Extensions;
 
 namespace Voxelmetric.Code.Common.Memory
 {
-    public sealed class ObjectPool<T> where T: class
+    public sealed class ObjectPool<T> where T : class
     {
         //! Delegate handling allocation of memory
         private readonly ObjectPoolAllocator<T> m_objectAllocator;
@@ -20,7 +20,8 @@ namespace Voxelmetric.Code.Common.Memory
         //! If true object pool will try to release some of the unused memory if the difference in currently used size and capacity of pool is too big
         private readonly bool m_autoReleaseMemory;
 
-        public int Capacity {
+        public int Capacity
+        {
             get { return m_objects.Count; }
         }
 
@@ -34,7 +35,9 @@ namespace Voxelmetric.Code.Common.Memory
 
             m_objects = new List<T>(initialSize);
             for (int i = 0; i < initialSize; i++)
+            {
                 m_objects.Add(m_objectAllocator.Action(m_objectAllocator.Arg));
+            }
         }
 
         public ObjectPool(ObjectPoolAllocator<T> objectAllocator, int initialSize, bool autoReleaseMememory)
@@ -46,8 +49,10 @@ namespace Voxelmetric.Code.Common.Memory
             m_objectIndex = 0;
 
             m_objects = new List<T>(initialSize);
-            for (int i=0; i< initialSize; i++)
+            for (int i = 0; i < initialSize; i++)
+            {
                 m_objects.Add(m_objectAllocator.Action(m_objectAllocator.Arg));
+            }
         }
 
         public ObjectPool(Func<T, T> objectAllocator, Action<T> objectDeallocator, int initialSize)
@@ -60,7 +65,9 @@ namespace Voxelmetric.Code.Common.Memory
 
             m_objects = new List<T>(initialSize);
             for (int i = 0; i < initialSize; i++)
+            {
                 m_objects.Add(m_objectAllocator.Action(m_objectAllocator.Arg));
+            }
         }
 
         public ObjectPool(ObjectPoolAllocator<T> objectAllocator, Action<T> objectDeallocator, int initialSize)
@@ -73,7 +80,9 @@ namespace Voxelmetric.Code.Common.Memory
 
             m_objects = new List<T>(initialSize);
             for (int i = 0; i < initialSize; i++)
+            {
                 m_objects.Add(m_objectAllocator.Action(m_objectAllocator.Arg));
+            }
         }
 
         /// <summary>
@@ -87,9 +96,11 @@ namespace Voxelmetric.Code.Common.Memory
                 m_objects.Add(m_objectAllocator.Action(m_objectAllocator.Arg));
                 // Let Unity handle how much memory is going to be preallocated
                 for (int i = m_objects.Count; i < m_objects.Capacity; i++)
+                {
                     m_objects.Add(m_objectAllocator.Action(m_objectAllocator.Arg));
+                }
             }
-            
+
             return m_objects[m_objectIndex++];
         }
 
@@ -98,24 +109,28 @@ namespace Voxelmetric.Code.Common.Memory
         /// </summary>
         public void Push(T item)
         {
-            if (m_objectIndex<=0)
+            if (m_objectIndex <= 0)
+            {
                 throw new InvalidOperationException("Object pool is full");
-            
+            }
+
             // If we're using less then 1/4th of memory capacity, let's free half of the allocated memory.
             // We're doing it this way so that there's a certain threshold before allocating new memory.
             // We only deallocate if there's at least m_initialSize items allocated.
             if (m_autoReleaseMemory)
             {
-                int thresholdCount = m_objects.Count>>2;
-                if (thresholdCount>m_initialSize && m_objectIndex<=thresholdCount)
+                int thresholdCount = m_objects.Count >> 2;
+                if (thresholdCount > m_initialSize && m_objectIndex <= thresholdCount)
                 {
-                    int halfCount = m_objects.Count>>1;
+                    int halfCount = m_objects.Count >> 1;
 
                     // Use custom deallocation if deallocator is set
-                    if (m_objectDeallocator!=null)
+                    if (m_objectDeallocator != null)
                     {
-                        for (int i = halfCount; i<m_objects.Count; i++)
+                        for (int i = halfCount; i < m_objects.Count; i++)
+                        {
                             m_objectDeallocator(m_objects[i]);
+                        }
                     }
 
                     // Remove one half of unused items
@@ -125,7 +140,7 @@ namespace Voxelmetric.Code.Common.Memory
 
             m_objects[--m_objectIndex] = item;
         }
-        
+
         /// <summary>
         ///    Releases all unused memory
         /// </summary>
@@ -135,11 +150,13 @@ namespace Voxelmetric.Code.Common.Memory
             if (m_objectDeallocator != null)
             {
                 for (int i = m_objectIndex; i < m_objects.Count; i++)
+                {
                     m_objectDeallocator(m_objects[i]);
+                }
             }
 
             // Remove all unused items
-            m_objects.RemoveRange(m_objectIndex, m_objects.Count-m_objectIndex);
+            m_objects.RemoveRange(m_objectIndex, m_objects.Count - m_objectIndex);
         }
 
         public override string ToString()

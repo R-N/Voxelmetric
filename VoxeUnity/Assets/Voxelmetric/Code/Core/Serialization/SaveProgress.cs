@@ -4,19 +4,21 @@ using Voxelmetric.Code.Common.Events;
 
 namespace Voxelmetric.Code.Core.Serialization
 {
-    public class SaveProgress: IEventListener<ChunkStateExternal>
+    public class SaveProgress : IEventListener<ChunkStateExternal>
     {
         private readonly List<Chunk> chunksToSave;
         public readonly int totalChunksToSave = 0;
         private int progress = 0;
-        
+
         public SaveProgress(List<Chunk> chunks)
         {
-            if (chunks==null)
+            if (chunks == null)
+            {
                 return;
+            }
 
             progress = 0;
-            if(chunks.Count<=0)
+            if (chunks.Count <= 0)
             {
                 progress = 100;
                 return;
@@ -26,7 +28,7 @@ namespace Voxelmetric.Code.Core.Serialization
             totalChunksToSave = chunksToSave.Count;
 
             // Register at each chunk
-            for (int i = 0; i<chunksToSave.Count; i++)
+            for (int i = 0; i < chunksToSave.Count; i++)
             {
                 Chunk chunk = chunksToSave[i];
                 chunk.Register(this);
@@ -42,7 +44,7 @@ namespace Voxelmetric.Code.Core.Serialization
 
         void IEventListener<ChunkStateExternal>.OnNotified(IEventSource<ChunkStateExternal> source, ChunkStateExternal evt)
         {
-            if (evt==ChunkStateExternal.Saved)
+            if (evt == ChunkStateExternal.Saved)
             {
                 chunksToSave.Remove((Chunk)source);
 

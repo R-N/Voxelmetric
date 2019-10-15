@@ -7,7 +7,7 @@ using Voxelmetric.Code.Data_types;
 
 namespace Voxelmetric.Code.Core.Serialization
 {
-    public class Save: IBinarizable
+    public class Save : IBinarizable
     {
         public static readonly short SaveVersion = 1;
 
@@ -32,9 +32,9 @@ namespace Voxelmetric.Code.Core.Serialization
         public void Reset()
         {
             MarkAsProcessed();
-            ResetTemporary();            
+            ResetTemporary();
         }
-        
+
         public void MarkAsProcessed()
         {
             // Release the memory allocated by temporary buffers
@@ -57,7 +57,9 @@ namespace Voxelmetric.Code.Core.Serialization
                 !Features.UseDifferentialSerialization_ForceSaveHeaders &&
                 m_blocksModified == null
                 )
+            {
                 return false;
+            }
 
             return true;
         }
@@ -75,8 +77,10 @@ namespace Voxelmetric.Code.Core.Serialization
             // Chunk data
             if (Features.UseDifferentialSerialization)
             {
-                if(m_blocksModified==null)
+                if (m_blocksModified == null)
+                {
                     bw.Write(0);
+                }
                 else
                 {
                     int posLenBytes = m_blocksModified.Length * blockPosSize;
@@ -104,21 +108,23 @@ namespace Voxelmetric.Code.Core.Serialization
 
             // Read the version number
             int version = br.ReadInt16();
-            if (version!=SaveVersion)
+            if (version != SaveVersion)
+            {
                 return false;
+            }
 
             // 0/1 allowed for IsDifferential
             byte isDifferential = br.ReadByte();
-            if (isDifferential!=0 && isDifferential!=1)
+            if (isDifferential != 0 && isDifferential != 1)
             {
                 success = false;
                 goto deserializeFail;
             }
-            IsDifferential = isDifferential==1;
+            IsDifferential = isDifferential == 1;
 
             // Current chunk size must match the saved chunk size
             int chunkBlocks = br.ReadInt32();
-            if (chunkBlocks!=Env.ChunkSizePow3)
+            if (chunkBlocks != Env.ChunkSizePow3)
             {
                 success = false;
                 goto deserializeFail;
@@ -126,13 +132,13 @@ namespace Voxelmetric.Code.Core.Serialization
 
             // NonEmptyBlocks must be a sane number in chunkBlocks range
             int nonEmptyBlocks = br.ReadInt32();
-            if (nonEmptyBlocks<0 || nonEmptyBlocks>chunkBlocks)
+            if (nonEmptyBlocks < 0 || nonEmptyBlocks > chunkBlocks)
             {
                 success = false;
                 goto deserializeFail;
             }
             Chunk.Blocks.NonEmptyBlocks = nonEmptyBlocks;
-            
+
             while (true)
             {
                 if (IsDifferential)
@@ -148,7 +154,7 @@ namespace Voxelmetric.Code.Core.Serialization
 
                         m_positionsBytes = new byte[posLenBytes];
                         int read = br.Read(m_positionsBytes, 0, posLenBytes);
-                        if (read!=posLenBytes)
+                        if (read != posLenBytes)
                         {
                             // Length must match
                             success = false;
@@ -157,7 +163,7 @@ namespace Voxelmetric.Code.Core.Serialization
 
                         m_blocksBytes = new byte[blkLenBytes];
                         read = br.Read(m_blocksBytes, 0, blkLenBytes);
-                        if (read!=blkLenBytes)
+                        if (read != blkLenBytes)
                         {
                             // Length must match
                             success = false;
@@ -171,13 +177,13 @@ namespace Voxelmetric.Code.Core.Serialization
                     }
                 }
                 else
-                {                    
+                {
                     int blkLenBytes = br.ReadInt32();
                     m_blocksBytes = new byte[blkLenBytes];
 
                     // Read raw data
                     int readLength = br.Read(m_blocksBytes, 0, blkLenBytes);
-                    if (readLength!= blkLenBytes)
+                    if (readLength != blkLenBytes)
                     {
                         // Length must match
                         success = false;
@@ -202,7 +208,7 @@ namespace Voxelmetric.Code.Core.Serialization
         {
             if (Features.UseDifferentialSerialization)
             {
-                var provider = Chunk.world.blockProvider;
+                Load_Resources.Blocks.BlockProvider provider = Chunk.world.blockProvider;
                 int blockPosSize = StructSerialization.TSSize<BlockPos>.ValueSize;
                 int blockDataSize = StructSerialization.TSSize<BlockData>.ValueSize;
 
@@ -238,8 +244,8 @@ namespace Voxelmetric.Code.Core.Serialization
             }
             else
             {
-                var pools = Globals.WorkPool.GetPool(Chunk.ThreadID);
-                var provider = Chunk.world.blockProvider;
+                Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(Chunk.ThreadID);
+                Load_Resources.Blocks.BlockProvider provider = Chunk.world.blockProvider;
 
                 int blockDataSize = StructSerialization.TSSize<BlockData>.ValueSize;
                 int requestedByteSize = Env.ChunkSizePow3 * blockDataSize;
@@ -252,14 +258,14 @@ namespace Voxelmetric.Code.Core.Serialization
                     int i = 0;
 
                     int index = Helpers.ZeroChunkIndex;
-                    int yOffset = Env.ChunkSizeWithPaddingPow2- Env.ChunkSize*Env.ChunkSizeWithPadding;
-                    int zOffset = Env.ChunkSizeWithPadding-Env.ChunkSize;
+                    int yOffset = Env.ChunkSizeWithPaddingPow2 - Env.ChunkSize * Env.ChunkSizeWithPadding;
+                    int zOffset = Env.ChunkSizeWithPadding - Env.ChunkSize;
 
-                    for (int y = 0; y<Env.ChunkSize; ++y, index+=yOffset)
+                    for (int y = 0; y < Env.ChunkSize; ++y, index += yOffset)
                     {
-                        for (int z = 0; z<Env.ChunkSize; ++z, index+=zOffset)
+                        for (int z = 0; z < Env.ChunkSize; ++z, index += zOffset)
                         {
-                            for (int x = 0; x<Env.ChunkSize; ++x, i += blockDataSize, ++index)
+                            for (int x = 0; x < Env.ChunkSize; ++x, i += blockDataSize, ++index)
                             {
                                 BlockData bd = blocks.Get(index);
 
@@ -297,15 +303,19 @@ namespace Voxelmetric.Code.Core.Serialization
         public bool CanDecompress()
         {
             if (IsDifferential)
+            {
                 return m_positionsBytes != null && m_blocksBytes != null;
+            }
             else
+            {
                 return m_blocksBytes != null;
+            }
         }
 
         public bool DoDecompression()
         {
-            var pools = Globals.WorkPool.GetPool(Chunk.ThreadID);
-            var provider = Chunk.world.blockProvider;
+            Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(Chunk.ThreadID);
+            Load_Resources.Blocks.BlockProvider provider = Chunk.world.blockProvider;
 
             if (IsDifferential)
             {
@@ -321,7 +331,7 @@ namespace Voxelmetric.Code.Core.Serialization
                     // Extract positions
                     fixed (byte* pSrc = m_positionsBytes)
                     {
-                        for (i = 0, j = 0; j<m_positionsModified.Length; i += blockPosSize, j++)
+                        for (i = 0, j = 0; j < m_positionsModified.Length; i += blockPosSize, j++)
                         {
                             m_positionsModified[j] = *(BlockPos*)&pSrc[i];
                         }
@@ -329,7 +339,7 @@ namespace Voxelmetric.Code.Core.Serialization
                     // Extract block data
                     fixed (byte* pSrc = m_blocksBytes)
                     {
-                        for (i = 0, j = 0; j<m_blocksModified.Length; i += blockDataSize, j++)
+                        for (i = 0, j = 0; j < m_blocksModified.Length; i += blockDataSize, j++)
                         {
                             BlockData* bd = (BlockData*)&pSrc[i];
                             // Convert global block types into internal optimized version
@@ -346,11 +356,11 @@ namespace Voxelmetric.Code.Core.Serialization
                 int requestedByteSize = Env.ChunkSizePow3 * blockDataSize;
 
                 // Pop a large enough buffers from the pool
-                var bytes = pools.ByteArrayPool.Pop(requestedByteSize);
+                byte[] bytes = pools.ByteArrayPool.Pop(requestedByteSize);
                 {
                     // Decompress data
                     int decompressedLength = CLZF2.lzf_decompress(m_blocksBytes, m_blocksBytes.Length, ref bytes);
-                    if (decompressedLength!=Env.ChunkSizePow3 * blockDataSize)
+                    if (decompressedLength != Env.ChunkSizePow3 * blockDataSize)
                     {
                         m_blocksBytes = null;
                         return false;
@@ -364,14 +374,14 @@ namespace Voxelmetric.Code.Core.Serialization
                         fixed (byte* pSrc = bytes)
                         {
                             int index = Helpers.ZeroChunkIndex;
-                            int yOffset = Env.ChunkSizeWithPaddingPow2- Env.ChunkSize*Env.ChunkSizeWithPadding;
-                            int zOffset = Env.ChunkSizeWithPadding-Env.ChunkSize;
+                            int yOffset = Env.ChunkSizeWithPaddingPow2 - Env.ChunkSize * Env.ChunkSizeWithPadding;
+                            int zOffset = Env.ChunkSizeWithPadding - Env.ChunkSize;
 
-                            for (int y = 0; y<Env.ChunkSize; ++y, index+=yOffset)
+                            for (int y = 0; y < Env.ChunkSize; ++y, index += yOffset)
                             {
-                                for (int z = 0; z<Env.ChunkSize; ++z, index+=zOffset)
+                                for (int z = 0; z < Env.ChunkSize; ++z, index += zOffset)
                                 {
-                                    for (int x = 0; x<Env.ChunkSize; ++x, i += blockDataSize, ++index)
+                                    for (int x = 0; x < Env.ChunkSize; ++x, i += blockDataSize, ++index)
                                     {
                                         BlockData* bd = (BlockData*)&pSrc[i];
 
@@ -398,26 +408,32 @@ namespace Voxelmetric.Code.Core.Serialization
             ChunkBlocks blocks = Chunk.Blocks;
 
             if (!Features.UseDifferentialSerialization)
+            {
                 return true;
+            }
 
             if (Features.UseDifferentialSerialization_ForceSaveHeaders)
             {
                 if (blocks.modifiedBlocks.Count <= 0)
+                {
                     return true;
+                }
             }
             else
             {
                 if (blocks.modifiedBlocks.Count <= 0)
+                {
                     return false;
+                }
             }
-            
+
             Dictionary<BlockPos, BlockData> blocksDictionary = new Dictionary<BlockPos, BlockData>();
-            
+
             // Create a map of modified blocks and their positions
             // TODO: Depending on the amount of changes this could become a performance bottleneck
             for (int i = 0; i < blocks.modifiedBlocks.Count; i++)
             {
-                var pos = blocks.modifiedBlocks[i];
+                BlockPos pos = blocks.modifiedBlocks[i];
                 // Remove any existing blocks in the dictionary. They come from the existing save and are overwritten
                 blocksDictionary.Remove(pos);
                 blocksDictionary.Add(pos, blocks.Get(Helpers.GetChunkIndex1DFrom3D(pos.x, pos.y, pos.z)));
@@ -430,7 +446,7 @@ namespace Voxelmetric.Code.Core.Serialization
                 m_positionsModified = new BlockPos[cnt];
 
                 int index = 0;
-                foreach (var pair in blocksDictionary)
+                foreach (KeyValuePair<BlockPos, BlockData> pair in blocksDictionary)
                 {
                     m_blocksModified[index] = pair.Value;
                     m_positionsModified[index] = pair.Key;
@@ -444,12 +460,14 @@ namespace Voxelmetric.Code.Core.Serialization
         public void CommitChanges()
         {
             if (!IsDifferential)
+            {
                 return;
+            }
 
             // Rewrite generated blocks with differential positions
-            if (m_blocksModified!=null)
+            if (m_blocksModified != null)
             {
-                for (int i = 0; i<m_blocksModified.Length; i++)
+                for (int i = 0; i < m_blocksModified.Length; i++)
                 {
                     BlockPos pos = m_positionsModified[i];
                     Chunk.Blocks.SetRaw(Helpers.GetChunkIndex1DFrom3D(pos.x, pos.y, pos.z), m_blocksModified[i]);

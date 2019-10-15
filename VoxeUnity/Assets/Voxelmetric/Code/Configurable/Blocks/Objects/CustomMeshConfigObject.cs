@@ -6,7 +6,13 @@ public class CustomMeshConfigObject : BlockConfigObject
     [SerializeField]
     private GameObject meshObject = null;
     [SerializeField]
+    private Texture2D texture = null;
+    [SerializeField]
     private Vector3 meshOffset = Vector3.zero;
+
+    public GameObject MeshObject { get { return meshObject; } set { meshObject = value; } }
+    public Texture2D Texture { get { return texture; } set { texture = value; } }
+    public Vector3 MeshOffset { get { return meshOffset; } set { meshOffset = value; } }
 
     public override object GetBlockClass()
     {
@@ -23,14 +29,8 @@ public class CustomMeshConfigObject : BlockConfigObject
 
         return new CustomMeshBlockConfig()
         {
-            solid = Solid,
-            transparent = Transparent,
-            name = BlockName,
-            typeInConfig = ID,
             raycastHit = true,
             raycastHitOnRemoval = true,
-            meshGO = meshObject,
-            MeshOffset = meshOffset
         };
     }
 }

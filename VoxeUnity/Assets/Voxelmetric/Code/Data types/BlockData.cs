@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Voxelmetric.Code.Data_types
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct BlockData: IEquatable<BlockData>
+    public struct BlockData : IEquatable<BlockData>
     {
         public static readonly ushort TypeMask = 0x7FFF;
 
@@ -13,7 +13,7 @@ namespace Voxelmetric.Code.Data_types
          * 14 - 0 - block type
         */
         private readonly ushort m_data;
-        
+
         public BlockData(ushort data)
         {
             m_data = data;
@@ -21,11 +21,13 @@ namespace Voxelmetric.Code.Data_types
 
         public BlockData(ushort type, bool solid)
         {
-            m_data = (ushort)(type&0x7FFF);
+            m_data = (ushort)(type & 0x7FFF);
             if (solid)
+            {
                 m_data |= 0x8000;
+            }
         }
-        
+
         public ushort Data
         {
             get { return m_data; }
@@ -36,7 +38,7 @@ namespace Voxelmetric.Code.Data_types
         /// </summary>
         public bool Solid
         {
-            get { return (m_data>>15)!=0; }
+            get { return (m_data >> 15) != 0; }
         }
 
         /// <summary>
@@ -44,7 +46,7 @@ namespace Voxelmetric.Code.Data_types
         /// </summary>
         public ushort Type
         {
-            get { return (ushort)(m_data&TypeMask); }
+            get { return (ushort)(m_data & TypeMask); }
         }
 
         public static ushort RestoreBlockData(byte[] data, int offset)
@@ -61,13 +63,16 @@ namespace Voxelmetric.Code.Data_types
 
         public bool Equals(BlockData other)
         {
-            return m_data==other.m_data;
+            return m_data == other.m_data;
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj))
+            {
                 return false;
+            }
+
             return obj is BlockData && Equals((BlockData)obj);
         }
 
@@ -76,14 +81,14 @@ namespace Voxelmetric.Code.Data_types
             return m_data.GetHashCode();
         }
 
-        public static bool operator==(BlockData data1, BlockData data2)
+        public static bool operator ==(BlockData data1, BlockData data2)
         {
-            return data1.m_data==data2.m_data;
+            return data1.m_data == data2.m_data;
         }
 
-        public static bool operator!=(BlockData data1, BlockData data2)
+        public static bool operator !=(BlockData data1, BlockData data2)
         {
-            return data1.m_data!=data2.m_data;
+            return data1.m_data != data2.m_data;
         }
 
         #endregion

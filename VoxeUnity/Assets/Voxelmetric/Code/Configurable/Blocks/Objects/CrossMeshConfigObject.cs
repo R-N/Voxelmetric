@@ -17,11 +17,6 @@ public class CrossMeshConfigObject : BlockConfigObject
     {
         return new CrossMeshBlockConfig()
         {
-            solid = Solid,
-            transparent = Transparent,
-            name = BlockName,
-            typeInConfig = ID,
-            Texture = texture,
             raycastHit = true,
             raycastHitOnRemoval = true
         };

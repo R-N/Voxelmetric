@@ -8,13 +8,13 @@ namespace Voxelmetric.Examples
     {
         public Camera cam;
         public GameObject obj;
-        
+
         private Renderer objRenderer;
         private Text txt;
 
         private Vector2 rot;
         private readonly Plane[] planes = new Plane[6];
-        
+
         void Start()
         {
             rot.y = 360f - cam.transform.localEulerAngles.x;
@@ -30,8 +30,8 @@ namespace Voxelmetric.Examples
             if (Input.GetMouseButton(1))
             {
                 rot = new Vector2(
-                    rot.x+Input.GetAxis("Mouse X")*3,
-                    rot.y+Input.GetAxis("Mouse Y")*3
+                    rot.x + Input.GetAxis("Mouse X") * 3,
+                    rot.y + Input.GetAxis("Mouse Y") * 3
                     );
 
                 cam.transform.localRotation = Quaternion.AngleAxis(rot.x, Vector3.up);
@@ -40,10 +40,10 @@ namespace Voxelmetric.Examples
 
             //Movement
             bool turbo = Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift);
-            cam.transform.position += cam.transform.forward*40*(turbo ? 3 : 1)*Input.GetAxis("Vertical")*Time.deltaTime;
-            cam.transform.position += cam.transform.right*40*(turbo ? 3 : 1)*Input.GetAxis("Horizontal")*Time.deltaTime;
+            cam.transform.position += cam.transform.forward * 40 * (turbo ? 3 : 1) * Input.GetAxis("Vertical") * Time.deltaTime;
+            cam.transform.position += cam.transform.right * 40 * (turbo ? 3 : 1) * Input.GetAxis("Horizontal") * Time.deltaTime;
 
-            if (objRenderer!=null && txt!=null)
+            if (objRenderer != null && txt != null)
             {
                 Planes.CalculateFrustumPlanes(cam, planes);
                 Bounds b = objRenderer.bounds;

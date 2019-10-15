@@ -57,8 +57,8 @@ namespace Voxelmetric.Code.Common.Collections
         public override int GetHashCode()
         {
             int hash = 17;
-            hash = hash*23+(item1==null ? 0 : item1.GetHashCode());
-            hash = hash*23+(item2==null ? 0 : item2.GetHashCode());
+            hash = hash * 23 + (item1 == null ? 0 : item1.GetHashCode());
+            hash = hash * 23 + (item2 == null ? 0 : item2.GetHashCode());
             return hash;
         }
 
@@ -69,32 +69,39 @@ namespace Voxelmetric.Code.Common.Collections
                 return false;
             }
 
-            var other = (Tuple<T1, T2>)o;
+            Tuple<T1, T2> other = (Tuple<T1, T2>)o;
 
-            return this==other;
+            return this == other;
         }
 
         public bool Equals(Tuple<T1, T2> other)
         {
-            return this==other;
+            return this == other;
         }
 
-        public static bool operator==(Tuple<T1, T2> a, Tuple<T1, T2> b)
+        public static bool operator ==(Tuple<T1, T2> a, Tuple<T1, T2> b)
         {
             if (ReferenceEquals(a, null))
+            {
                 return ReferenceEquals(b, null);
+            }
 
-            if (a.item1==null && b.item1!=null)
+            if (a.item1 == null && b.item1 != null)
+            {
                 return false;
-            if (a.item2==null && b.item2!=null)
+            }
+
+            if (a.item2 == null && b.item2 != null)
+            {
                 return false;
+            }
 
             return a.item1.Equals(b.item1) && a.item2.Equals(b.item2);
         }
 
-        public static bool operator!=(Tuple<T1, T2> a, Tuple<T1, T2> b)
+        public static bool operator !=(Tuple<T1, T2> a, Tuple<T1, T2> b)
         {
-            return !(a==b);
+            return !(a == b);
         }
 
         public void Unpack(Action<T1, T2> unpackerDelegate)

@@ -11,7 +11,7 @@ namespace Voxelmetric.Code.Geometry.Buffers
         public List<Vector2> UV1s;
         public List<Color32> Colors;
         public List<Vector4> Tangents;
-        
+
         /// <summary>
         ///     Clear the buffers
         /// </summary>
@@ -19,12 +19,20 @@ namespace Voxelmetric.Code.Geometry.Buffers
         {
             Vertices.Clear();
             Triangles.Clear();
-            if (UV1s!=null)
+            if (UV1s != null)
+            {
                 UV1s.Clear();
-            if (Colors!=null)
+            }
+
+            if (Colors != null)
+            {
                 Colors.Clear();
-            if (Tangents!=null)
+            }
+
+            if (Tangents != null)
+            {
                 Tangents.Clear();
+            }
         }
 
         /// <summary>
@@ -53,7 +61,7 @@ namespace Voxelmetric.Code.Geometry.Buffers
 
         public bool HasUV1
         {
-            get { return UV1s!=null; }
+            get { return UV1s != null; }
         }
 
         public bool HasColors
@@ -105,17 +113,22 @@ namespace Voxelmetric.Code.Geometry.Buffers
 
             // UVs
             mesh.uv = null;
-            if (UV1s!=null)
+            if (UV1s != null)
             {
-                Assert.IsTrue(UV1s.Count<=Vertices.Count);
-                if (UV1s.Count<Vertices.Count)
+                Assert.IsTrue(UV1s.Count <= Vertices.Count);
+                if (UV1s.Count < Vertices.Count)
                 {
                     // Fill in UVs if necessary
-                    if (UV1s.Capacity<Vertices.Count)
+                    if (UV1s.Capacity < Vertices.Count)
+                    {
                         UV1s.Capacity = Vertices.Count;
-                    int diff = Vertices.Count-UV1s.Count;
-                    for (int i = 0; i<diff; i++)
+                    }
+
+                    int diff = Vertices.Count - UV1s.Count;
+                    for (int i = 0; i < diff; i++)
+                    {
                         UV1s.Add(Vector2.zero);
+                    }
                 }
                 mesh.SetUVs(0, UV1s);
             }
@@ -125,17 +138,22 @@ namespace Voxelmetric.Code.Geometry.Buffers
 
             // Colors
             mesh.colors = null;
-            if (Colors!=null)
+            if (Colors != null)
             {
                 Assert.IsTrue(Colors.Count <= Vertices.Count);
-                if (Colors.Count<Vertices.Count)
+                if (Colors.Count < Vertices.Count)
                 {
                     // Fill in colors if necessary
-                    if (Colors.Capacity<Vertices.Count)
+                    if (Colors.Capacity < Vertices.Count)
+                    {
                         Colors.Capacity = Vertices.Count;
-                    int diff = Vertices.Count-Colors.Count;
-                    for (int i = 0; i<diff; i++)
+                    }
+
+                    int diff = Vertices.Count - Colors.Count;
+                    for (int i = 0; i < diff; i++)
+                    {
                         Colors.Add(new Color32(255, 255, 255, 255));
+                    }
                 }
                 mesh.SetColors(Colors);
             }
@@ -146,17 +164,22 @@ namespace Voxelmetric.Code.Geometry.Buffers
 
             // Tangents
             mesh.tangents = null;
-            if (Tangents!=null)
+            if (Tangents != null)
             {
                 Assert.IsTrue(Tangents.Count <= Vertices.Count);
-                if (Tangents.Count<Vertices.Count)
+                if (Tangents.Count < Vertices.Count)
                 {
                     // Fill in tangents if necessary
-                    if (Tangents.Capacity<Vertices.Count)
+                    if (Tangents.Capacity < Vertices.Count)
+                    {
                         Tangents.Capacity = Vertices.Count;
-                    int diff = Vertices.Count-Tangents.Count;
-                    for (int i = 0; i<diff; i++)
+                    }
+
+                    int diff = Vertices.Count - Tangents.Count;
+                    for (int i = 0; i < diff; i++)
+                    {
                         Tangents.Add(Vector4.zero);
+                    }
                 }
                 mesh.SetTangents(Tangents);
             }

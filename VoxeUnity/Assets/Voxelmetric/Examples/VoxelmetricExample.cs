@@ -189,7 +189,7 @@ namespace Voxelmetric.Examples
         {
             if (saveProgress == null)
             {
-                return "";
+                return string.Empty;
             }
 
             return saveProgress.GetProgress().ToString() + "%";

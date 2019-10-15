@@ -30,7 +30,7 @@ namespace Voxelmetric.Code.Common.Memory
         public IntPtr Pop(int size)
         {
             // Do not take more than we can give!
-            Assert.IsTrue(m_pos+size<m_buffer+m_size);
+            Assert.IsTrue(m_pos + size < m_buffer + m_size);
 
             m_pos += size;
             return (IntPtr)m_pos;
@@ -39,19 +39,19 @@ namespace Voxelmetric.Code.Common.Memory
         public void Push(int size)
         {
             // Do not return than we gave!
-            Assert.IsTrue(m_pos>=m_buffer);
+            Assert.IsTrue(m_pos >= m_buffer);
 
             m_pos -= size;
         }
 
         public int Left
         {
-            get { return m_size - (int)(m_pos-m_buffer); }
+            get { return m_size - (int)(m_pos - m_buffer); }
         }
 
         public override string ToString()
         {
-            return string.Format("{0}/{1}", (int)(m_pos-m_buffer), m_size);
+            return string.Format("{0}/{1}", (int)(m_pos - m_buffer), m_size);
         }
     }
 }

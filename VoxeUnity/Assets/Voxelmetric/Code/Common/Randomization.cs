@@ -2,7 +2,7 @@
 {
     public static class Randomization
     {
-        private static readonly float multiplier = 1f/10000f;
+        private static readonly float multiplier = 1f / 10000f;
         //! First 255 prime numbers and 1. Used for randomizing a number in the RandomPercent function.
         private static readonly int[] primeNumbers =
         {
@@ -33,10 +33,12 @@
             {
                 hash *= primeNumbers[seed];
 
-                if (hash<0)
+                if (hash < 0)
+                {
                     hash *= -1;
+                }
 
-                return (hash%10000)*multiplier;
+                return (hash % 10000) * multiplier;
             }
         }
 
@@ -46,12 +48,14 @@
             unchecked
             {
                 hash *= primeNumbers[seed];
-                hash *= primeNumbers[++seed]*h;
+                hash *= primeNumbers[++seed] * h;
 
-                if (hash<0)
+                if (hash < 0)
+                {
                     hash *= -1;
+                }
 
-                return (hash%10000)*multiplier;
+                return (hash % 10000) * multiplier;
             }
         }
     }

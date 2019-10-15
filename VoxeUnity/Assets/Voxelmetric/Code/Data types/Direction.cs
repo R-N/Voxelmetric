@@ -3,7 +3,7 @@
     /// <summary>
     /// Enum helping us to determine a direction
     /// </summary>
-    public enum Direction: byte
+    public enum Direction : byte
     {
         up = 0, // front face
         down = 1, // back face
@@ -36,7 +36,7 @@
         public static bool IsBackface(Direction dir)
         {
             // The first bit signalizes a backface
-            return (Get(dir) & 1)==1;
+            return (Get(dir) & 1) == 1;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Voxelmetric.Code.Utilities
         private readonly World world;
         private readonly Dictionary<Vector3Int, Heuristics> open;
         private readonly Dictionary<Vector3Int, Heuristics> closed;
-        
+
         private readonly Vector3Int target;
         private readonly Vector3Int start;
 
@@ -45,12 +45,14 @@ namespace Voxelmetric.Code.Utilities
             }
         }
 
-        public PathFinder(Vector3Int start, Vector3Int target, World world, float range = 0.5f, int entityHeight=1)
+        public PathFinder(Vector3Int start, Vector3Int target, World world, float range = 0.5f, int entityHeight = 1)
         {
             // Don't search the path if our target is too close
-            if (start.Distance2(ref target)<=range*range)
+            if (start.Distance2(ref target) <= range * range)
+            {
                 return;
-            
+            }
+
             path = new List<Vector3Int>();
             open = new Dictionary<Vector3Int, Heuristics>();
             closed = new Dictionary<Vector3Int, Heuristics>();
@@ -93,11 +95,13 @@ namespace Voxelmetric.Code.Utilities
 
             open.TryGetValue(lastTile, out pos);
 
-            while (pos.parent!=start)
+            while (pos.parent != start)
             {
                 path.Insert(0, pos.parent + Direction.up);
                 if (!closed.TryGetValue(pos.parent, out pos))
+                {
                     break;
+                }
             }
 
         }
@@ -106,10 +110,10 @@ namespace Voxelmetric.Code.Utilities
 
         private void ProcessBest()
         {
-            float shortestDist = distanceFromStartToTarget*maxDistToTravelMultiplier + maxDistToTravelAfterDirect;
+            float shortestDist = distanceFromStartToTarget * maxDistToTravelMultiplier + maxDistToTravelAfterDirect;
             Vector3Int bestPos = FailedPos;
 
-            foreach (var tile in open)
+            foreach (KeyValuePair<Vector3Int, Heuristics> tile in open)
             {
                 if (tile.Value.g + tile.Value.h < shortestDist)
                 {
@@ -121,14 +125,14 @@ namespace Voxelmetric.Code.Utilities
             Heuristics parent;
             open.TryGetValue(bestPos, out parent);
 
-            if (target.Distance2(ref bestPos) <= range*range)
+            if (target.Distance2(ref bestPos) <= range * range)
             {
                 PathComplete(bestPos);
                 status = Status.succeeded;
                 return;
             }
 
-            if (bestPos==FailedPos)
+            if (bestPos == FailedPos)
             {
                 status = Status.failed;
             }
@@ -142,7 +146,9 @@ namespace Voxelmetric.Code.Utilities
             bool exists = open.TryGetValue(pos, out h);
 
             if (!exists)
+            {
                 return;
+            }
 
             open.Remove(pos);
             closed.Add(pos, h);
@@ -156,24 +162,26 @@ namespace Voxelmetric.Code.Utilities
         private void CheckAdjacent(Vector3Int pos, Heuristics dist)
         {
             {
-                if (adjacentPositions==null)
+                if (adjacentPositions == null)
+                {
                     adjacentPositions = new Vector3Int[12]; // 16 for diagonal directions
-                
+                }
+
                 // Cardinal directions
-                adjacentPositions[0] = new Vector3Int(pos.x, pos.y, pos.z+1);
-                adjacentPositions[1] = new Vector3Int(pos.x+1, pos.y, pos.z);
-                adjacentPositions[2] = new Vector3Int(pos.x, pos.y, pos.z-1);
-                adjacentPositions[3] = new Vector3Int(pos.x-1, pos.y, pos.z);
+                adjacentPositions[0] = new Vector3Int(pos.x, pos.y, pos.z + 1);
+                adjacentPositions[1] = new Vector3Int(pos.x + 1, pos.y, pos.z);
+                adjacentPositions[2] = new Vector3Int(pos.x, pos.y, pos.z - 1);
+                adjacentPositions[3] = new Vector3Int(pos.x - 1, pos.y, pos.z);
                 // Climb up directions
-                adjacentPositions[4] = new Vector3Int(pos.x, pos.y+1, pos.z+1);
-                adjacentPositions[5] = new Vector3Int(pos.x+1, pos.y+1, pos.z);
-                adjacentPositions[6] = new Vector3Int(pos.x, pos.y+1, pos.z-1);
-                adjacentPositions[7] = new Vector3Int(pos.x-1, pos.y+1, pos.z);
+                adjacentPositions[4] = new Vector3Int(pos.x, pos.y + 1, pos.z + 1);
+                adjacentPositions[5] = new Vector3Int(pos.x + 1, pos.y + 1, pos.z);
+                adjacentPositions[6] = new Vector3Int(pos.x, pos.y + 1, pos.z - 1);
+                adjacentPositions[7] = new Vector3Int(pos.x - 1, pos.y + 1, pos.z);
                 // Climb down directions
-                adjacentPositions[8] = new Vector3Int(pos.x, pos.y-1, pos.z+1);
-                adjacentPositions[9] = new Vector3Int(pos.x+1, pos.y-1, pos.z);
-                adjacentPositions[10] = new Vector3Int(pos.x, pos.y-1, pos.z-1);
-                adjacentPositions[11] = new Vector3Int(pos.x-1, pos.y-1, pos.z);
+                adjacentPositions[8] = new Vector3Int(pos.x, pos.y - 1, pos.z + 1);
+                adjacentPositions[9] = new Vector3Int(pos.x + 1, pos.y - 1, pos.z);
+                adjacentPositions[10] = new Vector3Int(pos.x, pos.y - 1, pos.z - 1);
+                adjacentPositions[11] = new Vector3Int(pos.x - 1, pos.y - 1, pos.z);
                 // Diagonal directions
                 //adjacentPositions[12] = new Vector3Int(pos.x+1, pos.y, pos.z+1);
                 //adjacentPositions[13] = new Vector3Int(pos.x+1, pos.y, pos.z-1);
@@ -182,24 +190,26 @@ namespace Voxelmetric.Code.Utilities
             }
 
             {
-                if (distanceFromStart==null)
+                if (distanceFromStart == null)
+                {
                     distanceFromStart = new float[12]; // 16 for diagonal directions
-                
+                }
+
                 // Cardinal directions
-                distanceFromStart[0] = dist.g+1;
-                distanceFromStart[1] = dist.g+1;
-                distanceFromStart[2] = dist.g+1;
-                distanceFromStart[3] = dist.g+1;
+                distanceFromStart[0] = dist.g + 1;
+                distanceFromStart[1] = dist.g + 1;
+                distanceFromStart[2] = dist.g + 1;
+                distanceFromStart[3] = dist.g + 1;
                 // Climb up directions
-                distanceFromStart[4] = dist.g+1.414f;
-                distanceFromStart[5] = dist.g+1.414f;
-                distanceFromStart[6] = dist.g+1.414f;
-                distanceFromStart[7] = dist.g+1.414f;
+                distanceFromStart[4] = dist.g + 1.414f;
+                distanceFromStart[5] = dist.g + 1.414f;
+                distanceFromStart[6] = dist.g + 1.414f;
+                distanceFromStart[7] = dist.g + 1.414f;
                 // Climb down directions
-                distanceFromStart[8] = dist.g+1.414f;
-                distanceFromStart[9] = dist.g+1.414f;
-                distanceFromStart[10] = dist.g+1.414f;
-                distanceFromStart[11] = dist.g+1.414f;
+                distanceFromStart[8] = dist.g + 1.414f;
+                distanceFromStart[9] = dist.g + 1.414f;
+                distanceFromStart[10] = dist.g + 1.414f;
+                distanceFromStart[11] = dist.g + 1.414f;
                 // Diagonal directions
                 //distanceFromStart[12] = dist.g+1.414f;
                 //distanceFromStart[13] = dist.g+1.414f;
@@ -207,13 +217,13 @@ namespace Voxelmetric.Code.Utilities
                 //distanceFromStart[15] = dist.g+1.414f;
             }
 
-            for (int i = 0; i<12/*16*/; i++)
+            for (int i = 0; i < 12/*16*/; i++)
             {
                 if (!closed.ContainsKey(adjacentPositions[i]))
                 {
                     Vector3Int adjPos = adjacentPositions[i];
 
-                    var h = new Heuristics(
+                    Heuristics h = new Heuristics(
                         distanceFromStart[i],
                         target.Distance2(ref adjPos),
                         pos);
@@ -223,7 +233,7 @@ namespace Voxelmetric.Code.Utilities
                         Heuristics existingTile;
                         if (open.TryGetValue(adjacentPositions[i], out existingTile))
                         {
-                            if (existingTile.g>distanceFromStart[i])
+                            if (existingTile.g > distanceFromStart[i])
                             {
                                 open.Remove(adjacentPositions[i]);
                                 open.Add(adjacentPositions[i], h);
@@ -242,15 +252,19 @@ namespace Voxelmetric.Code.Utilities
         {
             Block block = world.GetBlock(ref pos);
             if (!block.CanCollide)
+            {
                 return false;
+            }
 
             // There has to be enough free space above the position
-            for (int y = 1; y<=entityHeight; y++)
+            for (int y = 1; y <= entityHeight; y++)
             {
                 Vector3Int blockPos = pos.Add(0, y, 0);
                 block = world.GetBlock(ref blockPos);
                 if (block.CanCollide)
+                {
                     return false;
+                }
             }
 
             return true;

@@ -3,7 +3,7 @@ using Voxelmetric.Code.Geometry.Batchers;
 
 namespace Voxelmetric.Code.Geometry.GeometryHandler
 {
-    public abstract class AColliderGeometryHandler: IGeometryHandler
+    public abstract class AColliderGeometryHandler : IGeometryHandler
     {
         public ColliderGeometryBatcher Batcher { get; private set; }
 

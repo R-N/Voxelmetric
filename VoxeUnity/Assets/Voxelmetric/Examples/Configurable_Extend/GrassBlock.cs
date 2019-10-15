@@ -9,7 +9,7 @@ using Voxelmetric.Code.Load_Resources.Blocks;
 // cube block but it replaces the RandomUpdate function with its own.
 // Use this class for a block by setting the config's controller to GrassBlock
 
-public class GrassBlock: CubeBlock
+public class GrassBlock : CubeBlock
 {
     private BlockData air;
     private BlockData dirt;
@@ -32,28 +32,32 @@ public class GrassBlock: CubeBlock
         ChunkBlocks blocks = chunk.Blocks;
 
         // Let's stay inside bounds
-        int minX = localPos.x<=0 ? 0 : 1;
-        int maxX = localPos.x>=Env.ChunkSize1 ? 0 : 1;
-        int minY = localPos.y<=0 ? 0 : 1;
-        int maxY = localPos.y>=Env.ChunkSize1 ? 0 : 1;
-        int minZ = localPos.z<=0 ? 0 : 1;
-        int maxZ = localPos.z>=Env.ChunkSize1 ? 0 : 1;
+        int minX = localPos.x <= 0 ? 0 : 1;
+        int maxX = localPos.x >= Env.ChunkSize1 ? 0 : 1;
+        int minY = localPos.y <= 0 ? 0 : 1;
+        int maxY = localPos.y >= Env.ChunkSize1 ? 0 : 1;
+        int minZ = localPos.z <= 0 ? 0 : 1;
+        int maxZ = localPos.z >= Env.ChunkSize1 ? 0 : 1;
 
-        for (int y = -minY; y<=maxY; y++)
+        for (int y = -minY; y <= maxY; y++)
         {
-            for (int z = -minZ; z<=maxZ; z++)
+            for (int z = -minZ; z <= maxZ; z++)
             {
-                for (int x = -minX; x<=maxX; x++)
+                for (int x = -minX; x <= maxX; x++)
                 {
                     // There has to be dirt above our block
-                    int grassIndex = Helpers.GetChunkIndex1DFrom3D(localPos.x+x, localPos.y+y, localPos.z+z);
+                    int grassIndex = Helpers.GetChunkIndex1DFrom3D(localPos.x + x, localPos.y + y, localPos.z + z);
                     if (!blocks.Get(grassIndex).Equals(dirt))
+                    {
                         continue;
+                    }
 
                     // There has to be air above the dirt
-                    int airIndex = grassIndex+Env.ChunkSizePow2;
+                    int airIndex = grassIndex + Env.ChunkSizePow2;
                     if (blocks.Get(airIndex).Equals(air))
+                    {
                         blocks.chunk.Modify(new ModifyOpBlock(grass, grassIndex, true));
+                    }
                 }
             }
         }

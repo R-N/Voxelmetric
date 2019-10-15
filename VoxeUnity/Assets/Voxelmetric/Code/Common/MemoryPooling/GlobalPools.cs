@@ -25,7 +25,7 @@ namespace Voxelmetric.Code.Common.MemoryPooling
          */
         public readonly ObjectPool<TaskPoolItem<Chunk>> SMTaskPI =
             new ObjectPool<TaskPoolItem<Chunk>>(m => new TaskPoolItem<Chunk>(), 2048, false);
-        
+
         public readonly ObjectPool<ThreadPoolItem<Chunk>> SMThreadPI =
             new ObjectPool<ThreadPoolItem<Chunk>>(m => new ThreadPoolItem<Chunk>(), 2048, false);
 

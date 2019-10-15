@@ -47,7 +47,8 @@ namespace Voxelmetric.Code.VM
 
         private void OnConnect(IAsyncResult ar)
         {
-            try {
+            try
+            {
 
                 if (clientSocket == null || !clientSocket.Connected)
                 {
@@ -72,7 +73,8 @@ namespace Voxelmetric.Code.VM
         {
             try
             {
-                if (clientSocket == null || !clientSocket.Connected) {
+                if (clientSocket == null || !clientSocket.Connected)
+                {
                     Debug.Log("VmClient.OnReceiveFromServer (" + Thread.CurrentThread.ManagedThreadId + "): "
                               + "server message rejected because connection was shutdown or not started");
                     return;
@@ -86,8 +88,10 @@ namespace Voxelmetric.Code.VM
                     return;
                 }
 
-                if ( debugClient )
+                if (debugClient)
+                {
                     Debug.Log("VmClient.OnReceiveFromServer (" + Thread.CurrentThread.ManagedThreadId + "): ");
+                }
 
                 VmSocketState socketState = ar.AsyncState as VmSocketState;
                 socketState.Receive(received, 0);
@@ -106,7 +110,9 @@ namespace Voxelmetric.Code.VM
         private void Send(byte[] buffer)
         {
             if (!connected)
+            {
                 return;
+            }
 
             try
             {
@@ -123,8 +129,10 @@ namespace Voxelmetric.Code.VM
             try
             {
                 clientSocket.EndSend(ar);
-                if ( debugClient )
+                if (debugClient)
+                {
                     Debug.Log("VmClient.OnSend (" + Thread.CurrentThread.ManagedThreadId + "): send ended");
+                }
             }
             catch (Exception ex)
             {
@@ -165,8 +173,10 @@ namespace Voxelmetric.Code.VM
 
         public void RequestChunk(Vector3Int pos)
         {
-            if ( debugClient )
+            if (debugClient)
+            {
                 Debug.Log("VmClient.RequestChunk (" + Thread.CurrentThread.ManagedThreadId + "): " + pos);
+            }
 
             byte[] message = new byte[13];
             message[0] = VmNetworking.RequestChunkData;
@@ -185,7 +195,9 @@ namespace Voxelmetric.Code.VM
                                + "Could not find chunk for " + pos);
             }
             else
+            {
                 chunk.Blocks.ReceiveChunkData(data);
+            }
         }
 
         public void BroadcastChange(Vector3Int pos, BlockData blockData)

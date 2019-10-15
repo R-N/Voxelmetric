@@ -33,8 +33,10 @@ namespace Voxelmetric.Code.Utilities
             public TimeWatch()
             {
                 if (!Stopwatch.IsHighResolution)
+                {
                     throw new NotSupportedException("Your hardware doesn't support high resolution counter");
-                
+                }
+
                 // Use the second core/processor for the test
                 Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(2);
 
@@ -71,7 +73,9 @@ namespace Voxelmetric.Code.Utilities
                 get
                 {
                     if (IsRunning)
+                    {
                         throw new NotImplementedException("Getting elapsed span while watch is running is not implemented");
+                    }
 
                     return endTime - startTime;
                 }
@@ -112,10 +116,13 @@ namespace Voxelmetric.Code.Utilities
             // Warm up
             action();
 
-            var stopwatch = new T();
+            T stopwatch = new T();
             stopwatch.Start();
             for (int j = 0; j < iterations; j++)
+            {
                 action();
+            }
+
             stopwatch.Stop();
 
             return stopwatch.Elapsed.TotalMilliseconds;

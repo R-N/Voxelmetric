@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Globalization;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
 using Voxelmetric.Code;
 using Voxelmetric.Code.Core;
@@ -30,37 +28,33 @@ public class CustomMeshBlockConfig : BlockConfig
         set { m_meshOffset = new Vector3(Env.BlockSizeHalf + value.x, Env.BlockSizeHalf + value.y, Env.BlockSizeHalf + value.z); }
     }
 
-    public override bool OnSetUp(Hashtable config, World world)
+    public override bool OnSetUp(BlockConfigObject config, World world)
     {
         if (!base.OnSetUp(config, world))
         {
             return false;
         }
 
-        solid = _GetPropertyFromConfig(config, "solid", false);
-        data.textures = world.textureProvider.GetTextureCollection(_GetPropertyFromConfig(config, "texture", ""));
-
-        m_meshOffset = new Vector3(
-            Env.BlockSizeHalf + float.Parse(_GetPropertyFromConfig(config, "meshXOffset", "0"), CultureInfo.InvariantCulture),
-            Env.BlockSizeHalf + float.Parse(_GetPropertyFromConfig(config, "meshYOffset", "0"), CultureInfo.InvariantCulture),
-            Env.BlockSizeHalf + float.Parse(_GetPropertyFromConfig(config, "meshZOffset", "0"), CultureInfo.InvariantCulture)
-        );
-        //m_path = _GetPropertyFromConfig(config, "meshFileLocation", "");
-
-        long scaleInv;
-        if (!_GetPropertyFromConfig(config, "scaleInv", out scaleInv) || scaleInv <= 0)
+        if (config is CustomMeshConfigObject meshConfig)
         {
-            scaleInv = 1;
+            data.textures = world.textureProvider.GetTextureCollection(meshConfig.Texture);
+            meshGO = meshConfig.MeshObject;
+            MeshOffset = meshConfig.MeshOffset;
+            long scaleInv = 1;
+
+            m_scale = 1f / scaleInv;
+
+            return true;
         }
-
-        m_scale = 1f / scaleInv;
-
-        return true;
+        else
+        {
+            Debug.LogError(config.GetType() + " config passed to custom mesh block.");
+            return false;
+        }
     }
 
     public override bool OnPostSetUp(World world)
     {
-        //string meshLocation = world.config.meshFolder + "/" + m_path;
         return SetUpMesh(
             world,
             meshGO,

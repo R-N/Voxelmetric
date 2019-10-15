@@ -39,15 +39,19 @@ namespace Voxelmetric.Code.Common.Memory
         public static unsafe void MemoryCopy(byte* pDst, byte* pSrc, uint length)
         {
             uint curr = 0;
-        #if PLATFORM_ARCH_64
-            for (; curr+64<=length; curr += 64)
-                *(CopyDataChunk64*)(pDst+curr) = *(CopyDataChunk64*)(pSrc+curr);
-        #else
+#if PLATFORM_ARCH_64
+            for (; curr + 64 <= length; curr += 64)
+            {
+                *(CopyDataChunk64*)(pDst + curr) = *(CopyDataChunk64*)(pSrc + curr);
+            }
+#else
             for (; curr+32<=length; curr += 32)
                 *(CopyDataChunk32*)(pDst+curr) = *(CopyDataChunk32*)(pSrc+curr);
-         #endif
-            for (; curr+1<=length; ++curr)
-                *(pDst+curr) = *(pSrc+curr);
+#endif
+            for (; curr + 1 <= length; ++curr)
+            {
+                *(pDst + curr) = *(pSrc + curr);
+            }
         }
 
         [SecurityCritical]
@@ -57,17 +61,19 @@ namespace Voxelmetric.Code.Common.Memory
             int curr = 0;
 #if PLATFORM_ARCH_64
             for (;
-                curr+64<=length;
+                curr + 64 <= length;
                 curr += 64)
             {
-                *(CopyDataChunk64*)(pDst+curr) = zero64;
+                *(CopyDataChunk64*)(pDst + curr) = zero64;
             }
 #else
             for (; curr+32<=length; curr += 32)
                 *(CopyDataChunk32*)(pDst+curr) = zero32;
-         #endif
-            for (; curr+1<=length; ++curr)
-                *(pDst+curr) = 0;
+#endif
+            for (; curr + 1 <= length; ++curr)
+            {
+                *(pDst + curr) = 0;
+            }
         }
     }
 }

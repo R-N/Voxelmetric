@@ -21,11 +21,15 @@ namespace Voxelmetric.Code.Load_Resources.Textures
             if (m_textureType == TextureConfigType.Connected)
             {
                 m_uvs = new List<Rect>(48);
-                for (int i=0; i<48; i++)
+                for (int i = 0; i < 48; i++)
+                {
                     m_uvs.Add(new Rect());
+                }
             }
             else
+            {
                 m_uvs = new List<Rect>();
+            }
         }
 
         public void AddTexture(Rect uvs, TextureConfig.Texture texture)
@@ -37,10 +41,15 @@ namespace Voxelmetric.Code.Load_Resources.Textures
                     break;
                 default:
                     if (texture.weight <= 0)
+                    {
                         texture.weight = 1;
+                    }
                     // Add the texture multiple times to raise the chance it's selected randomly
                     for (int i = 0; i < texture.weight; i++)
+                    {
                         m_uvs.Add(uvs);
+                    }
+
                     break;
             }
         }
@@ -48,9 +57,11 @@ namespace Voxelmetric.Code.Load_Resources.Textures
         public Rect GetTexture(Chunk chunk, ref Vector3Int localPos, Direction direction)
         {
             if (m_uvs.Count == 1)
+            {
                 return m_uvs[0];
+            }
 
-            if (m_textureType==TextureConfigType.Connected)
+            if (m_textureType == TextureConfigType.Connected)
             {
                 ChunkBlocks blocks = chunk.Blocks;
                 int localPosIndex = Helpers.GetChunkIndex1DFrom3D(localPos.x, localPos.y, localPos.z);
@@ -72,7 +83,7 @@ namespace Voxelmetric.Code.Load_Resources.Textures
                         index2 = index1 - sizeWithPadding;              // - (0,0,1)
                         index3 = index1 + sizeWithPadding;              // + (0,0,1)
 
-                        sw = blocks.Get(index2 - 1).Type==blockType;    // -1,1,-1
+                        sw = blocks.Get(index2 - 1).Type == blockType;    // -1,1,-1
                         s_ = blocks.Get(index2).Type == blockType;      //  0,1,-1
                         se = blocks.Get(index2 + 1).Type == blockType;  //  1,1,-1
                         _w = blocks.Get(index1 - 1).Type == blockType;  // -1,1, 0
@@ -161,9 +172,11 @@ namespace Voxelmetric.Code.Load_Resources.Textures
             {
                 int hash = localPos.GetHashCode();
                 if (hash < 0)
+                {
                     hash *= -1;
+                }
 
-                float randomNumber = (hash % 100) /100f;
+                float randomNumber = (hash % 100) / 100f;
                 randomNumber *= m_uvs.Count;
 
                 return m_uvs[(int)randomNumber];

@@ -13,7 +13,7 @@ public class StructureLayer : TerrainLayer
 
     protected override void SetUp(LayerConfigObject config)
     {
-        string configStructure = "";
+        string configStructure = string.Empty;
         if (config is StructureLayerConfigObject structureConfig)
         {
             configStructure = structureConfig.Structure;

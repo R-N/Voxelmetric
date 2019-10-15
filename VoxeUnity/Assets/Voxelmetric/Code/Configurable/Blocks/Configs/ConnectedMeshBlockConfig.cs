@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Globalization;
-using UnityEngine;
+﻿using UnityEngine;
 using Voxelmetric.Code.Core;
-using Voxelmetric.Code.Data_types;
 
+//TODO: ConnectedMesh config.
 public class ConnectedMeshBlockConfig : CustomMeshBlockConfig
 {
     public int[] connectsToTypes;
@@ -15,42 +13,43 @@ public class ConnectedMeshBlockConfig : CustomMeshBlockConfig
 
     private class MeshBlockInfo
     {
-        public string fileLocation;
-        public Vector3 meshOffset;
+        public string fileLocation = string.Empty;
+        public Vector3 meshOffset = Vector3.zero;
     }
     private readonly MeshBlockInfo[] m_info = new MeshBlockInfo[6];
 
-    public override bool OnSetUp(Hashtable config, World world)
+    public override bool OnSetUp(BlockConfigObject config, World world)
     {
         if (!base.OnSetUp(config, world))
         {
             return false;
         }
 
-        connectsToNames = _GetPropertyFromConfig(config, "connectsToNames", "").Replace(" ", "").Split(',');
-        connectsToSolid = _GetPropertyFromConfig(config, "connectsToSolid", true);
 
-        for (int dir = 0; dir < 6; dir++)
-        {
-            CustomMeshBlockData d = m_datas[dir] = new CustomMeshBlockData();
-            MeshBlockInfo i = m_info[dir] = new MeshBlockInfo();
-            Direction direction = DirectionUtils.Get(dir);
+        //connectsToNames = _GetPropertyFromConfig(config, "connectsToNames", string.Empty).Replace(" ", string.Empty).Split(',');
+        //connectsToSolid = _GetPropertyFromConfig(config, "connectsToSolid", true);
 
-            i.fileLocation = _GetPropertyFromConfig(config, direction + "FileLocation", "");
-            if (string.IsNullOrEmpty(i.fileLocation))
-            {
-                continue;
-            }
+        //for (int dir = 0; dir < 6; dir++)
+        //{
+        //    CustomMeshBlockData d = m_datas[dir] = new CustomMeshBlockData();
+        //    MeshBlockInfo i = m_info[dir] = new MeshBlockInfo();
+        //    Direction direction = DirectionUtils.Get(dir);
 
-            string textureName = _GetPropertyFromConfig(config, direction + "Texture", "");
-            d.textures = world.textureProvider.GetTextureCollection(textureName);
+        //    i.fileLocation = _GetPropertyFromConfig(config, direction + "FileLocation", string.Empty);
+        //    if (string.IsNullOrEmpty(i.fileLocation))
+        //    {
+        //        continue;
+        //    }
 
-            i.meshOffset = new Vector3(
-                float.Parse(_GetPropertyFromConfig(config, direction + "XOffset", "0"), CultureInfo.InvariantCulture),
-                float.Parse(_GetPropertyFromConfig(config, direction + "YOffset", "0"), CultureInfo.InvariantCulture),
-                float.Parse(_GetPropertyFromConfig(config, direction + "ZOffset", "0"), CultureInfo.InvariantCulture)
-            );
-        }
+        //    string textureName = _GetPropertyFromConfig(config, direction + "Texture", string.Empty);
+        //    d.textures = world.textureProvider.GetTextureCollection(textureName);
+
+        //    i.meshOffset = new Vector3(
+        //        float.Parse(_GetPropertyFromConfig(config, direction + "XOffset", "0"), CultureInfo.InvariantCulture),
+        //        float.Parse(_GetPropertyFromConfig(config, direction + "YOffset", "0"), CultureInfo.InvariantCulture),
+        //        float.Parse(_GetPropertyFromConfig(config, direction + "ZOffset", "0"), CultureInfo.InvariantCulture)
+        //    );
+        //}
 
         return true;
     }

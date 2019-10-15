@@ -36,7 +36,9 @@ namespace Voxelmetric.Code.Common.Memory
 
             IArrayPool<T> pool;
             if (!m_arrays.TryGetValue(length, out pool))
+            {
                 throw new InvalidOperationException("Couldn't find an array pool of length " + length.ToString());
+            }
 
             pool.Push(array);
         }

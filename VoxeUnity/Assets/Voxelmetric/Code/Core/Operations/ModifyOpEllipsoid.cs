@@ -3,7 +3,7 @@ using Voxelmetric.Code.Data_types;
 
 namespace Voxelmetric.Code.Core.Operations
 {
-    public sealed class ModifyOpEllipsoid: ModifyOpRange
+    public sealed class ModifyOpEllipsoid : ModifyOpRange
     {
         private readonly Vector3Int offset;
         private readonly float a2inv;
@@ -32,25 +32,27 @@ namespace Voxelmetric.Code.Core.Operations
         protected override void OnSetBlocks(ChunkBlocks blocks)
         {
             int index = Helpers.GetChunkIndex1DFrom3D(min.x, min.y, min.z);
-            int yOffset = Env.ChunkSizeWithPaddingPow2-(max.z-min.z+1) * Env.ChunkSizeWithPadding;
-            int zOffset = Env.ChunkSizeWithPadding-(max.x-min.x+1);
+            int yOffset = Env.ChunkSizeWithPaddingPow2 - (max.z - min.z + 1) * Env.ChunkSizeWithPadding;
+            int zOffset = Env.ChunkSizeWithPadding - (max.x - min.x + 1);
 
-            for (int y = min.y; y<=max.y; ++y, index+=yOffset)
+            for (int y = min.y; y <= max.y; ++y, index += yOffset)
             {
-                for (int z = min.z; z<=max.z; ++z, index+=zOffset)
+                for (int z = min.z; z <= max.z; ++z, index += zOffset)
                 {
-                    for (int x = min.x; x<=max.x; ++x, ++index)
+                    for (int x = min.x; x <= max.x; ++x, ++index)
                     {
-                        int xx = x+offset.x;
-                        int yy = y+offset.y;
-                        int zz = z+offset.z;
+                        int xx = x + offset.x;
+                        int yy = y + offset.y;
+                        int zz = z + offset.z;
 
-                        float _x = xx*xx*a2inv;
-                        float _y = yy*yy*b2inv;
-                        float _z = zz*zz*a2inv;
+                        float _x = xx * xx * a2inv;
+                        float _y = yy * yy * b2inv;
+                        float _z = zz * zz * a2inv;
 
-                        if (_x+_y+_z<=1.0f)
+                        if (_x + _y + _z <= 1.0f)
+                        {
                             blocks.ProcessSetBlock(blockData, index, setBlockModified);
+                        }
                     }
                 }
             }
@@ -59,12 +61,12 @@ namespace Voxelmetric.Code.Core.Operations
         protected override void OnSetBlocksRaw(ChunkBlocks blocks, ref Vector3Int from, ref Vector3Int to)
         {
             int index = Helpers.GetChunkIndex1DFrom3D(from.x, from.y, from.z);
-            int yOffset = Env.ChunkSizeWithPaddingPow2-(to.z- from.z+1) * Env.ChunkSizeWithPadding;
-            int zOffset = Env.ChunkSizeWithPadding-(to.x-from.x+1);
+            int yOffset = Env.ChunkSizeWithPaddingPow2 - (to.z - from.z + 1) * Env.ChunkSizeWithPadding;
+            int zOffset = Env.ChunkSizeWithPadding - (to.x - from.x + 1);
 
-            for (int y = from.y; y <= to.y; ++y, index+=yOffset)
+            for (int y = from.y; y <= to.y; ++y, index += yOffset)
             {
-                for (int z = from.z; z <= to.z; ++z, index+=zOffset)
+                for (int z = from.z; z <= to.z; ++z, index += zOffset)
                 {
                     for (int x = from.x; x <= to.x; ++x, ++index)
                     {
@@ -77,7 +79,9 @@ namespace Voxelmetric.Code.Core.Operations
                         float _z = zz * zz * a2inv;
 
                         if (_x + _y + _z <= 1.0f)
+                        {
                             blocks.SetRaw(index, blockData);
+                        }
                     }
                 }
             }

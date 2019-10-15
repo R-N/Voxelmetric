@@ -11,7 +11,7 @@ namespace Voxelmetric.Code.Core
     public partial class World
     {
         private Dictionary<Vector3Int, Chunk> chunks = new Dictionary<Vector3Int, Chunk>();
-        
+
         public ICollection<Chunk> Chunks
         {
             get { return chunks.Values; }
@@ -26,7 +26,7 @@ namespace Voxelmetric.Code.Core
         {
             get { return chunks.Count; }
         }
-        
+
         /// <summary>Instantiates a new chunk at a given position</summary>
         /// <param name="pos">Position to create this chunk on in the world coordinates</param>
         /// <param name="chunk">Chunk at a given positon</param>
@@ -42,8 +42,10 @@ namespace Voxelmetric.Code.Core
 
             // Let's keep it within allowed world bounds
             if (!IsCoordInsideWorld(ref chunkPos))
+            {
                 return false;
-            
+            }
+
             chunk = GetChunk(ref chunkPos);
             if (chunk == null)
             {

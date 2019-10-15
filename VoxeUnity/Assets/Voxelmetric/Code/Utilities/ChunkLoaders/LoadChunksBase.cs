@@ -130,7 +130,9 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
                 m_viewerPos == m_viewerPosPrev &&
                 // However, we need to make sure that we have enough chunks loaded
                 world.Count >= expectedChunks)
+            {
                 return;
+            }
 
             // Unregister any non-necessary pending structures
             Profiler.BeginSample("UnregisterStructures");
@@ -150,20 +152,30 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
                         // Skip loading chunks which are off limits
                         int cx = (m_chunkPositions[i].x * Env.ChunkSize) + m_viewerPos.x;
                         if (cx > maxX || cx < minX)
+                        {
                             continue;
+                        }
+
                         int cy = (m_chunkPositions[i].y * Env.ChunkSize) + y;
                         if (cy > maxY || cy < minY)
+                        {
                             continue;
+                        }
+
                         int cz = (m_chunkPositions[i].z * Env.ChunkSize) + m_viewerPos.z;
                         if (cz > maxZ || cz < minZ)
+                        {
                             continue;
+                        }
 
                         // Create a new chunk if possible
                         Vector3Int newChunkPos = new Vector3Int(cx, cy, cz);
                         Chunk chunk;
                         if (!world.CreateChunk(ref newChunkPos, out chunk))
+                        {
                             continue;
-                        
+                        }
+
                         m_updateRequests.Add(chunk);
                     }
                 }
@@ -174,12 +186,14 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
         private void HandleVisibility()
         {
             if (!UseFrustumCulling)
+            {
                 return;
+            }
 
             Profiler.BeginSample("CullPrepare1");
 
             // Make everything invisible by default
-            foreach (var ch in m_updateRequests)
+            foreach (Chunk ch in m_updateRequests)
             {
                 ch.PossiblyVisible = false;
                 ch.NeedsRenderGeometry = false;
@@ -233,7 +247,9 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
                         bool wasBuilt = chunk.UpdateCollisionGeometry();
                         wasBuilt |= chunk.UpdateRenderGeometry();
                         if (wasBuilt)
+                        {
                             Globals.GeometryBudget.StopMeasurement();
+                        }
                     }
                 }
 
@@ -274,7 +290,9 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
 
             // Rebuild precomputed chunk positions
             if (isDifferenceXZ)
+            {
                 m_chunkPositions = ChunkLoadOrder.ChunkPositions(HorizontalChunkLoadRadius);
+            }
             // Invalidate prev pos so that updated ranges can take effect right away
             if (isDifferenceXZ || isDifferenceY ||
                 HorizontalChunkLoadRadius != m_chunkHorizontalLoadRadiusPrev ||

@@ -22,16 +22,22 @@ namespace Voxelmetric.Code.Common.Threading.Managers
         public static void Add(AThreadPoolItem action, bool priority)
         {
             if (priority)
+            {
                 WorkItemsP.Add(action);
+            }
             else
+            {
                 WorkItems.Add(action);
+            }
         }
 
         private static void ProcessWorkItems(List<AThreadPoolItem> wi)
         {
             // Skip empty lists
-            if (wi.Count<=0)
+            if (wi.Count <= 0)
+            {
                 return;
+            }
 
             // Sort our work items by threadID
             wi.Sort((x, y) => x.ThreadID.CompareTo(y.ThreadID));
@@ -59,7 +65,9 @@ namespace Voxelmetric.Code.Common.Threading.Managers
                     tp.AddPriorityItem(wi[j]);
                 }
                 if (Threads.Add(tp))
+                {
                     ThreadsIter.Add(tp);
+                }
 
                 from = i + 1;
                 to = from;
@@ -71,7 +79,9 @@ namespace Voxelmetric.Code.Common.Threading.Managers
                 tp.AddPriorityItem(wi[j]);
             }
             if (Threads.Add(tp))
+            {
                 ThreadsIter.Add(tp);
+            }
         }
 
         public static void Commit()
@@ -85,8 +95,10 @@ namespace Voxelmetric.Code.Common.Threading.Managers
                 ProcessWorkItems(WorkItems);
 
                 // Commit all tasks we collected to their respective threads
-                for (int i = 0; i<ThreadsIter.Count; i++)
+                for (int i = 0; i < ThreadsIter.Count; i++)
+                {
                     ThreadsIter[i].Commit();
+                }
 
                 Threads.Clear();
                 ThreadsIter.Clear();
@@ -110,7 +122,7 @@ namespace Voxelmetric.Code.Common.Threading.Managers
                 }
 
                 WorkItems.Sort((x, y) => x.Priority.CompareTo(y.Priority));
-                for (int i = 0; i<WorkItems.Count; i++)
+                for (int i = 0; i < WorkItems.Count; i++)
                 {
                     TimeBudget.StartMeasurement();
                     WorkItems[i].Run();
@@ -120,7 +132,7 @@ namespace Voxelmetric.Code.Common.Threading.Managers
                     // frames to avoid performance spikes
                     if (!TimeBudget.HasTimeBudget)
                     {
-                        WorkItems.RemoveRange(0, i+1);
+                        WorkItems.RemoveRange(0, i + 1);
                         return;
                     }
                 }

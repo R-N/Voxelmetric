@@ -9,7 +9,7 @@ using Voxelmetric.Code.Common.MemoryPooling;
 
 namespace Voxelmetric.Code.Common.Threading
 {
-    public sealed class TaskPool: IDisposable
+    public sealed class TaskPool : IDisposable
     {
         //! Each thread contains an object pool
         public LocalPools Pools { get; }
@@ -35,7 +35,7 @@ namespace Voxelmetric.Code.Common.Threading
         public TaskPool()
         {
             Pools = new LocalPools();
-            
+
             m_items = new List<ITaskPoolItem>();
             m_itemsP = new List<ITaskPoolItem>();
 
@@ -47,7 +47,7 @@ namespace Voxelmetric.Code.Common.Threading
             {
                 IsBackground = true
             };
-            
+
             m_stop = false;
             m_hasPriorityItems = false;
 
@@ -87,7 +87,7 @@ namespace Voxelmetric.Code.Common.Threading
             m_stop = true;
             m_event.Set();
         }
-        
+
         public void AddItem(ITaskPoolItem item)
         {
             Assert.IsNotNull(item);
@@ -126,8 +126,10 @@ namespace Voxelmetric.Code.Common.Threading
 
         public void Commit()
         {
-            if (m_itemsTmp.Count<=0 && m_itemsTmpP.Count<=0)
+            if (m_itemsTmp.Count <= 0 && m_itemsTmpP.Count <= 0)
+            {
                 return;
+            }
 
             lock (m_lock)
             {
@@ -145,8 +147,8 @@ namespace Voxelmetric.Code.Common.Threading
 
         private void ThreadFunc()
         {
-            var actions = new List<ITaskPoolItem>();
-            var actionsP = new List<ITaskPoolItem>();
+            List<ITaskPoolItem> actions = new List<ITaskPoolItem>();
+            List<ITaskPoolItem> actionsP = new List<ITaskPoolItem>();
 
             ITaskPoolItem poolItem;
 
@@ -155,7 +157,7 @@ namespace Voxelmetric.Code.Common.Threading
                 // Swap action list pointers
                 lock (m_lock)
                 {
-                    var tmp = actions;
+                    List<ITaskPoolItem> tmp = actions;
                     actions = m_items;
                     m_items = tmp;
 
@@ -177,7 +179,7 @@ namespace Voxelmetric.Code.Common.Threading
                 m_currP = 0;
 
                 // Process priority tasks first
-                for (; m_currP< m_maxP; m_currP++)
+                for (; m_currP < m_maxP; m_currP++)
                 {
                     poolItem = actionsP[m_currP];
 

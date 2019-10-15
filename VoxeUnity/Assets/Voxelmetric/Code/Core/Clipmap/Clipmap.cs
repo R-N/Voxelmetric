@@ -15,9 +15,14 @@ namespace Voxelmetric.Code.Core.Clipmap
             VisibleRange = visibleRange;
 
             if (rangeYMin < -visibleRange)
+            {
                 rangeYMin = -visibleRange;
+            }
+
             if (rangeYMax > visibleRange)
+            {
                 rangeYMax = visibleRange;
+            }
 
             RangeYMin = rangeYMin;
             RangeYMax = rangeYMax;
@@ -78,12 +83,12 @@ namespace Voxelmetric.Code.Core.Clipmap
             int index = 0;
             int value = xx;
 
-            if (absY>absX && absY>absZ)
+            if (absY > absX && absY > absZ)
             {
                 index = 1;
                 value = yy;
             }
-            else if (absZ>absX && absZ>absY)
+            else if (absZ > absX && absZ > absY)
             {
                 index = 2;
                 value = zz;
@@ -94,13 +99,13 @@ namespace Voxelmetric.Code.Core.Clipmap
 
         private void InitAxis(int axis, int forceLOD, float coefLOD)
         {
-            var axisInfo = m_axes[axis];
-            for (int distance = axisInfo.RangeMin; distance<=axisInfo.RangeMax; distance++)
+            AxisInfo axisInfo = m_axes[axis];
+            for (int distance = axisInfo.RangeMin; distance <= axisInfo.RangeMax; distance++)
             {
                 int lod = DetermineLOD(distance, forceLOD, coefLOD);
                 bool isInVisibilityRange = IsInVisibilityRange(axisInfo, distance);
 
-                axisInfo.Map[distance+VisibleRange] = new ClipmapItem
+                axisInfo.Map[distance + VisibleRange] = new ClipmapItem
                 {
                     LOD = lod,
                     IsInVisibleRange = isInVisibilityRange
@@ -110,8 +115,10 @@ namespace Voxelmetric.Code.Core.Clipmap
 
         public void Init(int forceLOD, float coefLOD)
         {
-            for (int axis = 0; axis<3; axis++)
+            for (int axis = 0; axis < 3; axis++)
+            {
                 InitAxis(axis, forceLOD, coefLOD);
+            }
         }
 
         public void SetOffset(int x, int y, int z)
@@ -151,10 +158,10 @@ namespace Voxelmetric.Code.Core.Clipmap
         public bool IsInsideBounds_Transformed(int tx, int ty, int tz)
         {
             // Clamp coordinates to the array range
-            return tx>=0 && ty>=0 && tz>=00 &&
-                   tx<m_axes[0].Map.Length &&
-                   ty<m_axes[1].Map.Length &&
-                   tz<m_axes[2].Map.Length;
+            return tx >= 0 && ty >= 0 && tz >= 00 &&
+                   tx < m_axes[0].Map.Length &&
+                   ty < m_axes[1].Map.Length &&
+                   tz < m_axes[2].Map.Length;
         }
 
         private static int DetermineLOD(int distance, int forceLOD, float coefLOD)
@@ -168,7 +175,9 @@ namespace Voxelmetric.Code.Core.Clipmap
             else
             {
                 if (coefLOD <= 0)
+                {
                     return 0;
+                }
 
                 // Pick the greater distance and choose a proper LOD
                 int dist = Helpers.Abs(distance);
@@ -177,16 +186,21 @@ namespace Voxelmetric.Code.Core.Clipmap
 
             // LOD can't be bigger than chunk size
             if (lod < 0)
+            {
                 lod = 0;
+            }
+
             if (lod > Env.ChunkPow)
+            {
                 lod = Env.ChunkPow;
+            }
 
             return lod;
         }
 
         private bool IsInVisibilityRange(AxisInfo axis, int distance)
         {
-            return distance>=axis.RangeMin && distance<=axis.RangeMax;
+            return distance >= axis.RangeMin && distance <= axis.RangeMax;
         }
 
         private class AxisInfo

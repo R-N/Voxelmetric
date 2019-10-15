@@ -22,7 +22,7 @@ namespace Voxelmetric.Code.Data_types
             this.x = x;
             this.y = y;
             this.z = z;
-        }        
+        }
 
         public byte[] ToBytes()
         {
@@ -66,7 +66,8 @@ namespace Voxelmetric.Code.Data_types
 
         public static implicit operator Vector3Int(Direction d)
         {
-            switch (d) {
+            switch (d)
+            {
                 case Direction.up:
                     return up;
                 case Direction.down:
@@ -87,7 +88,7 @@ namespace Voxelmetric.Code.Data_types
             int xx = x - pos.x;
             int yy = y - pos.y;
             int zz = z - pos.z;
-            return xx*xx + yy*yy + zz*zz;
+            return xx * xx + yy * yy + zz * zz;
         }
 
         public static int Distance2(ref Vector3Int pos1, ref Vector3Int pos2)
@@ -95,7 +96,7 @@ namespace Voxelmetric.Code.Data_types
             int xx = pos1.x - pos2.x;
             int yy = pos1.y - pos2.y;
             int zz = pos1.z - pos2.z;
-            return xx*xx + yy*yy + zz*zz;
+            return xx * xx + yy * yy + zz * zz;
         }
 
         public static Vector3Int operator -(Vector3Int pos)
@@ -195,8 +196,8 @@ namespace Voxelmetric.Code.Data_types
             unchecked
             {
                 int hashCode = x;
-                hashCode = (hashCode*397)^y;
-                hashCode = (hashCode*397)^z;
+                hashCode = (hashCode * 397) ^ y;
+                hashCode = (hashCode * 397) ^ z;
                 return hashCode;
             }
         }
@@ -204,27 +205,30 @@ namespace Voxelmetric.Code.Data_types
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj))
+            {
                 return false;
+            }
+
             return obj is Vector3Int && Equals((Vector3Int)obj);
         }
 
         public bool Equals(Vector3Int other)
         {
-            return x==other.x && y==other.y && z==other.z;
+            return x == other.x && y == other.y && z == other.z;
         }
 
         public static bool operator ==(Vector3Int a, Vector3Int b)
         {
-            return a.x==b.x && a.y==b.y && a.z==b.z;
+            return a.x == b.x && a.y == b.y && a.z == b.z;
         }
 
         public static bool operator !=(Vector3Int a, Vector3Int b)
         {
-            return a.x!=b.x || a.y!=b.y || a.z!=b.z;
+            return a.x != b.x || a.y != b.y || a.z != b.z;
         }
 
         #endregion
-        
+
         public override string ToString()
         {
             return "[" + x + ", " + y + ", " + z + "]";

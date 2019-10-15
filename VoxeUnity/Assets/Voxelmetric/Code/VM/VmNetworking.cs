@@ -5,7 +5,8 @@ using Voxelmetric.Code.Core;
 namespace Voxelmetric.Code.VM
 {
     [Serializable]
-    public class VmNetworking {
+    public class VmNetworking
+    {
 
         public VmClient client;
         public VmServer server;
@@ -49,12 +50,15 @@ namespace Voxelmetric.Code.VM
             }
         }
 
-        public void EndConnections() {
-            if (client != null) {
+        public void EndConnections()
+        {
+            if (client != null)
+            {
                 client.Disconnect();
                 client = null;
             }
-            if (server != null) {
+            if (server != null)
+            {
                 server.Disconnect();
                 server = null;
             }

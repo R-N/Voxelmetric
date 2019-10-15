@@ -24,7 +24,7 @@ namespace Voxelmetric.Code.Common.Threading
             // If the number of threads is not correctly specified, create as many as possible minus one (taking
             // all available core is not effective - there's still the main thread we should not forget).
             // Allways create at least one thread, however.
-            int threadCnt = Features.UseThreadPool ? Mathf.Max(Environment.ProcessorCount-1, 1) : 1;
+            int threadCnt = Features.UseThreadPool ? Mathf.Max(Environment.ProcessorCount - 1, 1) : 1;
             m_pools = Helpers.CreateArray1D<TaskPool>(threadCnt);
             // NOTE: Normally, I would simply call CreateAndInitArray1D, however, any attempt to allocate memory
             // for TaskPool in this contructor ends up with Unity3D crashing :(
@@ -55,10 +55,13 @@ namespace Voxelmetric.Code.Common.Threading
         public void Start()
         {
             if (m_started)
+            {
                 return;
+            }
+
             m_started = true;
 
-            for (int i = 0; i<m_pools.Length; i++)
+            for (int i = 0; i < m_pools.Length; i++)
             {
                 m_pools[i] = new TaskPool();
                 m_pools[i].Start();
@@ -73,9 +76,12 @@ namespace Voxelmetric.Code.Common.Threading
         public override string ToString()
         {
             m_sb.Length = 0;
-            for (int i = 0; i<m_pools.Length-1; i++)
+            for (int i = 0; i < m_pools.Length - 1; i++)
+            {
                 m_sb.ConcatFormat("{0}, ", m_pools[i].ToString());
-            return m_sb.ConcatFormat("{0}", m_pools[m_pools.Length-1].ToString()).ToString();
+            }
+
+            return m_sb.ConcatFormat("{0}", m_pools[m_pools.Length - 1].ToString()).ToString();
         }
     }
 }

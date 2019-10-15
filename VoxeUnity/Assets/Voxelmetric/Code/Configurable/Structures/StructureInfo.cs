@@ -4,7 +4,7 @@ using Voxelmetric.Code.Data_types;
 
 namespace Voxelmetric.Code.Configurable.Structures
 {
-    public class StructureInfo: IEquatable<StructureInfo>, IEqualityComparer<StructureInfo>
+    public class StructureInfo : IEquatable<StructureInfo>, IEqualityComparer<StructureInfo>
     {
         //! Total bounds in world coordinates
         public readonly AABBInt bounds;
@@ -27,8 +27,8 @@ namespace Voxelmetric.Code.Configurable.Structures
             unchecked
             {
                 int hashCode = bounds.GetHashCode();
-                hashCode = (hashCode*397)^chunkPos.GetHashCode();
-                hashCode = (hashCode*397)^id;
+                hashCode = (hashCode * 397) ^ chunkPos.GetHashCode();
+                hashCode = (hashCode * 397) ^ id;
                 return hashCode;
             }
         }
@@ -36,14 +36,17 @@ namespace Voxelmetric.Code.Configurable.Structures
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj))
+            {
                 return false;
+            }
+
             StructureInfo a = obj as StructureInfo;
-            return a!=null && Equals(a);
+            return a != null && Equals(a);
         }
 
         public bool Equals(StructureInfo other)
         {
-            return other!=null && id==other.id && chunkPos==other.chunkPos && bounds==other.bounds;
+            return other != null && id == other.id && chunkPos == other.chunkPos && bounds == other.bounds;
         }
 
         public bool Equals(StructureInfo x, StructureInfo y)

@@ -12,7 +12,7 @@ namespace Voxelmetric.Code.Utilities
         public static Vector3Int[] ChunkPositions(int chunkLoadRadius)
         {
             s_chunkLoads.Clear();
-            
+
             for (int z = -chunkLoadRadius; z <= chunkLoadRadius; z++)
             {
                 for (int x = -chunkLoadRadius; x <= chunkLoadRadius; x++)
@@ -27,7 +27,7 @@ namespace Voxelmetric.Code.Utilities
                 // Smallest magnitude vectors first
                 .OrderBy(pos => Helpers.Abs(pos.x) + Helpers.Abs(pos.z))
                 // Make sure not to process e.g (-10,0) before (5,5)
-                .ThenBy(pos => Helpers.Abs(pos.x)) 
+                .ThenBy(pos => Helpers.Abs(pos.x))
                 .ThenBy(pos => Helpers.Abs(pos.z))
                 .ToArray();
         }

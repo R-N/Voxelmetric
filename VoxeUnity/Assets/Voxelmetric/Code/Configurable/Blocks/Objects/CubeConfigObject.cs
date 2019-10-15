@@ -28,6 +28,20 @@ public class CubeConfigObject : BlockConfigObject
     [SerializeField]
     private Color32 rightColor = Color.green;
 
+    public Texture2D TopTexture { get { return topTexture; } set { topTexture = value; } }
+    public Texture2D BottomTexture { get { return bottomTexture; } set { bottomTexture = value; } }
+    public Texture2D FrontTexture { get { return frontTexture; } set { frontTexture = value; } }
+    public Texture2D BackTexture { get { return backTexture; } set { backTexture = value; } }
+    public Texture2D LeftTexture { get { return leftTexture; } set { leftTexture = value; } }
+    public Texture2D RightTexture { get { return rightTexture; } set { rightTexture = value; } }
+
+    public Color32 TopColor { get { return topColor; } set { topColor = value; } }
+    public Color32 BottomColor { get { return bottomColor; } set { bottomColor = value; } }
+    public Color32 FrontColor { get { return frontColor; } set { frontColor = value; } }
+    public Color32 BackColor { get { return backColor; } set { backColor = value; } }
+    public Color32 LeftColor { get { return leftColor; } set { leftColor = value; } }
+    public Color32 RightColor { get { return rightColor; } set { rightColor = value; } }
+
     public override object GetBlockClass()
     {
         return typeof(CubeBlock);
@@ -37,22 +51,9 @@ public class CubeConfigObject : BlockConfigObject
     {
         CubeBlockConfig config = new CubeBlockConfig()
         {
-            typeInConfig = ID,
-            solid = Solid,
-            transparent = Transparent,
-            name = BlockName,
             raycastHit = true,
             raycastHitOnRemoval = true
         };
-
-        config.SetTextures(topTexture, bottomTexture, frontTexture, backTexture, rightTexture, leftTexture);
-
-        config.colors[0] = topColor;
-        config.colors[1] = bottomColor;
-        config.colors[2] = backColor;
-        config.colors[3] = frontColor;
-        config.colors[4] = rightColor;
-        config.colors[5] = leftColor;
 
         return config;
     }

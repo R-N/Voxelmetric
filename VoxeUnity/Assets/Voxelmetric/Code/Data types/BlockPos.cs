@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Voxelmetric.Code.Data_types
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct BlockPos: IEquatable<BlockPos>
+    public struct BlockPos : IEquatable<BlockPos>
     {
         public readonly byte x, y, z;
 
@@ -29,8 +29,8 @@ namespace Voxelmetric.Code.Data_types
             unchecked
             {
                 int hashCode = x.GetHashCode();
-                hashCode = (hashCode*397)^y.GetHashCode();
-                hashCode = (hashCode*397)^z.GetHashCode();
+                hashCode = (hashCode * 397) ^ y.GetHashCode();
+                hashCode = (hashCode * 397) ^ z.GetHashCode();
                 return hashCode;
             }
         }
@@ -38,23 +38,26 @@ namespace Voxelmetric.Code.Data_types
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj))
+            {
                 return false;
+            }
+
             return obj is BlockPos && Equals((BlockPos)obj);
         }
 
         public bool Equals(BlockPos other)
         {
-            return x==other.x && y==other.y && z==other.z;
+            return x == other.x && y == other.y && z == other.z;
         }
 
-        public static bool operator==(BlockPos pos1, BlockPos pos2)
+        public static bool operator ==(BlockPos pos1, BlockPos pos2)
         {
-            return pos1.x==pos2.x && pos1.y==pos2.y && pos1.z==pos2.z;
+            return pos1.x == pos2.x && pos1.y == pos2.y && pos1.z == pos2.z;
         }
 
-        public static bool operator!=(BlockPos pos1, BlockPos pos2)
+        public static bool operator !=(BlockPos pos1, BlockPos pos2)
         {
-            return pos1.x!=pos2.x || pos1.y!=pos2.y || pos1.z!=pos2.z;
+            return pos1.x != pos2.x || pos1.y != pos2.y || pos1.z != pos2.z;
         }
 
         #endregion
@@ -63,7 +66,7 @@ namespace Voxelmetric.Code.Data_types
         //"block at " + BlockPos + " is broken."
         public override string ToString()
         {
-            return "("+x+", "+y+", "+z+")";
+            return "(" + x + ", " + y + ", " + z + ")";
         }
     }
 }

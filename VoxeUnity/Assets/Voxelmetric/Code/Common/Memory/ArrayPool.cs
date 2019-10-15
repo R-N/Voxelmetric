@@ -2,25 +2,25 @@
 
 namespace Voxelmetric.Code.Common.Memory
 {
-    public sealed class ArrayPool<T>: IArrayPool<T>
+    public sealed class ArrayPool<T> : IArrayPool<T>
     {
         //! Stack of arrays
         private readonly Stack<T[]> m_arrays;
         //! Length of array to allocate
         private readonly int m_arrLength;
-        
+
         public ArrayPool(int length, int initialCapacity, int initialSize)
         {
             m_arrLength = length;
 
-            if (initialSize>0)
+            if (initialSize > 0)
             {
                 // Init
-                m_arrays = new Stack<T[]>(initialSize<initialCapacity ? initialCapacity : initialSize);
+                m_arrays = new Stack<T[]>(initialSize < initialCapacity ? initialCapacity : initialSize);
 
-                for (int i = 0; i<initialSize; ++i)
+                for (int i = 0; i < initialSize; ++i)
                 {
-                    var item = Helpers.CreateArray1D<T>(length);
+                    T[] item = Helpers.CreateArray1D<T>(length);
                     m_arrays.Push(item);
                 }
             }
@@ -44,8 +44,10 @@ namespace Voxelmetric.Code.Common.Memory
         /// </summary>
         public void Push(T[] item)
         {
-            if (item==null)
+            if (item == null)
+            {
                 return;
+            }
 
             m_arrays.Push(item);
         }

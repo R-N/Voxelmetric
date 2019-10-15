@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using Voxelmetric.Code.Utilities;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Voxelmetric.Code;
@@ -11,6 +10,7 @@ using Voxelmetric.Code.Common.IO;
 using Voxelmetric.Code.Common.Memory;
 using Voxelmetric.Code.Core;
 using Voxelmetric.Code.Data_types;
+using Voxelmetric.Code.Utilities;
 using Voxelmetric.Code.Utilities.Noise;
 using Random = System.Random;
 using Vector3Int = Voxelmetric.Code.Data_types.Vector3Int;
@@ -57,7 +57,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("Mod3\nout:{0}\ntime:{1} | {2} ms",
                     number[0], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
 
                 number[0] = 0;
                 t = Clock.BenchmarkTime(
@@ -71,7 +74,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("Mod3 mersenne\nout:{0}\ntime:{1} | {2} ms",
                     number[0], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
             }
         }
 
@@ -94,7 +100,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("Mathf.abs\nout:{0}\ntime:{1} | {2} ms",
                     number[0], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
 
                 number[0] = 0;
                 t = Clock.BenchmarkTime(
@@ -108,7 +117,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("Math.abs\nout:{0}\ntime:{1} | {2} ms",
                     number[0], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
 
                 number[0] = 0;
                 t = Clock.BenchmarkTime(
@@ -122,7 +134,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("Helpers.Abs\nout:{0}\ntime:{1} | {2} ms",
                     number[0], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
 
                 number[0] = 0;
                 t = Clock.BenchmarkTime(
@@ -136,7 +151,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("i < 0 ? -i : i\nout:{0}\ntime:{1} | {2} ms",
                     number[0], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
 
                 number[0] = 0;
                 t = Clock.BenchmarkTime(
@@ -151,7 +169,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("(i + mask) ^ mask\nout:{0}\ntime:{1} | {2} ms",
                     number[0], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
 
                 number[0] = 0;
                 t = Clock.BenchmarkTime(
@@ -165,7 +186,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("(i + (i >> 31)) ^ (i >> 31)\nout:{0}\ntime:{1} | {2} ms",
                     number[0], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
             }
         }
 
@@ -189,7 +213,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("GetIndex3DFrom1D\nout:{0}, x:{1},y:{2},z:{3}\ntime:{4} | {5} ms",
                     number[0], number[1], number[2], number[3], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
 
                 number[0] = 0;
                 number[1] = 0;
@@ -207,7 +234,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("GetIndex3DFrom1D non_pow_of_2\nout:{0}, x:{1},y:{2},z:{3}\ntime:{4} | {5} ms",
                     number[0], number[1], number[2], number[3], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
 
                 number[0] = 0;
                 number[1] = 0;
@@ -225,7 +255,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("GetChunkIndex3DFrom1D\nout:{0}, x:{1},y:{2},z:{3}\ntime:{4} | {5} ms",
                     number[0], number[1], number[2], number[3], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
             }
         }
 
@@ -251,7 +284,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("GetIndex1DFrom3D\nout:{0}, x:{1},y:{2},z:{3}\ntime:{4} | {5} ms",
                     number[0], number[1], number[2], number[3], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
 
                 number[0] = 0;
                 number[1] = 0;
@@ -270,7 +306,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("GetIndex1DFrom3D non_pow_of_2\nout:{0}, x:{1},y:{2},z:{3}\ntime:{4} | {5} ms",
                     number[0], number[1], number[2], number[3], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
 
                 number[0] = 0;
                 number[1] = 0;
@@ -289,7 +328,10 @@ namespace Voxelmetric.Examples
                 output = string.Format("GetChunkIndex1DFrom3D\nout:{0}, x:{1},y:{2},z:{3}\ntime:{4} | {5} ms",
                     number[0], number[1], number[2], number[3], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
             }
         }
 
@@ -306,30 +348,48 @@ namespace Voxelmetric.Examples
                     () =>
                     {
                         for (int y = 0; y < Env.ChunkSize; y++)
+                        {
                             for (int z = 0; z < Env.ChunkSize; z++)
+                            {
                                 for (int x = 0; x < Env.ChunkSize; x++)
+                                {
                                     number[0] += noise.SingleSimplex(0, x, z);
+                                }
+                            }
+                        }
                     }, iters);
                 t2 = t / iters;
                 output = string.Format("noise.Generate 2D\nout:{0}\ntime:{1} | {2} ms",
                     number[0], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
 
                 number[0] = 0;
                 t = Clock.BenchmarkTime(
                     () =>
                     {
                         for (int y = 0; y < Env.ChunkSize; y++)
+                        {
                             for (int z = 0; z < Env.ChunkSize; z++)
+                            {
                                 for (int x = 0; x < Env.ChunkSize; x++)
+                                {
                                     number[0] += noise.SingleSimplex(0, x, y, z);
+                                }
+                            }
+                        }
                     }, iters);
                 t2 = t / iters;
                 output = string.Format("noise.Generate 3D\nout:{0}\ntime:{1} | {2} ms",
                     number[0], t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                 Debug.Log(output);
-                foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                foreach (string s in output.Split('\n'))
+                {
+                    writer.WriteLine(s);
+                }
             }
         }
 
@@ -405,13 +465,18 @@ namespace Voxelmetric.Examples
                         {
                             PrepareLookupTable1D(noise, ni);
                             for (int x = 0; x < Env.ChunkSize; x++)
+                            {
                                 number[0] += ni.noiseGen.Interpolate(x, ni.lookupTable);
+                            }
                         }, iters);
                     t2 = t / iters;
                     output = string.Format("noise.Generate 1D\nout:{0}, downsample factor {1}\ntime:{2} | {3} ms", number[0], i,
                                     t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                     Debug.Log(output);
-                    foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                    foreach (string s in output.Split('\n'))
+                    {
+                        writer.WriteLine(s);
+                    }
                 }
 
                 for (int i = 1; i <= 3; i++)
@@ -426,14 +491,21 @@ namespace Voxelmetric.Examples
                         {
                             PrepareLookupTable2D(noise, ni);
                             for (int z = 0; z < Env.ChunkSize; z++)
+                            {
                                 for (int x = 0; x < Env.ChunkSize; x++)
+                                {
                                     number[0] += ni.noiseGen.Interpolate(x, z, ni.lookupTable);
+                                }
+                            }
                         }, iters);
                     t2 = t / iters;
                     output = string.Format("noise.Generate 2D\nout:{0}, downsample factor {1}\ntime:{2} | {3} ms", number[0], i,
                                     t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                     Debug.Log(output);
-                    foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                    foreach (string s in output.Split('\n'))
+                    {
+                        writer.WriteLine(s);
+                    }
                 }
 
                 for (int i = 1; i <= 3; i++)
@@ -448,15 +520,24 @@ namespace Voxelmetric.Examples
                         {
                             PrepareLookupTable3D(noise, ni);
                             for (int y = 0; y < Env.ChunkSize; y++)
+                            {
                                 for (int z = 0; z < Env.ChunkSize; z++)
+                                {
                                     for (int x = 0; x < Env.ChunkSize; x++)
+                                    {
                                         number[0] += ni.noiseGen.Interpolate(x, y, z, ni.lookupTable);
+                                    }
+                                }
+                            }
                         }, iters);
                     t2 = t / iters;
                     output = string.Format("noise.Generate 3D\nout:{0}, downsample factor {1}\ntime:{2} | {3} ms", number[0], i,
                                     t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                     Debug.Log(output);
-                    foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                    foreach (string s in output.Split('\n'))
+                    {
+                        writer.WriteLine(s);
+                    }
                 }
             }
         }
@@ -466,7 +547,7 @@ namespace Voxelmetric.Examples
         void Compression(StreamWriter writer, Chunk chunk, int blockTypes, int probabiltyOfChange)
         {
             const int iters = 100;
-            var blocks = chunk.Blocks;
+            ChunkBlocks blocks = chunk.Blocks;
 
             // Initialize the block array. Padded area contains zeros, the rest is random
             {
@@ -482,7 +563,10 @@ namespace Voxelmetric.Examples
                         {
                             int prob = r.Next(0, 99);
                             if (prob < probabiltyOfChange)
+                            {
                                 type = (ushort)r.Next(0, blockTypes);
+                            }
+
                             blocks.SetRaw(index, new BlockData(type));
                         }
                     }
@@ -490,7 +574,10 @@ namespace Voxelmetric.Examples
             }
 
             if (s_verifyBlocks == null)
+            {
                 s_verifyBlocks = new ChunkBlocks(null, chunk.SideSize);
+            }
+
             s_verifyBlocks.Copy(blocks, 0, 0, ChunkBlocks.GetLength(chunk.SideSize));
 
             {
@@ -514,8 +601,11 @@ namespace Voxelmetric.Examples
                                    blocks.BlocksCompressed.Count, memSizeCompressed, memSizeUncompressed, compressionFactor,
                                    t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                     Debug.Log(output);
-                    foreach (string s in output.Split('\n')) writer.WriteLine(s);
-                }                
+                    foreach (string s in output.Split('\n'))
+                    {
+                        writer.WriteLine(s);
+                    }
+                }
 
                 // Decompression
                 {
@@ -530,12 +620,17 @@ namespace Voxelmetric.Examples
                     output = string.Format("Decompression\nout:{0}\ntime:{1} | {2} ms", number[0],
                                    t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                     Debug.Log(output);
-                    foreach (string s in output.Split('\n')) writer.WriteLine(s);
-                }                
+                    foreach (string s in output.Split('\n'))
+                    {
+                        writer.WriteLine(s);
+                    }
+                }
 
                 // Verify that data has not changed
                 for (int i = 0; i < ChunkBlocks.GetLength(chunk.SideSize); i++)
+                {
                     Assert.IsTrue(s_verifyBlocks.Get(i) == chunk.Blocks.Get(i));
+                }
             }
         }
 
@@ -577,7 +672,7 @@ namespace Voxelmetric.Examples
             {
                 // Force 16-bytes aligment
                 rawptr = Marshal.AllocHGlobal(Env.ChunkSizePow3 * StructSerialization.TSSize<BlockData>.ValueSize + 16);
-                var aligned = new IntPtr(16 * (((long)rawptr + 15) / 16));
+                IntPtr aligned = new IntPtr(16 * (((long)rawptr + 15) / 16));
                 m_blocks = (byte*)aligned.ToPointer();
             }
 
@@ -651,10 +746,16 @@ namespace Voxelmetric.Examples
 
             byte[] bd1 = Helpers.CreateArray1D<byte>(maxItems * StructSerialization.TSSize<BlockData>.ValueSize);
             for (int i = 0; i < bd1.Length; i++)
+            {
                 bd1[i] = 1;
+            }
+
             bd2 = Helpers.CreateArray1D<BlockData>(maxItems);
             for (int i = 0; i < bd2.Length; i++)
+            {
                 bd2[i] = new BlockData(0x101);
+            }
+
             BlockData dummy = new BlockData(0x101);
 
             TestClass1 tc1 = new TestClass1();
@@ -683,10 +784,15 @@ namespace Voxelmetric.Examples
                         output = string.Format("MemoryCopy\nout:{0}\ntime:{1} | {2} ms", number[0],
                                         t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                         Debug.Log(output);
-                        foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                        foreach (string s in output.Split('\n'))
+                        {
+                            writer.WriteLine(s);
+                        }
                     }
                     for (int j = 0; j < items; j++)
+                    {
                         Assert.IsTrue(tc1[j] == dummy);
+                    }
 
                     {
                         float[] number = { 0 };
@@ -699,10 +805,15 @@ namespace Voxelmetric.Examples
                         output = string.Format("ArrayCopy\nout:{0}\ntime:{1} | {2} ms", number[0],
                                         t.ToString(CultureInfo.InvariantCulture), t2.ToString(CultureInfo.InvariantCulture));
                         Debug.Log(output);
-                        foreach (string s in output.Split('\n')) writer.WriteLine(s);
+                        foreach (string s in output.Split('\n'))
+                        {
+                            writer.WriteLine(s);
+                        }
                     }
                     for (int j = 0; j < items; j++)
+                    {
                         Assert.IsTrue(tc2[j] == dummy);
+                    }
                 }
             }
         }

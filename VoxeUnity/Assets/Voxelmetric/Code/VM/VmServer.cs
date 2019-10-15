@@ -26,7 +26,8 @@ namespace Voxelmetric.Code.VM
 
         public int ClientCount
         {
-            get {
+            get
+            {
                 lock (clients)
                 {
                     return clients.Count;
@@ -44,11 +45,23 @@ namespace Voxelmetric.Code.VM
                 serverSocket = new Socket(addressFamily, SocketType.Stream, ProtocolType.Tcp);
 
                 string serverName = Dns.GetHostName();
-                if (debugServer) Debug.Log("serverName='" + serverName + "'");
-                foreach (IPAddress serverAddress in Dns.GetHostAddresses(serverName)) {
-                    if (debugServer) Debug.Log("serverAddress='" + serverAddress + "', AddressFamily=" + serverAddress.AddressFamily);
-                    if (serverAddress.AddressFamily !=  addressFamily)
+                if (debugServer)
+                {
+                    Debug.Log("serverName='" + serverName + "'");
+                }
+
+                foreach (IPAddress serverAddress in Dns.GetHostAddresses(serverName))
+                {
+                    if (debugServer)
+                    {
+                        Debug.Log("serverAddress='" + serverAddress + "', AddressFamily=" + serverAddress.AddressFamily);
+                    }
+
+                    if (serverAddress.AddressFamily != addressFamily)
+                    {
                         continue;
+                    }
+
                     serverIP = serverAddress;
                     break;
                 }
@@ -67,13 +80,15 @@ namespace Voxelmetric.Code.VM
         {
             try
             {
-                if (serverSocket == null) {
+                if (serverSocket == null)
+                {
                     Debug.Log("VmServer.OnJoinServer (" + Thread.CurrentThread.ManagedThreadId + "): "
                               + "client connection rejected because server was not started");
                     return;
                 }
                 Socket newClientSocket = serverSocket.EndAccept(ar);
-                lock(clients) {
+                lock (clients)
+                {
                     ClientConnection connection = new ClientConnection(clients.Count, newClientSocket, this);
                     clients.Add(nextId, connection);
                     nextId++;
@@ -89,7 +104,7 @@ namespace Voxelmetric.Code.VM
 
         internal void RemoveClient(int id)
         {
-            lock(clients)
+            lock (clients)
             {
                 clients[id] = null;
             }
@@ -97,14 +112,17 @@ namespace Voxelmetric.Code.VM
 
         public void Disconnect()
         {
-            lock(clients)
+            lock (clients)
             {
-                var clientConnections = clients.Values.ToList();
-                foreach (var client in clientConnections)
+                List<ClientConnection> clientConnections = clients.Values.ToList();
+                foreach (ClientConnection client in clientConnections)
+                {
                     client.Disconnect();
+                }
             }
 
-            if (serverSocket != null) {// && serverSocket.Connected) {
+            if (serverSocket != null)
+            {// && serverSocket.Connected) {
                 //serverSocket.Shutdown(SocketShutdown.Both);
                 serverSocket.Close();
                 serverSocket = null;
@@ -116,8 +134,10 @@ namespace Voxelmetric.Code.VM
             lock (clients)
             {
                 ClientConnection clientConnection = clients[client];
-                if ( clientConnection != null )
+                if (clientConnection != null)
+                {
                     clientConnection.Send(data);
+                }
             }
         }
 
@@ -130,7 +150,9 @@ namespace Voxelmetric.Code.VM
                                + " world not set (" + pos + ", " + id + ")");
             }
             else
+            {
                 chunk = world.GetChunk(ref pos);
+            }
 
             byte[] data;
 
@@ -143,11 +165,15 @@ namespace Voxelmetric.Code.VM
                 data = ChunkBlocks.EmptyBytes;
             }
             else
+            {
                 data = chunk.Blocks.ToBytes();
+            }
 
-            if ( debugServer )
+            if (debugServer)
+            {
                 Debug.Log("VmServer.RequestChunk (" + Thread.CurrentThread.ManagedThreadId + "): " + id
                           + " " + pos);
+            }
 
             SendChunk(pos, data, id);
         }
@@ -165,11 +191,13 @@ namespace Voxelmetric.Code.VM
                 BitConverter.GetBytes(chunkDataIndex).CopyTo(message, headerSize);
                 BitConverter.GetBytes(chunkData.Length).CopyTo(message, headerSize + 4);
 
-                if ( debugServer )
+                if (debugServer)
+                {
                     Debug.Log("VmServer.SendChunk (" + Thread.CurrentThread.ManagedThreadId + "): " + pos
                               + ", chunkDataIndex=" + chunkDataIndex
                               + ", chunkData.Length=" + chunkData.Length
                               + ", buffer=" + message.Length);
+                }
 
                 for (int i = leaderSize; i < message.Length; i++)
                 {
@@ -177,7 +205,9 @@ namespace Voxelmetric.Code.VM
                     chunkDataIndex++;
 
                     if (chunkDataIndex >= chunkData.Length)
+                    {
                         break;
+                    }
                 }
 
                 SendToClient(message, id);
@@ -186,10 +216,12 @@ namespace Voxelmetric.Code.VM
 
         public void BroadcastChange(Vector3Int pos, BlockData blockData, int excludedUser)
         {
-            lock(clients)
+            lock (clients)
             {
                 if (clients.Count == 0)
+                {
                     return;
+                }
 
                 byte[] data = new byte[15];
 
@@ -197,10 +229,12 @@ namespace Voxelmetric.Code.VM
                 pos.ToBytes().CopyTo(data, 1);
                 BlockData.ToByteArray(blockData).CopyTo(data, 13);
 
-                foreach (var client in clients.Values)
+                foreach (ClientConnection client in clients.Values)
                 {
                     if (excludedUser == -1 || client.ID != excludedUser)
+                    {
                         client.Send(data);
+                    }
                 }
             }
         }

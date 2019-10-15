@@ -1,42 +1,43 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using Voxelmetric.Code.Core;
 using Voxelmetric.Code.Load_Resources.Textures;
 
 public class CubeBlockConfig : BlockConfig
 {
     public TextureCollection[] textures;
-    public Color32[] colors = new Color32[6];
+    public Color32[] colors;
 
-    public override bool OnSetUp(Hashtable config, World world)
+    public override bool OnSetUp(BlockConfigObject config, World world)
     {
         if (!base.OnSetUp(config, world))
         {
             return false;
         }
 
-        textures = new TextureCollection[6];
-        JArray textureNames = (JArray)JsonConvert.DeserializeObject(config["textures"].ToString());
-
-        for (int i = 0; i < 6; i++)
+        if (config is CubeConfigObject cubeConfig)
         {
-            textures[i] = world.textureProvider.GetTextureCollection(textureNames[i].ToObject<string>());
+            textures = new TextureCollection[6];
+            textures[0] = world.textureProvider.GetTextureCollection(cubeConfig.TopTexture);
+            textures[1] = world.textureProvider.GetTextureCollection(cubeConfig.BottomTexture);
+            textures[2] = world.textureProvider.GetTextureCollection(cubeConfig.BackTexture);
+            textures[3] = world.textureProvider.GetTextureCollection(cubeConfig.FrontTexture);
+            textures[4] = world.textureProvider.GetTextureCollection(cubeConfig.RightTexture);
+            textures[5] = world.textureProvider.GetTextureCollection(cubeConfig.LeftTexture);
+
+            colors = new Color32[6];
+            colors[0] = cubeConfig.TopColor;
+            colors[1] = cubeConfig.BottomColor;
+            colors[2] = cubeConfig.BackColor;
+            colors[3] = cubeConfig.FrontColor;
+            colors[4] = cubeConfig.RightColor;
+            colors[5] = cubeConfig.LeftColor;
+        }
+        else
+        {
+            Debug.LogError(config.GetType() + " config passed to cube block.");
+            return false;
         }
 
         return true;
-    }
-
-    public void SetTextures(Texture2D top, Texture2D bottom, Texture2D front, Texture2D back, Texture2D right, Texture2D left)
-    {
-        textures = new TextureCollection[6];
-
-        textures[0] = World.Instance.textureProvider.GetTextureCollection(top != null ? top.name : "");
-        textures[1] = World.Instance.textureProvider.GetTextureCollection(bottom != null ? bottom.name : "");
-        textures[2] = World.Instance.textureProvider.GetTextureCollection(back != null ? back.name : "");
-        textures[3] = World.Instance.textureProvider.GetTextureCollection(front != null ? front.name : "");
-        textures[4] = World.Instance.textureProvider.GetTextureCollection(right != null ? right.name : "");
-        textures[5] = World.Instance.textureProvider.GetTextureCollection(left != null ? left.name : "");
     }
 }

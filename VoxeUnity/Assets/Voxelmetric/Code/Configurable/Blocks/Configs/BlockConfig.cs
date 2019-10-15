@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using Voxelmetric.Code.Core;
 using Voxelmetric.Code.Load_Resources.Blocks;
@@ -78,63 +77,43 @@ public class BlockConfig
     /// </summary>
     /// <param name="config">Hashtable of the json config for the block</param>
     /// <param name="world">The world this block type belongs to</param>
-    public virtual bool OnSetUp(Hashtable config, World world)
+    public virtual bool OnSetUp(BlockConfigObject config, World world)
     {
         // Obligatory parameters
+        name = config.BlockName;
+        if (string.IsNullOrWhiteSpace(name))
         {
-            string tmpName;
-            if (!_GetPropertyFromConfig(config, "name", out tmpName))
-            {
-                Debug.LogError("Parameter 'name' missing from config");
-                return false;
-            }
-            name = tmpName;
-
-            long tmpTypeInConfig;
-            if (!_GetPropertyFromConfig(config, "type", out tmpTypeInConfig))
-            {
-                Debug.LogError("Parameter 'type' missing from config");
-                return false;
-            }
-            typeInConfig = (ushort)(tmpTypeInConfig + BlockProvider.LastReservedType);
+            Debug.LogError(config.name + " can't have a empty block name!");
+            return false;
         }
 
-        // Optional parameters
-        {
-            className = _GetPropertyFromConfig(config, "blockClass", "Block");
-            solid = _GetPropertyFromConfig(config, "solid", true);
-            transparent = _GetPropertyFromConfig(config, "transparent", false);
-            raycastHit = _GetPropertyFromConfig(config, "raycastHit", solid);
-            raycastHitOnRemoval = _GetPropertyFromConfig(config, "raycastHitOnRemoval", solid);
+        typeInConfig = (ushort)(config.ID + BlockProvider.LastReservedType);
+        solid = config.Solid;
+        transparent = config.Transparent;
 
-            // Try to associate requested render materials with one of world's materials
-            {
-                renderMaterialID = 0;
-                string materialName = _GetPropertyFromConfig(config, "material", "");
-                for (int i = 0; i < world.renderMaterials.Length; i++)
-                {
-                    if (world.renderMaterials[i].name.Equals(materialName))
-                    {
-                        renderMaterialID = i;
-                        break;
-                    }
-                }
-            }
+        // Try to associate requested render materials with one of world's materials
+        renderMaterialID = 0;
+        //string materialName = _GetPropertyFromConfig(config, "material", string.Empty);
+        //for (int i = 0; i < world.renderMaterials.Length; i++)
+        //{
+        //    if (world.renderMaterials[i].name.Equals(materialName))
+        //    {
+        //        renderMaterialID = i;
+        //        break;
+        //    }
+        //}
 
-            // Try to associate requested physic materials with one of world's materials
-            {
-                physicMaterialID = solid ? 0 : -1; // solid objects will collide by default
-                string materialName = _GetPropertyFromConfig(config, "materialPx", "");
-                for (int i = 0; i < world.physicsMaterials.Length; i++)
-                {
-                    if (world.physicsMaterials[i].name.Equals(materialName))
-                    {
-                        physicMaterialID = i;
-                        break;
-                    }
-                }
-            }
-        }
+        // Try to associate requested physic materials with one of world's materials
+        physicMaterialID = solid ? 0 : -1; // solid objects will collide by default
+                                           //string materialName = _GetPropertyFromConfig(config, "materialPx", string.Empty);
+                                           //for (int i = 0; i < world.physicsMaterials.Length; i++)
+                                           //{
+                                           //    if (world.physicsMaterials[i].name.Equals(materialName))
+                                           //    {
+                                           //        physicMaterialID = i;
+                                           //        break;
+                                           //    }
+                                           //}
 
         return true;
     }
@@ -147,27 +126,5 @@ public class BlockConfig
     public override string ToString()
     {
         return name;
-    }
-
-    protected static bool _GetPropertyFromConfig<T>(Hashtable config, string key, out T ret)
-    {
-        if (config.ContainsKey(key))
-        {
-            ret = (T)config[key];
-            return true;
-        }
-
-        ret = default(T);
-        return false;
-    }
-
-    protected static T _GetPropertyFromConfig<T>(Hashtable config, string key, T defaultValue)
-    {
-        if (config.ContainsKey(key))
-        {
-            return (T)config[key];
-        }
-
-        return defaultValue;
     }
 }

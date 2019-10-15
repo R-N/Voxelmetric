@@ -88,6 +88,11 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
                 BlockConfig config = blocks[i].GetConfig();
                 config.blockClass = (Type)blocks[i].GetBlockClass();
 
+                if (!config.OnSetUp(blocks[i], world))
+                {
+                    continue;
+                }
+
                 if (!VerifyBlockConfig(types, config))
                 {
                     continue;

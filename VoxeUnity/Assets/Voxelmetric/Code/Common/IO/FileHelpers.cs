@@ -83,8 +83,10 @@ namespace Voxelmetric.Code.Common.IO
             }
             finally
             {
-                if (fs!=null)
+                if (fs != null)
+                {
                     fs.Dispose();
+                }
             }
 
             return true;
@@ -96,7 +98,7 @@ namespace Voxelmetric.Code.Common.IO
             try
             {
                 fs = new FileStream(targetFilePath, FileMode.Create);
-                using (var bw = new BinaryWriter(fs))
+                using (BinaryWriter bw = new BinaryWriter(fs))
                 {
                     fs = null;
                     stream.Binarize(bw);
@@ -109,8 +111,10 @@ namespace Voxelmetric.Code.Common.IO
             }
             finally
             {
-                if (fs!=null)
+                if (fs != null)
+                {
                     fs.Dispose();
+                }
             }
 
             return true;
@@ -119,13 +123,15 @@ namespace Voxelmetric.Code.Common.IO
         public static bool DebinarizeFromFile(string targetFilePath, IBinarizable stream)
         {
             if (!File.Exists(targetFilePath))
+            {
                 return false;
+            }
 
             FileStream fs = null;
             try
             {
                 fs = new FileStream(targetFilePath, FileMode.Open);
-                using (var br = new BinaryReader(fs))
+                using (BinaryReader br = new BinaryReader(fs))
                 {
                     fs = null;
                     stream.Debinarize(br);
@@ -138,8 +144,10 @@ namespace Voxelmetric.Code.Common.IO
             }
             finally
             {
-                if (fs!=null)
+                if (fs != null)
+                {
                     fs.Dispose();
+                }
             }
 
             return true;

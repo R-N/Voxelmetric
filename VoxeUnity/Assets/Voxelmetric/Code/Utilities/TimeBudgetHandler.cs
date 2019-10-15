@@ -11,8 +11,8 @@ namespace Voxelmetric.Code.Utilities
 
         private long m_startTime;
         private long m_totalTime;
-        
-        public TimeBudgetHandler(long budget=0)
+
+        public TimeBudgetHandler(long budget = 0)
         {
             Reset();
             TimeBudgetMs = budget;
@@ -33,10 +33,10 @@ namespace Voxelmetric.Code.Utilities
         public void StopMeasurement()
         {
             long stopTime = Globals.Watch.ElapsedMilliseconds;
-            Debug.Assert(stopTime>=m_startTime); // Let's make sure the class is used correctly
+            Debug.Assert(stopTime >= m_startTime); // Let's make sure the class is used correctly
 
-            m_totalTime += (stopTime-m_startTime);
-            HasTimeBudget = m_totalTime<TimeBudgetMs;
+            m_totalTime += (stopTime - m_startTime);
+            HasTimeBudget = m_totalTime < TimeBudgetMs;
         }
     }
 }

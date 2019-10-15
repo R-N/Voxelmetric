@@ -2,12 +2,12 @@
 
 namespace Voxelmetric.Code.Common.Threading
 {
-    public interface AThreadPoolItem: ITaskPoolItem
+    public interface AThreadPoolItem : ITaskPoolItem
     {
         int ThreadID { get; }
     }
 
-    public class ThreadPoolItem<T>: AThreadPoolItem
+    public class ThreadPoolItem<T> : AThreadPoolItem
     {
         private Action<T> m_action;
         private T m_arg;

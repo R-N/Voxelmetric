@@ -8,10 +8,10 @@ using Voxelmetric.Code.Common.Memory;
 namespace Voxelmetric.Code.Common.MemoryPooling
 {
     [AddComponentMenu("VoxelMetric/Singleton/GameObjectProvider")]
-    public sealed class GameObjectProvider: MonoSingleton<GameObjectProvider>
+    public sealed class GameObjectProvider : MonoSingleton<GameObjectProvider>
     {
         private GameObject m_go;
-        public ObjectPoolEntry [] ObjectPools = new ObjectPoolEntry [0];
+        public ObjectPoolEntry[] ObjectPools = new ObjectPoolEntry[0];
 
         private readonly StringBuilder m_stringBuilder = new StringBuilder();
 
@@ -29,7 +29,7 @@ namespace Voxelmetric.Code.Common.MemoryPooling
             // Iterate pool entries and create a pool of prefabs for each of them
             foreach (ObjectPoolEntry pool in Instance.ObjectPools)
             {
-                if (pool.Prefab==null)
+                if (pool.Prefab == null)
                 {
                     Debug.LogError("No prefab specified in one of the object pool's entries");
                     continue;
@@ -44,20 +44,26 @@ namespace Voxelmetric.Code.Common.MemoryPooling
         {
             foreach (ObjectPoolEntry pool in Instance.ObjectPools)
             {
-                if (pool.Name==poolName)
+                if (pool.Name == poolName)
+                {
                     return pool;
+                }
             }
             return null;
         }
 
         public static void PushObject(string poolName, GameObject go)
         {
-            if (go==null)
+            if (go == null)
+            {
                 throw new ArgumentNullException(string.Format("Trying to pool a null game object in pool {0}", poolName));
+            }
 
             ObjectPoolEntry pool = GetPool(poolName);
-            if (pool==null)
+            if (pool == null)
+            {
                 throw new InvalidOperationException(string.Format("Object pool {0} does not exist", poolName));
+            }
 
             pool.Push(go);
         }
@@ -66,7 +72,9 @@ namespace Voxelmetric.Code.Common.MemoryPooling
         {
             ObjectPoolEntry pool = GetPool(poolName);
             if (pool == null)
+            {
                 throw new InvalidOperationException(string.Format("Object pool {0} does not exist", poolName));
+            }
 
             return pool.Pop();
         }
@@ -76,8 +84,11 @@ namespace Voxelmetric.Code.Common.MemoryPooling
             m_stringBuilder.Length = 0;
 
             m_stringBuilder.Append("ObjectPools ");
-            foreach (var entry in ObjectPools)
+            foreach (ObjectPoolEntry entry in ObjectPools)
+            {
                 m_stringBuilder.ConcatFormat("{0},", entry.ToString());
+            }
+
             return m_stringBuilder.ToString();
         }
 
@@ -94,7 +105,7 @@ namespace Voxelmetric.Code.Common.MemoryPooling
 
             public ObjectPoolEntry()
             {
-                //Name = "";
+                //Name = string.Empty;
                 //InitialSize = 0;
                 m_parentGo = null;
                 Prefab = null;
@@ -127,7 +138,9 @@ namespace Voxelmetric.Code.Common.MemoryPooling
 
                 Rigidbody rbody = go.GetComponent<Rigidbody>();
                 if (rbody != null)
+                {
                     rbody.velocity = Vector3.zero;
+                }
 
                 // Place a pointer to our object to the back of our cache list
                 Cache.Push(go);

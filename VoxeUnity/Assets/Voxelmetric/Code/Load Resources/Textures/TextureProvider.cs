@@ -201,6 +201,12 @@ namespace Voxelmetric.Code.Load_Resources.Textures
             return newTexture;
         }
 
+        public TextureCollection GetTextureCollection(Texture2D texture)
+        {
+            string textureName = texture == null ? NO_TEXTURE_NAME : texture.name;
+            return GetTextureCollection(textureName);
+        }
+
         public TextureCollection GetTextureCollection(string textureName)
         {
             if (string.IsNullOrWhiteSpace(textureName))

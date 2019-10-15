@@ -18,7 +18,9 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
         protected override void UpdateVisibility(int x, int y, int z, int rangeX, int rangeY, int rangeZ)
         {
             if (rangeX == 0 || rangeY == 0 || rangeZ == 0)
+            {
                 return;
+            }
 
             Profiler.BeginSample("Cull");
 
@@ -57,7 +59,7 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
             AABB bounds2 = new AABB(wx, wy, wz, wx + rx, wy + ry, wz + rz);
             Planes.TestPlanesResult res = Planes.TestPlanesAABB2(m_cameraPlanes, ref bounds2);
 
-            #region Full invisibility            
+            #region Full invisibility
 
             // Everything is invisible by default
 
@@ -69,7 +71,7 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
 
             #endregion
 
-            #region Full visibility            
+            #region Full visibility
 
             if (res == Planes.TestPlanesResult.Inside)
             {
@@ -86,7 +88,9 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
                             Vector3Int chunkPos = new Vector3Int(cx, cy, cz);
                             Chunk chunk = world.GetChunk(ref chunkPos);
                             if (chunk == null)
+                            {
                                 continue;
+                            }
 
                             // Update visibility information
                             chunk.PossiblyVisible = true;
@@ -174,7 +178,9 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
         private void OnDrawGizmosSelected()
         {
             if (!enabled)
+            {
                 return;
+            }
 
             float size = Env.ChunkSize * Env.BlockSize;
             float halfSize = size * 0.5f;

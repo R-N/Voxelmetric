@@ -8,7 +8,7 @@
         bool Register(IEventListener<TEvent> listener);
         //! Unregisters a listener from receiving a certain kind of notifications from the source
         bool Unregister(IEventListener<TEvent> listener);
-        //! Notifies subscribers about something (implementation specific)	
+        //! Notifies subscribers about something (implementation specific)
         void NotifyAll(TEvent evt);
     }
 }

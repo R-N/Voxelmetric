@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Voxelmetric.Code.Common
 {
-    public class MonoSingleton<T>: MonoBehaviour where T: MonoSingleton<T>
+    public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
     {
         //protected static bool s_instanceIsNull = true;
 
@@ -28,7 +28,9 @@ namespace Voxelmetric.Code.Common
                 {
                     // No instance of this class created yet
                     if (s_instance != null)
+                    {
                         return s_instance;
+                    }
 
                     //if (s_instanceIsNull) {
                     // Only one instance of the object is allowed. Anything else is an error
@@ -39,15 +41,19 @@ namespace Voxelmetric.Code.Common
                     // If no other instance is found create a new object
                     s_instance = FindObjectOfType<T>();
                     if (s_instance != null)
+                    {
                         return s_instance;
+                    }
 
                     //s_instanceIsNull = false;
 
-                    GameObject go = new GameObject("Singleton "+typeof (T));
+                    GameObject go = new GameObject("Singleton " + typeof(T));
                     s_instance = go.AddComponent<T>();
 
                     if (!s_instance.DestroyOnLoad)
+                    {
                         DontDestroyOnLoad(go);
+                    }
                     //else
                     //	s_instanceIsNull = false;
 

@@ -25,7 +25,7 @@ namespace Voxelmetric.Code
 
         public static void InitIOPool()
         {
-            if(IOPool == null)
+            if (IOPool == null)
             {
                 IOPool = new TaskPool();
                 IOPool.Start();
@@ -47,14 +47,16 @@ namespace Voxelmetric.Code
         public static void InitMemPools()
         {
             if (MemPools == null)
+            {
                 MemPools = new GlobalPools();
+            }
         }
 
         // Global stop watch
         public static Stopwatch Watch { get; private set; }
         public static void InitWatch()
         {
-            if (Watch==null)
+            if (Watch == null)
             {
                 Watch = new Stopwatch();
                 Watch.Start();

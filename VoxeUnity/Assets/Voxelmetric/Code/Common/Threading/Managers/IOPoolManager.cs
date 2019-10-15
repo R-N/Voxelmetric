@@ -18,15 +18,17 @@ namespace Voxelmetric.Code.Common.Threading.Managers
 
         public static void Commit()
         {
-            if (WorkItems.Count<=0)
+            if (WorkItems.Count <= 0)
+            {
                 return;
+            }
 
             // Commit all the work we have
             if (Features.UseThreadedIO)
             {
                 TaskPool pool = Globals.IOPool;
 
-                for (int i = 0; i<WorkItems.Count; i++)
+                for (int i = 0; i < WorkItems.Count; i++)
                 {
                     pool.AddItem(WorkItems[i]);
                 }
@@ -34,7 +36,7 @@ namespace Voxelmetric.Code.Common.Threading.Managers
             }
             else
             {
-                for (int i = 0; i<WorkItems.Count; i++)
+                for (int i = 0; i < WorkItems.Count; i++)
                 {
                     TimeBudget.StartMeasurement();
                     WorkItems[i].Run();
@@ -44,7 +46,7 @@ namespace Voxelmetric.Code.Common.Threading.Managers
                     // frames to avoid performance spikes
                     if (!TimeBudget.HasTimeBudget)
                     {
-                        WorkItems.RemoveRange(0, i+1);
+                        WorkItems.RemoveRange(0, i + 1);
                         return;
                     }
                 }

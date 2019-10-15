@@ -3,7 +3,8 @@ using Voxelmetric.Code.Common.Threading.Managers;
 
 namespace Voxelmetric.Code
 {
-    public class GlobalObjects : MonoBehaviour {
+    public class GlobalObjects : MonoBehaviour
+    {
 
         void Awake()
         {
@@ -13,7 +14,7 @@ namespace Voxelmetric.Code
             Globals.InitWatch();
         }
 
-        void Update ()
+        void Update()
         {
             IOPoolManager.Commit();
             WorkPoolManager.Commit();

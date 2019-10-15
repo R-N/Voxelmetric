@@ -26,7 +26,7 @@ namespace Voxelmetric.Code.Utilities.Import
             0xff000022, 0xff000011, 0xff00ee00, 0xff00dd00, 0xff00bb00, 0xff00aa00, 0xff008800, 0xff007700, 0xff005500, 0xff004400, 0xff002200, 0xff001100, 0xffee0000, 0xffdd0000, 0xffbb0000, 0xffaa0000,
             0xff880000, 0xff770000, 0xff550000, 0xff440000, 0xff220000, 0xff110000, 0xffeeeeee, 0xffdddddd, 0xffbbbbbb, 0xffaaaaaa, 0xff888888, 0xff777777, 0xff555555, 0xff444444, 0xff222222, 0xff111111
         };
-        
+
         public class MagicaVoxelChunk
         {
             public byte[] data;
@@ -50,7 +50,7 @@ namespace Voxelmetric.Code.Utilities.Import
         {
             // VOX file starts with 'VOX '
             char[] chars = br.ReadChars(4);
-            if (chars[0]!='V' || chars[1]!='O' || chars[2]!='X' || chars[3]!=' ')
+            if (chars[0] != 'V' || chars[1] != 'O' || chars[2] != 'X' || chars[3] != ' ')
             {
                 Debug.LogError("MV: Invalid file format. It does not start with 'VOX '");
                 return null;
@@ -63,21 +63,21 @@ namespace Voxelmetric.Code.Utilities.Import
             }
 
             chars = br.ReadChars(4);
-            if (chars[0]!='M' || chars[1]!='A' || chars[2]!='I' || chars[3]!='N')
+            if (chars[0] != 'M' || chars[1] != 'A' || chars[2] != 'I' || chars[3] != 'N')
             {
                 Debug.LogError("MV: Invalid ChunkID, 'MAIN' expected");
                 return null;
             }
 
             chars = br.ReadChars(4);
-            if (chars[0]=='P' && chars[1]=='A' && chars[2]=='C' && chars[3]=='K')
+            if (chars[0] == 'P' && chars[1] == 'A' && chars[2] == 'C' && chars[3] == 'K')
             {
                 Debug.LogError("MV: Multiple models for VOX not supported");
                 return null;
             }
 
             // Main chunk data size in bytes
-            int chunkSize = (chars[3]>>24) | chars[2]>>16 | chars[1]>>8 | chars[0];
+            int chunkSize = (chars[3] >> 24) | chars[2] >> 16 | chars[1] >> 8 | chars[0];
             // Children chunk data size in bytes
             int childrenSize = br.ReadInt32();
             if (childrenSize < 0)
@@ -92,30 +92,39 @@ namespace Voxelmetric.Code.Utilities.Import
             MagicaVoxelMainChunk mainChunk = new MagicaVoxelMainChunk();
 
             int readSize = 0;
-            while (readSize<childrenSize)
+            while (readSize < childrenSize)
             {
                 // each chunk has an ID, size and child chunks
                 chars = br.ReadChars(4);
 
-                if (chars[0]=='S' && chars[1]=='I' && chars[2]=='Z' && chars[3]=='E')
+                if (chars[0] == 'S' && chars[1] == 'I' && chars[2] == 'Z' && chars[3] == 'E')
                 {
                     int size = ReadSize(br, mainChunk);
-                    if (size<0)
+                    if (size < 0)
+                    {
                         return null;
+                    }
+
                     readSize += size;
                 }
-                else if (chars[0]=='X' && chars[1]=='Y' && chars[2]=='Z' && chars[3]=='I')
+                else if (chars[0] == 'X' && chars[1] == 'Y' && chars[2] == 'Z' && chars[3] == 'I')
                 {
                     int size = ReadXYZI(br, mainChunk);
-                    if (size<0)
+                    if (size < 0)
+                    {
                         return null;
+                    }
+
                     readSize += size;
                 }
-                else if (chars[0]=='R' && chars[1]=='G' && chars[2]=='B' && chars[3]=='A')
+                else if (chars[0] == 'R' && chars[1] == 'G' && chars[2] == 'B' && chars[3] == 'A')
                 {
                     int size = ReadRGBA(br, mainChunk);
-                    if (size<0)
+                    if (size < 0)
+                    {
                         return null;
+                    }
+
                     readSize += size;
                 }
                 else
@@ -126,16 +135,16 @@ namespace Voxelmetric.Code.Utilities.Import
             }
 
             // Use default palette if there is none in the file
-            if (mainChunk.palette==null)
+            if (mainChunk.palette == null)
             {
                 mainChunk.palette = new Color32[256];
-                for (int i = 0; i<256; i++)
+                for (int i = 0; i < 256; i++)
                 {
                     uint color = DefaultPalette[i];
-                    byte r = (byte)(color &0xFF);
-                    byte g = (byte)((color >> 8)&0xFF);
-                    byte b = (byte)((color >> 16)&0xFF);
-                    byte a = (byte)((color >> 24)&0xFF);
+                    byte r = (byte)(color & 0xFF);
+                    byte g = (byte)((color >> 8) & 0xFF);
+                    byte b = (byte)((color >> 16) & 0xFF);
+                    byte a = (byte)((color >> 24) & 0xFF);
 
                     mainChunk.palette[i] = new Color32(r, g, b, a);
                 }
@@ -155,7 +164,7 @@ namespace Voxelmetric.Code.Utilities.Import
                 return -1;
             }
 
-            var chunk = mainChunk.chunk = new MagicaVoxelChunk();
+            MagicaVoxelChunk chunk = mainChunk.chunk = new MagicaVoxelChunk();
             chunk.sizeX = br.ReadInt32();
             chunk.sizeZ = br.ReadInt32(); // Magica has Z and Y swapped
             chunk.sizeY = br.ReadInt32();
@@ -184,7 +193,7 @@ namespace Voxelmetric.Code.Utilities.Import
                 int z = br.ReadByte(); // Magica has Z and Y swapped
                 int y = br.ReadByte();
 
-                chunk.data[Helpers.GetIndex1DFrom3D(x,y,z, chunk.sizeX, chunk.sizeZ)] = br.ReadByte();
+                chunk.data[Helpers.GetIndex1DFrom3D(x, y, z, chunk.sizeX, chunk.sizeZ)] = br.ReadByte();
             }
 
             return chunkSize + childrenSize + 4 * 3;
@@ -202,7 +211,7 @@ namespace Voxelmetric.Code.Utilities.Import
             }
 
             mainChunk.palette = new Color32[256];
-            mainChunk.palette[0] = new Color32(0,0,0,0);
+            mainChunk.palette[0] = new Color32(0, 0, 0, 0);
             for (int i = 1; i < 256; ++i)
             {
                 mainChunk.palette[i] = new Color32(

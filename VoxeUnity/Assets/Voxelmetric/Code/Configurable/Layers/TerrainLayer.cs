@@ -14,7 +14,7 @@ public abstract class TerrainLayer : IComparable, IEquatable<TerrainLayer>
     protected NoiseWrapperSIMD noiseSIMD;
 #endif
 
-    public string layerName = "";
+    public string layerName = string.Empty;
     public int index { get; private set; }
     public bool isStructure { get; private set; }
 

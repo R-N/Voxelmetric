@@ -6,7 +6,7 @@ namespace Voxelmetric.Code.Configurable.Blocks
     {
         public Vector3Int pos; // 12B
         public Block block; // 8B
-        public int materialID; // 4B        
+        public int materialID; // 4B
         public Direction side; // 1B
         public BlockLightData light; //1B
     }

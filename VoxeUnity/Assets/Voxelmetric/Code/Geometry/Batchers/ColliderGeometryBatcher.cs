@@ -6,7 +6,7 @@ using Voxelmetric.Code.Geometry.Buffers;
 
 namespace Voxelmetric.Code.Geometry.Batchers
 {
-    public class ColliderGeometryBatcher: IGeometryBatcher
+    public class ColliderGeometryBatcher : IGeometryBatcher
     {
         private readonly string m_prefabName;
         //! Materials our meshes are to use
@@ -24,7 +24,9 @@ namespace Voxelmetric.Code.Geometry.Batchers
                 if (value != m_enabled)
                 {
                     for (int i = 0; i < m_objects.Count; i++)
+                    {
                         m_objects[i].SetActive(value);
+                    }
                 }
                 m_enabled = value;
             }
@@ -39,7 +41,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
             m_prefabName = prefabName;
             m_materials = materials;
 
-            int buffersLen = (materials==null || materials.Length<1) ? 1 : materials.Length;
+            int buffersLen = (materials == null || materials.Length < 1) ? 1 : materials.Length;
             m_buffers = new List<ColliderGeometryBuffer>[buffersLen];
             for (int i = 0; i < m_buffers.Length; i++)
             {
@@ -69,11 +71,13 @@ namespace Voxelmetric.Code.Geometry.Batchers
             // may grow more but only by 1 or 2 (and only if Env.ChunkPow>5).
             for (int i = 0; i < m_buffers.Length; i++)
             {
-                var geometryBuffer = m_buffers[i];
+                List<ColliderGeometryBuffer> geometryBuffer = m_buffers[i];
                 for (int j = 0; j < geometryBuffer.Count; j++)
                 {
                     if (geometryBuffer[j].WasUsed)
+                    {
                         geometryBuffer[j] = new ColliderGeometryBuffer();
+                    }
                 }
             }
 
@@ -86,10 +90,12 @@ namespace Voxelmetric.Code.Geometry.Batchers
         /// </summary>
         public void Clear()
         {
-            foreach (var holder in m_buffers)
+            foreach (List<ColliderGeometryBuffer> holder in m_buffers)
             {
                 for (int i = 0; i < holder.Count; i++)
+                {
                     holder[i].Clear();
+                }
             }
 
             ReleaseOldData();
@@ -106,8 +112,8 @@ namespace Voxelmetric.Code.Geometry.Batchers
         {
             Assert.IsTrue(verts.Length == 4);
 
-            var holder = m_buffers[materialID];
-            var buffer = holder[holder.Count - 1];
+            List<ColliderGeometryBuffer> holder = m_buffers[materialID];
+            ColliderGeometryBuffer buffer = holder[holder.Count - 1];
 
             // If there are too many vertices we need to create a new separate buffer for them
             if (buffer.Vertices.Count + 4 > 65000)
@@ -133,19 +139,21 @@ namespace Voxelmetric.Code.Geometry.Batchers
             )
         {
             ReleaseOldData();
-            
-            for (int j = 0; j<m_buffers.Length; j++)
-            {
-                var holder = m_buffers[j];
-                var material = (m_materials == null || m_materials.Length < 1) ? null : m_materials[j];
 
-                for (int i = 0; i< holder.Count; i++)
+            for (int j = 0; j < m_buffers.Length; j++)
+            {
+                List<ColliderGeometryBuffer> holder = m_buffers[j];
+                PhysicMaterial material = (m_materials == null || m_materials.Length < 1) ? null : m_materials[j];
+
+                for (int i = 0; i < holder.Count; i++)
                 {
                     ColliderGeometryBuffer buffer = holder[i];
 
                     // No data means there's no mesh to build
                     if (buffer.IsEmpty)
+                    {
                         continue;
+                    }
 
                     // Create a game object for collider. Unfortunatelly, we can't use object pooling
                     // here. Unity3D would have to rebake the geometry of the old object because of a
@@ -160,14 +168,14 @@ namespace Voxelmetric.Code.Geometry.Batchers
 #endif
 
                         Mesh mesh = Globals.MemPools.MeshPool.Pop();
-                        Assert.IsTrue(mesh.vertices.Length<=0);
+                        Assert.IsTrue(mesh.vertices.Length <= 0);
                         buffer.SetupMesh(mesh, true);
 
                         MeshCollider collider = go.GetComponent<MeshCollider>();
                         collider.enabled = true;
                         collider.sharedMesh = null;
                         collider.sharedMesh = mesh;
-                        var t = collider.transform;
+                        Transform t = collider.transform;
                         t.position = position;
                         t.rotation = rotation;
                         collider.sharedMaterial = material;
@@ -191,18 +199,20 @@ namespace Voxelmetric.Code.Geometry.Batchers
         {
             ReleaseOldData();
 
-            for (int j = 0; j<m_buffers.Length; j++)
+            for (int j = 0; j < m_buffers.Length; j++)
             {
-                var holder = m_buffers[j];
-                var material = (m_materials == null || m_materials.Length < 1) ? null : m_materials[j];
+                List<ColliderGeometryBuffer> holder = m_buffers[j];
+                PhysicMaterial material = (m_materials == null || m_materials.Length < 1) ? null : m_materials[j];
 
-                for (int i = 0; i<holder.Count; i++)
+                for (int i = 0; i < holder.Count; i++)
                 {
                     ColliderGeometryBuffer buffer = holder[i];
 
                     // No data means there's no mesh to build
                     if (buffer.IsEmpty)
+                    {
                         continue;
+                    }
 
                     // Create a game object for collider. Unfortunatelly, we can't use object pooling
                     // here. Unity3D would have to rebake the geometry of the old object because of a
@@ -217,7 +227,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
 #endif
 
                         Mesh mesh = Globals.MemPools.MeshPool.Pop();
-                        Assert.IsTrue(mesh.vertices.Length<=0);
+                        Assert.IsTrue(mesh.vertices.Length <= 0);
                         buffer.SetupMesh(mesh, false);
                         mesh.bounds = bounds;
 
@@ -225,7 +235,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                         collider.enabled = true;
                         collider.sharedMesh = null;
                         collider.sharedMesh = mesh;
-                        var t = collider.transform;
+                        Transform t = collider.transform;
                         t.position = position;
                         t.rotation = rotation;
                         collider.sharedMaterial = material;
@@ -240,12 +250,14 @@ namespace Voxelmetric.Code.Geometry.Batchers
 
         private void ReleaseOldData()
         {
-            for (int i = 0; i<m_objects.Count; i++)
+            for (int i = 0; i < m_objects.Count; i++)
             {
-                var go = m_objects[i];
+                GameObject go = m_objects[i];
                 // If the component does not exist it means nothing else has been added as well
-                if (go==null)
+                if (go == null)
+                {
                     continue;
+                }
 
 #if DEBUG
                 go.name = m_prefabName;

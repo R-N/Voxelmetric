@@ -13,7 +13,7 @@ namespace Voxelmetric.Code.Common.MemoryPooling
     public class LocalPools
     {
         public NoiseItem[] noiseItems;
-        
+
         public readonly ArrayPoolCollection<Vector3> Vector3ArrayPool =
             new ArrayPoolCollection<Vector3>(128);
 
@@ -39,8 +39,8 @@ namespace Voxelmetric.Code.Common.MemoryPooling
             new ArrayPoolCollection<BlockFace>(128);
 
         public readonly MarshalMemPool MarshaledPool =
-            new MarshalMemPool(Env.ChunkSizeWithPaddingPow3*8); // Set to a multiple of chunk volume
-        
+            new MarshalMemPool(Env.ChunkSizeWithPaddingPow3 * 8); // Set to a multiple of chunk volume
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder(256);

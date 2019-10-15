@@ -4,7 +4,7 @@ using Voxelmetric.Code.Core;
 
 namespace Voxelmetric.Code.Builders
 {
-    public abstract class MergedFacesMeshBuilder: AMeshBuilder
+    public abstract class MergedFacesMeshBuilder : AMeshBuilder
     {
         protected readonly int m_sideSize;
         protected readonly int m_pow;
@@ -13,7 +13,7 @@ namespace Voxelmetric.Code.Builders
         protected MergedFacesMeshBuilder(float scale, int sideSize)
         {
             m_scale = scale;
-            m_pow = 1+(int)Math.Log(sideSize, 2);
+            m_pow = 1 + (int)Math.Log(sideSize, 2);
             m_sideSize = sideSize;
         }
 
@@ -22,26 +22,30 @@ namespace Voxelmetric.Code.Builders
             int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
 
-            int yOffset = sizeWithPaddingPow2 - (z2-z1)* sizeWithPadding;
+            int yOffset = sizeWithPaddingPow2 - (z2 - z1) * sizeWithPadding;
             int index0 = Helpers.GetChunkIndex1DFrom3D(x2, y1, z1, m_pow);
 
             // Check the quad formed by YZ axes and try to expand the X axis
             int index = index0;
-            for (int y = y1; y<y2; ++y, index+=yOffset)
+            for (int y = y1; y < y2; ++y, index += yOffset)
             {
-                for (int z = z1; z<z2; ++z, index += sizeWithPadding)
+                for (int z = z1; z < z2; ++z, index += sizeWithPadding)
                 {
                     if (mask[index] || !CanCreateBox(block, blocks.GetBlock(index)))
+                    {
                         return false;
+                    }
                 }
             }
 
             // If the box can expand, mark the position as tested and expand the X axis
             index = index0;
-            for (int y = y1; y<y2; ++y, index+=yOffset)
+            for (int y = y1; y < y2; ++y, index += yOffset)
             {
-                for (int z = z1; z<z2; ++z, index += sizeWithPadding)
+                for (int z = z1; z < z2; ++z, index += sizeWithPadding)
+                {
                     mask[index] = true;
+                }
             }
 
             ++x2;
@@ -52,26 +56,30 @@ namespace Voxelmetric.Code.Builders
         {
             int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
 
-            int zOffset = sizeWithPadding - x2+x1;
+            int zOffset = sizeWithPadding - x2 + x1;
             int index0 = Helpers.GetChunkIndex1DFrom3D(x1, y2, z1, m_pow);
 
             // Check the quad formed by XZ axes and try to expand the Y axis
             int index = index0;
-            for (int z = z1; z<z2; ++z, index+=zOffset)
+            for (int z = z1; z < z2; ++z, index += zOffset)
             {
-                for (int x = x1; x<x2; ++x, ++index)
+                for (int x = x1; x < x2; ++x, ++index)
                 {
                     if (mask[index] || !CanCreateBox(block, blocks.GetBlock(index)))
+                    {
                         return false;
+                    }
                 }
             }
 
             // If the box can expand, mark the position as tested and expand the X axis
             index = index0;
-            for (int z = z1; z<z2; ++z, index+=zOffset)
+            for (int z = z1; z < z2; ++z, index += zOffset)
             {
-                for (int x = x1; x<x2; ++x, ++index)
+                for (int x = x1; x < x2; ++x, ++index)
+                {
                     mask[index] = true;
+                }
             }
 
             ++y2;
@@ -83,36 +91,40 @@ namespace Voxelmetric.Code.Builders
             int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
 
-            int yOffset = sizeWithPaddingPow2 - x2+x1;
+            int yOffset = sizeWithPaddingPow2 - x2 + x1;
             int index0 = Helpers.GetChunkIndex1DFrom3D(x1, y1, z2, m_pow);
-            
+
             // Check the quad formed by XY axes and try to expand the Z axis
             int index = index0;
-            for (int y = y1; y<y2; ++y, index+=yOffset)
+            for (int y = y1; y < y2; ++y, index += yOffset)
             {
-                for (int x = x1; x<x2; ++x, ++index)
+                for (int x = x1; x < x2; ++x, ++index)
                 {
                     if (mask[index] || !CanCreateBox(block, blocks.GetBlock(index)))
+                    {
                         return false;
+                    }
                 }
             }
 
             // If the box can expand, mark the position as tested and expand the X axis
             index = index0;
-            for (int y = y1; y<y2; ++y, index+=yOffset)
+            for (int y = y1; y < y2; ++y, index += yOffset)
             {
-                for (int x = x1; x<x2; ++x, ++index)
+                for (int x = x1; x < x2; ++x, ++index)
+                {
                     mask[index] = true;
+                }
             }
 
             ++z2;
             return true;
         }
-        
+
         public override void Build(Chunk chunk, out int minBounds, out int maxBounds)
         {
-            var blocks = chunk.Blocks;
-            var pools = Globals.WorkPool.GetPool(chunk.ThreadID);
+            ChunkBlocks blocks = chunk.Blocks;
+            Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
 
             int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
@@ -142,15 +154,19 @@ namespace Voxelmetric.Code.Builders
                     {
                         // Skip already checked blocks
                         if (mask[index])
+                        {
                             continue;
+                        }
 
                         mask[index] = true;
-                            
+
                         Block block = blocks.GetBlock(index);
 
                         // Skip blocks we're not interested in right away
                         if (!CanConsiderBlock(block))
+                        {
                             continue;
+                        }
 
                         int x1 = x, y1 = y, z1 = z, x2 = x + 1, y2 = y + 1, z2 = z + 1;
 
@@ -187,20 +203,43 @@ namespace Voxelmetric.Code.Builders
                         BuildBox(chunk, block, x1, y1, z1, x2, y2, z2);
 
                         // Calculate bounds
-                        if (x1 < minX) minX = x1;
-                        if (y1 < minY) minY = y1;
-                        if (z1 < minZ) minZ = z1;
-                        if (x2 > maxX) maxX = x2;
-                        if (y2 > maxY) maxY = y2;
-                        if (z2 > maxZ) maxZ = z2;
+                        if (x1 < minX)
+                        {
+                            minX = x1;
+                        }
+
+                        if (y1 < minY)
+                        {
+                            minY = y1;
+                        }
+
+                        if (z1 < minZ)
+                        {
+                            minZ = z1;
+                        }
+
+                        if (x2 > maxX)
+                        {
+                            maxX = x2;
+                        }
+
+                        if (y2 > maxY)
+                        {
+                            maxY = y2;
+                        }
+
+                        if (z2 > maxZ)
+                        {
+                            maxZ = z2;
+                        }
                     }
                 }
             }
 
             // Update chunk's geoemetry bounds
-            minBounds = minX|(minY<<8)|(minZ<<16);
-            maxBounds = maxX|(maxY<<8)|(maxZ<<16);
-            
+            minBounds = minX | (minY << 8) | (minZ << 16);
+            maxBounds = maxX | (maxY << 8) | (maxZ << 16);
+
             pools.BoolArrayPool.Push(mask);
         }
 

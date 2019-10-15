@@ -4,11 +4,11 @@ using Voxelmetric.Code.Common.Events;
 
 namespace Voxelmetric.Code.Core
 {
-    public class ChunkEventSource: IEventSource<ChunkStateExternal>
+    public class ChunkEventSource : IEventSource<ChunkStateExternal>
     {
         //! List of external listeners
         private List<IEventListener<ChunkStateExternal>> m_listenersExternal;
-     
+
         protected ChunkEventSource()
         {
             Clear();
@@ -16,7 +16,7 @@ namespace Voxelmetric.Code.Core
 
         public void Clear()
         {
-            
+
             m_listenersExternal = new List<IEventListener<ChunkStateExternal>>();
         }
 

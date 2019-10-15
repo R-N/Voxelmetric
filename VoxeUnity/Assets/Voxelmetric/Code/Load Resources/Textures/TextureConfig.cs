@@ -8,7 +8,8 @@ namespace Voxelmetric.Code.Load_Resources.Textures
         Connected
     }
 
-    public struct TextureConfig {
+    public struct TextureConfig
+    {
 
         public string name;
         public TextureConfigType type;

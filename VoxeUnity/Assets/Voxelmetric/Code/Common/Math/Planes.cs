@@ -121,16 +121,18 @@ namespace Voxelmetric.Code.Common.Math
         /// </summary>
         public static bool TestPlanesAABB(Plane[] planes, ref Bounds aabb)
         {
-            for (int i = 0; i<planes.Length; ++i)
+            for (int i = 0; i < planes.Length; ++i)
             {
                 Plane p = planes[i];
                 Vector3 vPositive = new Vector3(
-                    p.normal.x>0 ? aabb.max.x : aabb.min.x,
-                    p.normal.y>0 ? aabb.max.y : aabb.min.y,
-                    p.normal.z>0 ? aabb.max.z : aabb.min.z
+                    p.normal.x > 0 ? aabb.max.x : aabb.min.x,
+                    p.normal.y > 0 ? aabb.max.y : aabb.min.y,
+                    p.normal.z > 0 ? aabb.max.z : aabb.min.z
                     );
-                if (Vector3.Dot(vPositive, p.normal)+p.distance<0)
+                if (Vector3.Dot(vPositive, p.normal) + p.distance < 0)
+                {
                     return false; // Outside the bounds
+                }
             }
 
             return true;
@@ -143,16 +145,18 @@ namespace Voxelmetric.Code.Common.Math
         /// </summary>
         public static bool TestPlanesAABB(Plane[] planes, ref AABB aabb)
         {
-            for (int i = 0; i<planes.Length; ++i)
+            for (int i = 0; i < planes.Length; ++i)
             {
                 Plane p = planes[i];
                 Vector3 vPositive = new Vector3(
-                    p.normal.x>0 ? aabb.maxX : aabb.minX,
-                    p.normal.y>0 ? aabb.maxY : aabb.minY,
-                    p.normal.z>0 ? aabb.maxZ : aabb.minZ
+                    p.normal.x > 0 ? aabb.maxX : aabb.minX,
+                    p.normal.y > 0 ? aabb.maxY : aabb.minY,
+                    p.normal.z > 0 ? aabb.maxZ : aabb.minZ
                     );
-                if (Vector3.Dot(vPositive, p.normal)+p.distance<0)
+                if (Vector3.Dot(vPositive, p.normal) + p.distance < 0)
+                {
                     return false; // Outside the bounds
+                }
             }
 
             return true;
@@ -167,12 +171,16 @@ namespace Voxelmetric.Code.Common.Math
             {
                 Plane p = planes[i];
 
-                float dist = Vector3.Dot(p.normal, center)+p.distance;
+                float dist = Vector3.Dot(p.normal, center) + p.distance;
                 if (dist < -radius)
+                {
                     return TestPlanesResult.Outside; // Outside the bounds
+                }
 
-                if (Mathf.Abs(dist)<radius)
+                if (Mathf.Abs(dist) < radius)
+                {
                     return TestPlanesResult.Intersect; // Partial intersection
+                }
             }
 
             return TestPlanesResult.Inside; // Fully inside
@@ -187,7 +195,7 @@ namespace Voxelmetric.Code.Common.Math
         {
             TestPlanesResult res = TestPlanesResult.Inside;
 
-            for (int i = 0; i<planes.Length; ++i)
+            for (int i = 0; i < planes.Length; ++i)
             {
                 Plane p = planes[i];
                 bool condX = p.normal.x > 0;
@@ -199,16 +207,20 @@ namespace Voxelmetric.Code.Common.Math
                     condY ? aabb.max.y : aabb.min.y,
                     condZ ? aabb.max.z : aabb.min.z
                     );
-                if (Vector3.Dot(vPositive, p.normal)+p.distance<0)
+                if (Vector3.Dot(vPositive, p.normal) + p.distance < 0)
+                {
                     return TestPlanesResult.Outside; // Outside the bounds
+                }
 
                 Vector3 vNegative = new Vector3(
                     condX ? aabb.min.x : aabb.max.x,
                     condY ? aabb.min.y : aabb.max.y,
                     condZ ? aabb.min.z : aabb.max.z
                     );
-                if (Vector3.Dot(vNegative, p.normal)+p.distance<0)
+                if (Vector3.Dot(vNegative, p.normal) + p.distance < 0)
+                {
                     res = TestPlanesResult.Intersect; // Partial intersection
+                }
             }
 
             return res; // Fully inside
@@ -223,28 +235,32 @@ namespace Voxelmetric.Code.Common.Math
         {
             TestPlanesResult res = TestPlanesResult.Inside;
 
-            for (int i = 0; i<planes.Length; ++i)
+            for (int i = 0; i < planes.Length; ++i)
             {
                 Plane p = planes[i];
-                bool condX = p.normal.x>0;
-                bool condY = p.normal.y>0;
-                bool condZ = p.normal.z>0;
+                bool condX = p.normal.x > 0;
+                bool condY = p.normal.y > 0;
+                bool condZ = p.normal.z > 0;
 
                 Vector3 vPositive = new Vector3(
                     condX ? aabb.maxX : aabb.minX,
                     condY ? aabb.maxY : aabb.minY,
                     condZ ? aabb.maxZ : aabb.minZ
                     );
-                if (Vector3.Dot(vPositive, p.normal)+p.distance<0)
+                if (Vector3.Dot(vPositive, p.normal) + p.distance < 0)
+                {
                     return TestPlanesResult.Outside; // Outside the bounds
+                }
 
                 Vector3 vNegative = new Vector3(
                     condX ? aabb.minX : aabb.maxX,
                     condY ? aabb.minY : aabb.maxY,
                     condZ ? aabb.minZ : aabb.maxZ
                     );
-                if (Vector3.Dot(vNegative, p.normal)+p.distance<0)
+                if (Vector3.Dot(vNegative, p.normal) + p.distance < 0)
+                {
                     res = TestPlanesResult.Intersect; // Partial intersection
+                }
             }
 
             return res; // Fully inside

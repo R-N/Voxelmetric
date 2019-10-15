@@ -53,9 +53,11 @@ namespace Voxelmetric.Code.Core.Operations
         {
             // Once all child actions are performed register this action in the world
             --ChildActionsPending;
-            Assert.IsTrue(ChildActionsPending>=0);
-            if (ChildActionsPending==0)
+            Assert.IsTrue(ChildActionsPending >= 0);
+            if (ChildActionsPending == 0)
+            {
                 World.RegisterModifyRange(this);
+            }
         }
 
         public void PerformAction()

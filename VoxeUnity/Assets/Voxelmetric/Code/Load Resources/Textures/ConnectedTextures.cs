@@ -7,145 +7,239 @@ namespace Voxelmetric.Code.Load_Resources.Textures
         public static int GetTexture(bool n, bool e, bool s, bool w, bool nw, bool ne, bool se, bool sw)
         {
             if (!n && !w && !e && !s)
+            {
                 return 0;
+            }
 
             if (n && w && e && s && nw && ne && se && sw)
+            {
                 return 1;
+            }
 
             if (!n && w && e && !s)
+            {
                 return 2;
+            }
 
             if (n && !w && !e && s)
+            {
                 return 3;
+            }
 
             if (n && w && e && s && !nw && !ne && !se && !sw)
+            {
                 return 4;
+            }
 
             if (!n && !w && e && !s)
+            {
                 return 5;
+            }
 
             if (!n && w && !e && !s)
+            {
                 return 6;
+            }
 
             if (!n && !w && e && s && !se)
+            {
                 return 7;
+            }
 
             if (!n && w && !e && s && !sw)
+            {
                 return 8;
+            }
 
             if (n && !w && e && s && !ne && !se)
+            {
                 return 9;
+            }
 
             if (!n && w && e && s && !se && !sw)
+            {
                 return 10;
+            }
 
             if (n && w && e && s && !nw && ne && !se && !sw)
+            {
                 return 11;
+            }
 
             if (n && w && e && s && !nw && !ne && se && !sw)
+            {
                 return 12;
+            }
 
             if (n && w && e && s && nw && !ne && !se && sw)
+            {
                 return 13;
+            }
 
             if (n && w && e && s && nw && ne && !se && !sw)
+            {
                 return 14;
+            }
 
             if (!n && !w && !e && s)
+            {
                 return 15;
+            }
 
             if (!n && !w && e && s && se)
+            {
                 return 16;
+            }
 
             if (!n && w && e && s && se && sw)
+            {
                 return 17;
+            }
 
             if (!n && w && !e && s && sw)
+            {
                 return 18;
+            }
 
             if (n && !w && e && !s && !ne)
+            {
                 return 19;
+            }
 
             if (n && w && !e && !s && !nw)
+            {
                 return 20;
+            }
 
             if (n && w && e && !s && !nw && !ne)
+            {
                 return 21;
+            }
 
             if (n && w && !e && s && !nw && !sw)
+            {
                 return 22;
+            }
 
             if (n && w && e && s && nw && !ne && !se && !sw)
+            {
                 return 23;
+            }
 
             if (n && w && e && s && !nw && !ne && !se && sw)
+            {
                 return 24;
+            }
 
             if (n && w && e && s && !nw && !ne && se && sw)
+            {
                 return 25;
+            }
 
             if (n && w && e && s && !nw && ne && se && !sw)
+            {
                 return 26;
+            }
 
             if (n && !w && e && s && ne && se)
+            {
                 return 27;
+            }
 
             if (n && w && !e && s && nw && sw)
+            {
                 return 28;
+            }
 
             if (n && !w && e && s && !ne && se)
+            {
                 return 29;
+            }
 
             if (!n && w && e && s && !se && sw)
+            {
                 return 30;
-            
+            }
+
             if (n && !w && e && s && ne && !se)
+            {
                 return 31;
+            }
 
             if (!n && w && e && s && se && !sw)
+            {
                 return 32;
+            }
 
             if (n && w && e && s && nw && ne && !se && sw)
+            {
                 return 33;
+            }
 
             if (n && w && e && s && nw && ne && se && !sw)
+            {
                 return 34;
+            }
 
             if (n && w && e && s && !nw && ne && !se && sw)
+            {
                 return 35;
+            }
 
             if (n && w && e && s && nw && !ne && se && !sw)
+            {
                 return 36;
+            }
 
             if (n && !w && !e && !s)
+            {
                 return 37;
+            }
 
             if (n && !w && e && !s && ne)
+            {
                 return 38;
+            }
 
             if (n && w && e && !s && nw && ne)
+            {
                 return 39;
+            }
 
             if (n && w && !e && !s && nw)
+            {
                 return 40;
+            }
 
             if (n && w && e && !s && !nw && ne)
+            {
                 return 41;
-            
+            }
+
             if (n && w && !e && s && nw && !sw)
+            {
                 return 42;
+            }
 
             if (n && w && e && !s && nw && !ne)
+            {
                 return 43;
+            }
 
             if (n && w && !e && s && !nw && sw)
+            {
                 return 44;
+            }
 
             if (n && w && e && s && nw && !ne && se && sw)
+            {
                 return 45;
+            }
 
             if (n && w && e && s && !nw && ne && se && sw)
+            {
                 return 46;
+            }
 
             return 0;
         }
@@ -156,7 +250,9 @@ namespace Voxelmetric.Code.Load_Resources.Textures
 
             // Line 0
             for (int i = 0; i < baseTextures.Length; i++)
+            {
                 textures[i] = baseTextures[i].texture2d;
+            }
 
             int w = textures[0].width;
             int h = textures[0].height;

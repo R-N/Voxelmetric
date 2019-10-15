@@ -100,10 +100,12 @@ namespace Voxelmetric.Code.Utilities
             float fPos = pos + 0.5f;
             int iPos = (int)fPos;
 
-            if (Math.Abs(fPos-iPos)<0.001f)
+            if (Math.Abs(fPos - iPos) < 0.001f)
             {
                 if (dirS == 1)
+                {
                     return iPos;
+                }
 
                 return iPos - 1;
             }
@@ -118,8 +120,10 @@ namespace Voxelmetric.Code.Utilities
 
             int result = dirS == -1 ? Mathf.FloorToInt(pos) : Mathf.CeilToInt(pos);
 
-            if (Math.Abs(result-pos)<0.001f)
+            if (Math.Abs(result - pos) < 0.001f)
+            {
                 result += dirS;
+            }
 
             return result - 0.5f;
         }

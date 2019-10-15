@@ -66,7 +66,9 @@ namespace Client.Scripts.Misc
                 m_peakAlloc = m_allocMem > m_peakAlloc ? m_allocMem : m_peakAlloc;
 
                 if (!(Time.realtimeSinceStartup - m_lastAllocSet > 0.3f))
+                {
                     yield return new WaitForSeconds(1.0f);
+                }
 
                 long diff = m_allocMem - m_lastAllocMemory;
                 m_lastAllocMemory = m_allocMem;
@@ -94,7 +96,7 @@ namespace Client.Scripts.Misc
             m_text.ConcatFormat("Collection freq: {0:0.00}s\n", m_delta);
             m_text.ConcatFormat("Last collect delta: {0:0.000}s ({1:0.0} FPS)\n", m_lastDeltaTime, 1f / m_lastDeltaTime);
 
-            if (World!=null)
+            if (World != null)
             {
                 ++m_lines;
                 m_text.ConcatFormat("Chunks: {0}\n", World.Count);
@@ -110,10 +112,10 @@ namespace Client.Scripts.Misc
             m_text.ConcatFormat("{0}\n", GameObjectProvider.Instance.ToString());
             m_text.ConcatFormat("Main pools: {0}\n", Globals.MemPools.ToString()); // the main thread pool
             m_text.ConcatFormat("IO pools: {0}\n", Globals.IOPool.Pools.ToString()); // io pool
-            for (int i = 0; i<Globals.WorkPool.Size; i++)
+            for (int i = 0; i < Globals.WorkPool.Size; i++)
             {
                 ++m_lines;
-                m_text.ConcatFormat("TP #{0} pools: {1}\n", i+1, Globals.WorkPool.GetPool(i).ToString()); // thread pool
+                m_text.ConcatFormat("TP #{0} pools: {1}\n", i + 1, Globals.WorkPool.GetPool(i).ToString()); // thread pool
             }
         }
 
@@ -121,12 +123,14 @@ namespace Client.Scripts.Misc
         public void OnGUI()
         {
             if (!Show || !Application.isPlaying && !ShowInEditor)
+            {
                 return;
+            }
 
             int width = 900;
             int height = m_lines * 16;
-            GUI.Box(new Rect(Screen.width-width, Screen.height-height, width, height), "");
-            GUI.Label(new Rect(Screen.width-width+10, Screen.height-height+10, width-10, height-10), m_text.ToString());
+            GUI.Box(new Rect(Screen.width - width, Screen.height - height, width, height), string.Empty);
+            GUI.Label(new Rect(Screen.width - width + 10, Screen.height - height + 10, width - 10, height - 10), m_text.ToString());
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Voxelmetric.Code.Common.Threading
         void Run();
     }
 
-    public class TaskPoolItem<T>: ITaskPoolItem
+    public class TaskPoolItem<T> : ITaskPoolItem
     {
         private Action<T> m_action;
         private T m_arg;
