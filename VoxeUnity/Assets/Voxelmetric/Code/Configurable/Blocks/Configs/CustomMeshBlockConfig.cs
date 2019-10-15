@@ -24,6 +24,12 @@ public class CustomMeshBlockConfig : BlockConfig
     protected Vector3 m_meshOffset;
     protected float m_scale;
 
+    public Vector3 MeshOffset
+    {
+        get { return m_meshOffset; }
+        set { m_meshOffset = new Vector3(Env.BlockSizeHalf + value.x, Env.BlockSizeHalf + value.y, Env.BlockSizeHalf + value.z); }
+    }
+
     public override bool OnSetUp(Hashtable config, World world)
     {
         if (!base.OnSetUp(config, world))

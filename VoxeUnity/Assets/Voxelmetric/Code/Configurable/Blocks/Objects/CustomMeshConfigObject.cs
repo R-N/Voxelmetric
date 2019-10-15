@@ -5,6 +5,8 @@ public class CustomMeshConfigObject : BlockConfigObject
 {
     [SerializeField]
     private GameObject meshObject = null;
+    [SerializeField]
+    private Vector3 meshOffset = Vector3.zero;
 
     public override object GetBlockClass()
     {
@@ -27,7 +29,8 @@ public class CustomMeshConfigObject : BlockConfigObject
             typeInConfig = ID,
             raycastHit = true,
             raycastHitOnRemoval = true,
-            meshGO = meshObject
+            meshGO = meshObject,
+            MeshOffset = meshOffset
         };
     }
 }

@@ -7,6 +7,7 @@ using Voxelmetric.Code.Data_types;
 using Voxelmetric.Code.Geometry.Batchers;
 using Voxelmetric.Code.Load_Resources.Blocks;
 
+[System.Obsolete("Now combined with CubeBlock.")]
 public class ColoredBlock : Block
 {
     public Color32[] colors { get; private set; }
@@ -23,24 +24,19 @@ public class ColoredBlock : Block
         bool backFace = DirectionUtils.IsBackface(face.side);
         int d = DirectionUtils.Get(face.side);
 
-        var pools = Globals.WorkPool.GetPool(chunk.ThreadID);
-        var verts = pools.Vector3ArrayPool.PopExact(4);
-        var cols = pools.Color32ArrayPool.PopExact(4);
+        Voxelmetric.Code.Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
+        Vector3[] verts = pools.Vector3ArrayPool.PopExact(4);
+        Color32[] cols = pools.Color32ArrayPool.PopExact(4);
 
         {
-            if (vertices==null)
+            if (vertices == null)
             {
                 Vector3 pos = face.pos;
 
-                verts[0] = pos+BlockUtils.PaddingOffsets[d][0];
-                verts[1] = pos+BlockUtils.PaddingOffsets[d][1];
-                verts[2] = pos+BlockUtils.PaddingOffsets[d][2];
-                verts[3] = pos+BlockUtils.PaddingOffsets[d][3];
-
-                cols[0] = colors[d];
-                cols[1] = colors[d];
-                cols[2] = colors[d];
-                cols[3] = colors[d];
+                verts[0] = pos + BlockUtils.PaddingOffsets[d][0];
+                verts[1] = pos + BlockUtils.PaddingOffsets[d][1];
+                verts[2] = pos + BlockUtils.PaddingOffsets[d][2];
+                verts[3] = pos + BlockUtils.PaddingOffsets[d][3];
             }
             else
             {
@@ -48,19 +44,19 @@ public class ColoredBlock : Block
                 verts[1] = vertices[1];
                 verts[2] = vertices[2];
                 verts[3] = vertices[3];
-                
-                cols[0] = colors[d];
-                cols[1] = colors[d];
-                cols[2] = colors[d];
-                cols[3] = colors[d];
             }
+
+            cols[0] = colors[d];
+            cols[1] = colors[d];
+            cols[2] = colors[d];
+            cols[3] = colors[d];
 
             BlockUtils.AdjustColors(chunk, cols, face.light);
 
             RenderGeometryBatcher batcher = chunk.RenderGeometryHandler.Batcher;
             batcher.AddFace(face.materialID, verts, cols, backFace);
         }
-        
+
         pools.Color32ArrayPool.Push(cols);
         pools.Vector3ArrayPool.Push(verts);
     }

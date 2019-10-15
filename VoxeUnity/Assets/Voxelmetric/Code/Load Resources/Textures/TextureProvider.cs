@@ -37,8 +37,26 @@ namespace Voxelmetric.Code.Load_Resources.Textures
         private void LoadTextureIndex()
         {
             List<Texture2D> individualTextures = blocks.GetAllUniqueTextures();
-            Texture2D neutralTexture = Texture2D.whiteTexture;
-            neutralTexture.name = NO_TEXTURE_NAME;
+            Texture2D neutralTexture = new Texture2D(32, 32)
+            {
+                name = NO_TEXTURE_NAME
+            };
+            for (int x = 0; x < neutralTexture.width; x++)
+            {
+                for (int y = 0; y < neutralTexture.height; y++)
+                {
+                    neutralTexture.SetPixel(x, y, Color.white);
+                }
+            }
+            neutralTexture.Apply(false);
+
+            for (int i = 0; i < individualTextures.Count; i++)
+            {
+                if (individualTextures[i] == null)
+                {
+                    individualTextures[i] = neutralTexture;
+                }
+            }
 
             //individualTextures.Add(neutralTexture);
             //for (int i = 0; i < configs.Length; i++)
@@ -97,11 +115,6 @@ namespace Voxelmetric.Code.Load_Resources.Textures
 
             for (int i = 0; i < individualTextures.Count; i++)
             {
-                if (individualTextures[i] == null)
-                {
-                    individualTextures[i] = neutralTexture;
-                }
-
                 Rect uvs = rects[index];
 
                 if (!textures.TryGetValue(individualTextures[i].name, out TextureCollection collection))

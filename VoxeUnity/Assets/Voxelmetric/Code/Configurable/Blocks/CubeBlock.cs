@@ -11,12 +11,14 @@ using Voxelmetric.Code.Load_Resources.Textures;
 public class CubeBlock : Block
 {
     public TextureCollection[] textures { get; private set; }
+    public Color32[] Colors { get; private set; }
 
     public override void OnInit(BlockProvider blockProvider)
     {
         base.OnInit(blockProvider);
 
         textures = ((CubeBlockConfig)Config).textures;
+        Colors = ((CubeBlockConfig)Config).colors;
     }
 
     public override void BuildFace(Chunk chunk, Vector3[] vertices, Color32[] palette, ref BlockFace face, bool rotated)
@@ -47,8 +49,13 @@ public class CubeBlock : Block
                 verts[3] = vertices[3];
             }
 
+            cols[0] = Colors[d];
+            cols[1] = Colors[d];
+            cols[2] = Colors[d];
+            cols[3] = Colors[d];
+
             BlockUtils.PrepareTexture(chunk, ref face.pos, uvs, face.side, textures, rotated);
-            BlockUtils.PrepareColors(chunk, cols, face.light);
+            BlockUtils.AdjustColors(chunk, cols, face.light);
 
             RenderGeometryBatcher batcher = chunk.RenderGeometryHandler.Batcher;
             batcher.AddFace(face.materialID, verts, cols, uvs, backface);

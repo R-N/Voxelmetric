@@ -47,12 +47,12 @@ public class CubeConfigObject : BlockConfigObject
 
         config.SetTextures(topTexture, bottomTexture, frontTexture, backTexture, rightTexture, leftTexture);
 
-        //config.colors[0] = topColor;
-        //config.colors[1] = bottomColor;
-        //config.colors[2] = backColor;
-        //config.colors[3] = frontColor;
-        //config.colors[4] = rightColor;
-        //config.colors[5] = leftColor;
+        config.colors[0] = topColor;
+        config.colors[1] = bottomColor;
+        config.colors[2] = backColor;
+        config.colors[3] = frontColor;
+        config.colors[4] = rightColor;
+        config.colors[5] = leftColor;
 
         return config;
     }

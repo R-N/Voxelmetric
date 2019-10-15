@@ -16,7 +16,7 @@ MonoBehaviour:
   id: 5
   solid: 1
   transparent: 0
-  topTexture: {fileID: 0}
+  topTexture: {fileID: 2800000, guid: 1e01e659ba6c33046b3bad935d3d609a, type: 3}
   topColor:
     serializedVersion: 2
     rgba: 4294967295

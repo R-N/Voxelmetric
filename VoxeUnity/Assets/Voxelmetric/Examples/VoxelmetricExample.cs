@@ -45,7 +45,9 @@ namespace Voxelmetric.Examples
         void Update()
         {
             if (saveProgress != null && saveProgress.GetProgress() >= 100)
+            {
                 saveProgress = null;
+            }
 
             // Roatation
             if (Input.GetMouseButton(1))
@@ -64,9 +66,14 @@ namespace Voxelmetric.Examples
             // Movement
             float speedModificator = 1f;
             if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
                 speedModificator = 2f;
+            }
             else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+            {
                 speedModificator = 0.25f;
+            }
+
             cam.transform.position += cam.transform.forward * 40f * speedModificator * Input.GetAxis("Vertical") * Time.deltaTime;
             cam.transform.position += cam.transform.right * 40f * speedModificator * Input.GetAxis("Horizontal") * Time.deltaTime;
 
@@ -82,8 +89,6 @@ namespace Voxelmetric.Examples
                     Vector3Int from = cam.transform.position - new Vector3(-2, -2, -2);
                     Vector3Int to = cam.transform.position - new Vector3(2, 2, 2);
 
-                    Debug.Log("Set blocks " + from + " | " + to);
-
                     Code.Voxelmetric.SetBlockData(world, ref from, ref to, new BlockData(block.Type, block.Solid));
                 }
 
@@ -94,11 +99,15 @@ namespace Voxelmetric.Examples
 
                 // Display the type of the selected block
                 if (selectedBlockText != null)
+                {
                     selectedBlockText.text = Code.Voxelmetric.GetBlock(world, ref hit.vector3Int).DisplayName;
+                }
 
                 // Save current world status
                 if (saveProgressText != null)
+                {
                     saveProgressText.text = saveProgress != null ? SaveStatus() : "Save";
+                }
 
                 if (eventSystem != null && !eventSystem.IsPointerOverGameObject())
                 {
@@ -170,7 +179,9 @@ namespace Voxelmetric.Examples
         public void SaveAll()
         {
             if (saveProgress != null)
+            {
                 return;
+            }
 
             saveProgress = new SaveProgress(
                 Code.Voxelmetric.SaveAll(world)
@@ -180,7 +191,9 @@ namespace Voxelmetric.Examples
         public string SaveStatus()
         {
             if (saveProgress == null)
+            {
                 return "";
+            }
 
             return saveProgress.GetProgress().ToString() + "%";
         }

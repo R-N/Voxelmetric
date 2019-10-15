@@ -8,6 +8,7 @@ using Voxelmetric.Code.Load_Resources.Textures;
 public class CubeBlockConfig : BlockConfig
 {
     public TextureCollection[] textures;
+    public Color32[] colors = new Color32[6];
 
     public override bool OnSetUp(Hashtable config, World world)
     {
