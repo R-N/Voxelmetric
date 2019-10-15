@@ -18,7 +18,7 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
         //Adding a tiny overlap between block meshes may solve floating point imprecision
         //errors causing pixel size gaps between blocks when looking closely
         public static readonly float blockPadding = Env.BlockFacePadding;
-        
+
         public static readonly Vector3[][] PaddingOffsets =
         {
             new[]
@@ -76,16 +76,22 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
         public static void PrepareColors(Chunk chunk, Color32[] data, BlockLightData light)
         {
             if (chunk.world.config.addAOToMesh)
+            {
                 SetColorsAO(data, light, chunk.world.config.ambientOcclusionStrength);
+            }
             else
+            {
                 SetColors(data, 1f, 1f, 1f, 1f, false);
+            }
         }
 
         public static BlockLightData CalculateColors(Chunk chunk, int localPosIndex, Direction direction)
         {
             // With AO turned off, do not generate any fancy data
             if (!chunk.world.config.addAOToMesh)
+            {
                 return new BlockLightData();
+            }
 
             // Side blocks
             bool n_Solid, _eSolid, s_Solid, _wSolid;
@@ -104,7 +110,7 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
                     index1 = localPosIndex + sizeWithPaddingPow2; // + (0,1,0)
                     index2 = index1 - sizeWithPadding; // - (0,0,1)
                     index3 = index1 + sizeWithPadding; // + (0,0,1)
-                    
+
                     swSolid = blocks.Get(index2 - 1).Solid; // -1,1,-1
                     s_Solid = blocks.Get(index2).Solid;     //  0,1,-1
                     seSolid = blocks.Get(index2 + 1).Solid; //  1,1,-1
@@ -146,7 +152,7 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
                     index1 = localPosIndex - sizeWithPadding; // - (0,0,1)
                     index2 = index1 - sizeWithPaddingPow2;   // - (0,1,0)
                     index3 = index1 + sizeWithPaddingPow2;   // + (0,1,0)
-                    
+
                     swSolid = blocks.Get(index2 - 1).Solid; // -1,-1,-1
                     seSolid = blocks.Get(index2 + 1).Solid; //  1,-1,-1
                     _wSolid = blocks.Get(index1 - 1).Solid; // -1, 0,-1
@@ -157,10 +163,10 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
                     neSolid = blocks.Get(index3 + 1).Solid; //  1, 1,-1
                     break;
                 case Direction.east:
-                    index1 = localPosIndex+1; // + (1,0,0)
+                    index1 = localPosIndex + 1; // + (1,0,0)
                     index2 = index1 - sizeWithPaddingPow2; // - (0,1,0)
                     index3 = index1 + sizeWithPaddingPow2; // + (0,1,0)
-                    
+
                     swSolid = blocks.Get(index2 - sizeWithPadding).Solid; // 1,-1,-1
                     s_Solid = blocks.Get(index2).Solid;                   // 1,-1, 0
                     seSolid = blocks.Get(index2 + sizeWithPadding).Solid; // 1,-1, 1
@@ -171,7 +177,7 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
                     neSolid = blocks.Get(index3 + sizeWithPadding).Solid; // 1, 1, 1
                     break;
                 default://case Direction.west:
-                    index1 = localPosIndex-1; // - (1,0,0)
+                    index1 = localPosIndex - 1; // - (1,0,0)
                     index2 = index1 - sizeWithPaddingPow2; // - (0,1,0)
                     index3 = index1 + sizeWithPaddingPow2; // + (0,1,0)
 
@@ -188,11 +194,13 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
 
             return new BlockLightData(nwSolid, n_Solid, neSolid, _eSolid, seSolid, s_Solid, swSolid, _wSolid);
         }
-        
+
         public static void AdjustColors(Chunk chunk, Color32[] data, BlockLightData light)
         {
             if (!chunk.world.config.addAOToMesh)
+            {
                 return;
+            }
 
             AdjustColorsAO(data, light, chunk.world.config.ambientOcclusionStrength);
         }
@@ -240,7 +248,7 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
             Rect texture = textureCollection.GetTexture(chunk, ref localPos, direction);
             bool backface = DirectionUtils.IsBackface(direction);
             PrepareTexture(data, ref texture, rotated, backface);
-        }        
+        }
 
         public static void PrepareTexture(Chunk chunk, ref Vector3Int localPos, Vector2[] data, Direction direction, TextureCollection[] textureCollections, bool rotated)
         {
@@ -260,7 +268,7 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
 
             SetColors(data, sw, nw, ne, se, light.FaceRotationNecessary);
         }
-        
+
         private static void AdjustColorsAO(Color32[] data, BlockLightData light, float strength)
         {
             // 0.33f for there are 3 degrees of AO darkening (0.33f * 3 =~ 1f)
@@ -275,10 +283,10 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
 
         public static void SetColors(Color32[] data, float sw, float nw, float ne, float se, bool rotated)
         {
-            float _sw = (sw*255.0f).Clamp(0f,255f);
-            float _nw = (nw*255.0f).Clamp(0f,255f);
-            float _ne = (ne*255.0f).Clamp(0f,255f);
-            float _se = (se*255.0f).Clamp(0f,255f);
+            float _sw = (sw * 255.0f).Clamp(0f, 255f);
+            float _nw = (nw * 255.0f).Clamp(0f, 255f);
+            float _ne = (ne * 255.0f).Clamp(0f, 255f);
+            float _se = (se * 255.0f).Clamp(0f, 255f);
 
             byte sw_ = (byte)_sw;
             byte nw_ = (byte)_nw;
@@ -300,7 +308,7 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
                 data[3] = new Color32(sw_, sw_, sw_, 255);
             }
         }
-        
+
         private static Color32 ToColor32(ref Color32 col, float coef)
         {
             return new Color32(
@@ -310,7 +318,7 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
                 col.a
                 );
         }
-        
+
         public static void AdjustColors(Color32[] data, float sw, float nw, float ne, float se, bool rotated)
         {
             sw = sw.Clamp(0f, 1f);

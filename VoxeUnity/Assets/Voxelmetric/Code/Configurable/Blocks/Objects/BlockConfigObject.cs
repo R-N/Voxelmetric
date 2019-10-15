@@ -19,4 +19,9 @@ public abstract class BlockConfigObject : ScriptableObject
     public abstract BlockConfig GetConfig();
 
     public abstract object GetBlockClass();
+
+    public virtual Texture2D[] GetTextures()
+    {
+        return new Texture2D[0];
+    }
 }

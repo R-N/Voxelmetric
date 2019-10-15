@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using UnityEngine;
 using Voxelmetric.Code.Core;
 using Voxelmetric.Code.Data_types;
@@ -16,9 +14,9 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
 
         //! Special reserved block types
         public static readonly ushort FirstReservedSimpleType = 1;
-        public static readonly ushort LastReservedSimpleType = (ushort)(FirstReservedSimpleType+254);
+        public static readonly ushort LastReservedSimpleType = (ushort)(FirstReservedSimpleType + 254);
         public static readonly ushort LastReservedType = LastReservedSimpleType;
-        public static readonly ushort FirstCustomType = (ushort)(LastReservedType+1);
+        public static readonly ushort FirstCustomType = (ushort)(LastReservedType + 1);
 
         //! An array of loaded block configs
         private BlockConfig[] m_configs;
@@ -40,14 +38,14 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
             m_names = new Dictionary<string, ushort>();
         }
 
-        public void Init(string blockFolder, World world)
+        public void Init(BlockCollection blocks, World world)
         {
             // Add all the block definitions defined in the config files
-            ProcessConfigs(world, blockFolder);
-            
+            ProcessConfigs(world, blocks.Blocks);
+
             // Build block type lookup table
             BlockTypes = new Block[m_configs.Length];
-            for (int i = 0; i< m_configs.Length; i++)
+            for (int i = 0; i < m_configs.Length; i++)
             {
                 BlockConfig config = m_configs[i];
 
@@ -65,42 +63,35 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
             }
 
             // Add block types from config
-            foreach (var configFile in m_configs)
+            foreach (BlockConfig configFile in m_configs)
             {
                 configFile.OnPostSetUp(world);
             }
         }
 
         // World is only needed for setting up the textures
-        private void ProcessConfigs(World world, string blockFolder)
+        private void ProcessConfigs(World world, BlockConfigObject[] blocks)
         {
-            var configFiles = Resources.LoadAll<TextAsset>(blockFolder);
-            List<BlockConfig> configs = new List<BlockConfig>(configFiles.Length);
+            List<BlockConfig> configs = new List<BlockConfig>(blocks.Length);
             Dictionary<ushort, ushort> types = new Dictionary<ushort, ushort>();
 
             // Add reserved block types
             AddBlockType(configs, types, BlockConfig.CreateAirBlockConfig(world));
-            for(ushort i=1; i<=LastReservedSimpleType; i++)
-                AddBlockType(configs, types, BlockConfig.CreateColorBlockConfig(world, i));
+            //for (ushort i = 1; i <= LastReservedSimpleType; i++)
+            //{
+            //    AddBlockType(configs, types, BlockConfig.CreateColorBlockConfig(world, i));
+            //}
 
             // Add block types from config
-            foreach (var configFile in configFiles)
+            for (int i = 0; i < blocks.Length; i++)
             {
-                Hashtable configHash = JsonConvert.DeserializeObject<Hashtable>(configFile.text);
-
-                Type configType = Type.GetType(configHash["configClass"] + ", " + typeof(BlockConfig).Assembly, false);
-                if (configType == null)
-                {
-                    Debug.LogError("Could not create config for " + configHash["configClass"]);
-                    continue;
-                }
-
-                BlockConfig config = (BlockConfig)Activator.CreateInstance(configType);
-                if (!config.OnSetUp(configHash, world))
-                    continue;
+                BlockConfig config = blocks[i].GetConfig();
+                config.blockClass = (Type)blocks[i].GetBlockClass();
 
                 if (!VerifyBlockConfig(types, config))
+                {
                     continue;
+                }
 
                 AddBlockType(configs, types, config);
             }
@@ -109,14 +100,16 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
 
             // Now iterate over configs and find the one with the highest TypeInConfig
             ushort maxTypeInConfig = LastReservedType;
-            for (int i = 0; i<m_configs.Length; i++)
+            for (int i = 0; i < m_configs.Length; i++)
             {
-                if (m_configs[i].typeInConfig>maxTypeInConfig)
+                if (m_configs[i].typeInConfig > maxTypeInConfig)
+                {
                     maxTypeInConfig = m_configs[i].typeInConfig;
+                }
             }
 
             // Allocate maxTypeInConfigs big array now and map config types to runtime types
-            m_types = new ushort[maxTypeInConfig+FirstCustomType];
+            m_types = new ushort[maxTypeInConfig + FirstCustomType];
             for (ushort i = 0; i < m_configs.Length; i++)
             {
                 m_types[m_configs[i].typeInConfig] = i;
@@ -175,7 +168,9 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
         {
             ushort type;
             if (m_names.TryGetValue(name, out type))
+            {
                 return type;
+            }
 
             Debug.LogError("Block not found: " + name);
             return AirType;
@@ -183,8 +178,10 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
 
         public ushort GetTypeFromTypeInConfig(ushort typeInConfig)
         {
-            if (typeInConfig<m_types.Length)
+            if (typeInConfig < m_types.Length)
+            {
                 return m_types[typeInConfig];
+            }
 
             Debug.LogError("TypeInConfig not found: " + typeInConfig);
             return AirType;
@@ -194,7 +191,9 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
         {
             ushort type;
             if (m_names.TryGetValue(name, out type))
+            {
                 return BlockTypes[type];
+            }
 
             Debug.LogError("Block not found: " + name);
             return BlockTypes[AirType];
@@ -202,10 +201,12 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
 
         public BlockConfig GetConfig(ushort type)
         {
-            if (type<m_configs.Length)
+            if (type < m_configs.Length)
+            {
                 return m_configs[type];
+            }
 
-            Debug.LogError("Config not found: "+type);
+            Debug.LogError("Config not found: " + type);
             return m_configs[AirType];
         }
     }

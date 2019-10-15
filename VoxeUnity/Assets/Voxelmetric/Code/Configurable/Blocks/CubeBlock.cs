@@ -8,7 +8,7 @@ using Voxelmetric.Code.Geometry.Batchers;
 using Voxelmetric.Code.Load_Resources.Blocks;
 using Voxelmetric.Code.Load_Resources.Textures;
 
-public class CubeBlock: Block
+public class CubeBlock : Block
 {
     public TextureCollection[] textures { get; private set; }
 
@@ -24,20 +24,20 @@ public class CubeBlock: Block
         bool backface = DirectionUtils.IsBackface(face.side);
         int d = DirectionUtils.Get(face.side);
 
-        var pools = Globals.WorkPool.GetPool(chunk.ThreadID);
-        var verts = pools.Vector3ArrayPool.PopExact(4);
-        var uvs = pools.Vector2ArrayPool.PopExact(4);
-        var cols = pools.Color32ArrayPool.PopExact(4);
+        Voxelmetric.Code.Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
+        Vector3[] verts = pools.Vector3ArrayPool.PopExact(4);
+        Vector2[] uvs = pools.Vector2ArrayPool.PopExact(4);
+        Color32[] cols = pools.Color32ArrayPool.PopExact(4);
 
         {
-            if (vertices==null)
+            if (vertices == null)
             {
                 Vector3 pos = face.pos;
 
-                verts[0] = pos+BlockUtils.PaddingOffsets[d][0];
-                verts[1] = pos+BlockUtils.PaddingOffsets[d][1];
-                verts[2] = pos+BlockUtils.PaddingOffsets[d][2];
-                verts[3] = pos+BlockUtils.PaddingOffsets[d][3];
+                verts[0] = pos + BlockUtils.PaddingOffsets[d][0];
+                verts[1] = pos + BlockUtils.PaddingOffsets[d][1];
+                verts[2] = pos + BlockUtils.PaddingOffsets[d][2];
+                verts[3] = pos + BlockUtils.PaddingOffsets[d][3];
             }
             else
             {

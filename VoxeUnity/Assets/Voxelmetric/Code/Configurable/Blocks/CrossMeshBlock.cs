@@ -23,37 +23,37 @@ public class CrossMeshBlock : Block
 
     public override void BuildBlock(Chunk chunk, ref Vector3Int localPos, int materialID)
     {
-        var pools = Globals.WorkPool.GetPool(chunk.ThreadID);
+        Voxelmetric.Code.Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
         RenderGeometryBatcher batcher = chunk.RenderGeometryHandler.Batcher;
 
         // Using the block positions hash is much better for random numbers than saving the offset and height in the block data
         int hash = localPos.GetHashCode();
 
-        float blockHeight = (hash&63)*coef*Env.BlockSize;
-        
-        hash *= 39;
-        float offsetX = (hash&63)*coef*Env.BlockSizeHalf-Env.BlockSizeHalf*0.5f;
+        float blockHeight = (hash & 63) * coef * Env.BlockSize;
 
         hash *= 39;
-        float offsetZ = (hash&63)*coef*Env.BlockSizeHalf-Env.BlockSizeHalf*0.5f;
+        float offsetX = (hash & 63) * coef * Env.BlockSizeHalf - Env.BlockSizeHalf * 0.5f;
+
+        hash *= 39;
+        float offsetZ = (hash & 63) * coef * Env.BlockSizeHalf - Env.BlockSizeHalf * 0.5f;
 
         // Converting the position to a vector adjusts it based on block size and gives us real world coordinates for x, y and z
         Vector3 vPos = localPos;
         vPos += new Vector3(offsetX, 0, offsetZ);
 
-        float x1 = vPos.x-BlockUtils.blockPadding;
-        float x2 = vPos.x+BlockUtils.blockPadding+Env.BlockSize;
-        float y1 = vPos.y-BlockUtils.blockPadding;
-        float y2 = vPos.y+BlockUtils.blockPadding+blockHeight;
-        float z1 = vPos.z-BlockUtils.blockPadding;
-        float z2 = vPos.z+BlockUtils.blockPadding+Env.BlockSize;
+        float x1 = vPos.x - BlockUtils.blockPadding;
+        float x2 = vPos.x + BlockUtils.blockPadding + Env.BlockSize;
+        float y1 = vPos.y - BlockUtils.blockPadding;
+        float y2 = vPos.y + BlockUtils.blockPadding + Env.BlockSize;
+        float z1 = vPos.z - BlockUtils.blockPadding;
+        float z2 = vPos.z + BlockUtils.blockPadding + Env.BlockSize;
 
-        var verts = pools.Vector3ArrayPool.PopExact(4);
-        var uvs = pools.Vector2ArrayPool.PopExact(4);
-        var colors = pools.Color32ArrayPool.PopExact(4);
+        Vector3[] verts = pools.Vector3ArrayPool.PopExact(4);
+        Vector2[] uvs = pools.Vector2ArrayPool.PopExact(4);
+        Color32[] colors = pools.Color32ArrayPool.PopExact(4);
 
         BlockUtils.PrepareTexture(chunk, ref localPos, uvs, Direction.north, texture, false);
-        
+
         // TODO: How do I make sure that if I supply no color value, white is used?
         // TODO: These colors could be removed and memory would be saved
         {

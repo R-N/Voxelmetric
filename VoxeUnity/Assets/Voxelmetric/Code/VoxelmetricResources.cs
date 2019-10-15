@@ -18,12 +18,15 @@ namespace Voxelmetric.Code
         /// </summary>
         public readonly Dictionary<string, TextureProvider> TextureProviders = new Dictionary<string, TextureProvider>();
 
+        //REMOVE_ME: GetTextureProvider
         public TextureProvider GetTextureProvider(World world)
         {
             // Check for the folder in the dictionary and if it doesn't exist create it
             TextureProvider textureProvider;
             if (TextureProviders.TryGetValue(world.config.textureFolder, out textureProvider))
+            {
                 return textureProvider;
+            }
 
             textureProvider = TextureProvider.Create();
             TextureProviders.Add(world.config.textureFolder, textureProvider);
@@ -35,17 +38,18 @@ namespace Voxelmetric.Code
         /// </summary>
         public readonly Dictionary<string, BlockProvider> BlockProviders = new Dictionary<string, BlockProvider>();
 
-        public BlockProvider GetBlockProvider(World world)
-        {
-            //Check for the folder in the dictionary and if it doesn't exist create it
-            BlockProvider blockProvider;
-            if (BlockProviders.TryGetValue(world.config.blockFolder, out blockProvider))
-                return blockProvider;
+        //REMOVE_ME: GetBlockProvider
+        //public BlockProvider GetBlockProvider(World world, BlockCollection blocks)
+        //{
+        //    //Check for the folder in the dictionary and if it doesn't exist create it
+        //    //BlockProvider blockProvider;
+        //    //if (BlockProviders.TryGetValue(world.config.blockFolder, out blockProvider))
+        //    //    return blockProvider;
 
-            blockProvider = BlockProvider.Create();
-            BlockProviders.Add(world.config.blockFolder, blockProvider);
-            return blockProvider;
-        }
+        //    BlockProvider blockProvider = BlockProvider.Create();
+        //    //BlockProviders.Add(world.config.blockFolder, blockProvider);
+        //    return blockProvider;
+        //}
 
     }
 }
