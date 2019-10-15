@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f83d2ecb51116fe4ab3d66660dcc5d2e, type: 3}
+  m_Name: Additive Stone Noise
+  m_EditorClassIdentifier: 
+  layerName: Stone noise layer
+  index: 200
+  blockName: stone
+  frequency: 7
+  exponent: 1
+  minHeight: 1
+  maxHeight: 4

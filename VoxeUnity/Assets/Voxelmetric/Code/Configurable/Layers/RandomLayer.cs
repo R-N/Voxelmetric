@@ -1,30 +1,26 @@
-﻿using System.Globalization;
-using UnityEngine;
+﻿using UnityEngine;
 using Voxelmetric.Code.Common.Math;
 using Voxelmetric.Code.Core;
 using Voxelmetric.Code.Data_types;
-using Voxelmetric.Code.Load_Resources;
 
-public class RandomLayer: TerrainLayer
+public class RandomLayer : TerrainLayer
 {
     private BlockData blockToPlace;
-    private float chance;
+    public float Chance { get; set; }
 
-    protected override void SetUp(LayerConfig config)
+    protected override void SetUp(LayerConfigObject config)
     {
         // Config files for random layers MUST define these properties
-        Block block = world.blockProvider.GetBlock(properties["blockName"]);
+        Block block = world.blockProvider.GetBlock(config.BlockName);
         blockToPlace = new BlockData(block.Type, block.Solid);
-        
-        chance = float.Parse(properties["chance"], CultureInfo.InvariantCulture);
     }
-    
+
     public override float GetHeight(Chunk chunk, int layerIndex, int x, int z, float heightSoFar, float strength)
     {
-        var lpos = new Vector3(chunk.Pos.x + x, heightSoFar + 1f, chunk.Pos.z);
+        Vector3 lpos = new Vector3(chunk.Pos.x + x, heightSoFar + 1f, chunk.Pos.z);
         float posChance = Randomization.Random(lpos.GetHashCode(), 200);
 
-        if (chance > posChance)
+        if (Chance > posChance)
         {
             return heightSoFar + 1;
         }
@@ -34,14 +30,14 @@ public class RandomLayer: TerrainLayer
 
     public override float GenerateLayer(Chunk chunk, int layerIndex, int x, int z, float heightSoFar, float strength)
     {
-        var lpos = new Vector3(chunk.Pos.x + x, heightSoFar + 1f, chunk.Pos.z);
+        Vector3 lpos = new Vector3(chunk.Pos.x + x, heightSoFar + 1f, chunk.Pos.z);
         float posChance = Randomization.Random(lpos.GetHashCode(), 200);
 
-        if (chance > posChance)
+        if (Chance > posChance)
         {
-            SetBlocks(chunk, x, z, (int)heightSoFar, (int)(heightSoFar+1f), blockToPlace);
+            SetBlocks(chunk, x, z, (int)heightSoFar, (int)(heightSoFar + 1f), blockToPlace);
 
-            return heightSoFar+1;
+            return heightSoFar + 1;
         }
 
         return heightSoFar;

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7591a00b1ecdc484f92ef3388513371b, type: 3}
+  m_Name: Absolute Stone Mountains
+  m_EditorClassIdentifier: 
+  layerName: Stone mountains layer
+  index: 150
+  blockName: stone
+  frequency: 120
+  exponent: 1.2
+  minHeight: 30
+  maxHeight: 56

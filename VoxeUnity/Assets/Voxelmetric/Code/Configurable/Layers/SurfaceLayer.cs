@@ -1,6 +1,5 @@
 ﻿using Voxelmetric.Code.Core;
 using Voxelmetric.Code.Data_types;
-using Voxelmetric.Code.Load_Resources;
 
 public class SurfaceLayer : TerrainLayer
 {
@@ -10,9 +9,9 @@ public class SurfaceLayer : TerrainLayer
 
     private BlockData blockToPlace;
 
-    protected override void SetUp(LayerConfig config)
+    protected override void SetUp(LayerConfigObject config)
     {
-        Block block = world.blockProvider.GetBlock(properties["blockName"]);
+        Block block = world.blockProvider.GetBlock(config.BlockName);
         blockToPlace = new BlockData(block.Type, block.Solid);
     }
 

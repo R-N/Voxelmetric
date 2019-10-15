@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using Voxelmetric.Code;
 using Voxelmetric.Code.Common;
 using Voxelmetric.Code.Core;
 using Voxelmetric.Code.Data_types;
-using Voxelmetric.Code.Load_Resources;
 using Voxelmetric.Code.Utilities.Noise;
 
 public abstract class TerrainLayer : IComparable, IEquatable<TerrainLayer>
 {
     protected World world;
     protected TerrainGen terrainGen;
-    protected readonly Dictionary<string, string> properties = new Dictionary<string, string>();
     protected NoiseWrapper noise;
 #if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN) && ENABLE_FASTSIMD
     protected NoiseWrapperSIMD noiseSIMD;
@@ -26,30 +23,25 @@ public abstract class TerrainLayer : IComparable, IEquatable<TerrainLayer>
     public NoiseWrapperSIMD NoiseSIMD { get {return noiseSIMD;} }
 #endif
 
-    public void BaseSetUp(LayerConfig config, World world, TerrainGen terrainGen)
+    public void BaseSetUp(LayerConfigObject config, World world, TerrainGen terrainGen)
     {
         this.terrainGen = terrainGen;
-        layerName = config.name;
-        isStructure = LayerConfig.IsStructure(config.structure);
+        layerName = config.LayerName;
+        isStructure = config.IsStructure();
         this.world = world;
-        index = config.index;
+        index = config.Index;
 
         noise = new NoiseWrapper(world.name);
 #if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN) && ENABLE_FASTSIMD
         noiseSIMD = new NoiseWrapperSIMD(world.name);
 #endif
 
-        foreach (var key in config.properties.Keys)
-        {
-            properties.Add(key.ToString(), config.properties[key].ToString());
-        }
-
         SetUp(config);
     }
 
-    protected virtual void SetUp(LayerConfig config) { }
+    protected virtual void SetUp(LayerConfigObject config) { }
 
-    public virtual void Init(LayerConfig config) { }
+    public virtual void Init(LayerConfigObject config) { }
 
     public virtual void PreProcess(Chunk chunk, int layerIndex) { }
     public virtual void PostProcess(Chunk chunk, int layerIndex) { }
@@ -101,13 +93,13 @@ public abstract class TerrainLayer : IComparable, IEquatable<TerrainLayer>
     {
         int chunkY = chunk.Pos.y;
         int chunkYMax = chunkY + Env.ChunkSize;
-                
-        int y = startPlaceHeight>chunkY ? startPlaceHeight : chunkY;        
-        int yMax = endPlaceHeight<chunkYMax ? endPlaceHeight : chunkYMax;
-        
+
+        int y = startPlaceHeight > chunkY ? startPlaceHeight : chunkY;
+        int yMax = endPlaceHeight < chunkYMax ? endPlaceHeight : chunkYMax;
+
         ChunkBlocks blocks = chunk.Blocks;
-        int index = Helpers.GetChunkIndex1DFrom3D(x, y-chunkY, z);
-        while (y++<yMax)
+        int index = Helpers.GetChunkIndex1DFrom3D(x, y - chunkY, z);
+        while (y++ < yMax)
         {
             blocks.SetRaw(index, blockData);
             index += Env.ChunkSizeWithPaddingPow2;
@@ -123,7 +115,10 @@ public abstract class TerrainLayer : IComparable, IEquatable<TerrainLayer>
     public override bool Equals(object obj)
     {
         if (!(obj is TerrainLayer))
+        {
             return false;
+        }
+
         TerrainLayer other = (TerrainLayer)obj;
         return Equals(other);
     }
@@ -135,7 +130,7 @@ public abstract class TerrainLayer : IComparable, IEquatable<TerrainLayer>
 
     public bool Equals(TerrainLayer other)
     {
-        return other.index==index;
+        return other.index == index;
     }
 
     #endregion

@@ -15,6 +15,7 @@ namespace Voxelmetric.Code.Core
     public partial class World : MonoBehaviour
     {
         public BlockCollection blocks;
+        public LayerCollection layers;
         public string worldConfig = "default";
         public WorldConfig config;
 
@@ -136,7 +137,7 @@ namespace Voxelmetric.Code.Core
             Configure();
 
             networking.StartConnections(this);
-            terrainGen = TerrainGen.Create(this, config.layerFolder);
+            terrainGen = TerrainGen.Create(this, layers);
         }
 
         private void StopWorld()

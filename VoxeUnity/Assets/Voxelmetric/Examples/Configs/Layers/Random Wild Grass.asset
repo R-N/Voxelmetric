@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 383d6d2c734074e4d9ca03d6c0aaac18, type: 3}
+  m_Name: Random Wild Grass
+  m_EditorClassIdentifier: 
+  layerName: Random wild grass
+  index: 1600
+  blockName: wildgrass
+  chance: 0.08

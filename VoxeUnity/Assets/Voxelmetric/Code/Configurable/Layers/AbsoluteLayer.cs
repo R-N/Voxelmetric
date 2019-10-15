@@ -1,41 +1,40 @@
-﻿using System.Globalization;
-using Voxelmetric.Code;
+﻿using Voxelmetric.Code;
 using Voxelmetric.Code.Core;
 using Voxelmetric.Code.Data_types;
-using Voxelmetric.Code.Load_Resources;
 using Voxelmetric.Code.Utilities.Noise;
 
 public class AbsoluteLayer : TerrainLayer
 {
     private BlockData blockToPlace;
-    private int minHeight;
-    private int maxHeight;
+    public int MinHeight { get; set; }
+    public int MaxHeight { get; set; }
     private int amplitude;
 
-    protected override void SetUp(LayerConfig config)
+    public float Frequency { get; set; }
+    public float Exponent { get; set; }
+
+    protected override void SetUp(LayerConfigObject config)
     {
         // Config files for absolute layers MUST define these properties
-        Block block = world.blockProvider.GetBlock(properties["blockName"]);
+        Block block = world.blockProvider.GetBlock(config.BlockName);
         blockToPlace = new BlockData(block.Type, block.Solid);
-        
-        noise.Frequency = 1f/float.Parse(properties["frequency"], CultureInfo.InvariantCulture); // Frequency in configs is in fast 1/frequency
-        noise.Gain = float.Parse(properties["exponent"], CultureInfo.InvariantCulture);
+
+        noise.Frequency = 1f / Frequency; // Frequency in configs is in fast 1/frequency
+        noise.Gain = Exponent;
 #if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN) && ENABLE_FASTSIMD
         noiseSIMD.Frequency = noise.Frequency;
         noiseSIMD.Gain = noise.Gain;
 #endif
-        minHeight = int.Parse(properties["minHeight"], CultureInfo.InvariantCulture);
-        maxHeight = int.Parse(properties["maxHeight"], CultureInfo.InvariantCulture);
 
-        amplitude = maxHeight - minHeight;
+        amplitude = MaxHeight - MinHeight;
     }
 
     public override void PreProcess(Chunk chunk, int layerIndex)
     {
-        var pools = Globals.WorkPool.GetPool(chunk.ThreadID);
-        var ni = pools.noiseItems[layerIndex];
+        Voxelmetric.Code.Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
+        NoiseItem ni = pools.noiseItems[layerIndex];
         ni.noiseGen.SetInterpBitStep(Env.ChunkSizeWithPadding, 2);
-        ni.lookupTable = pools.FloatArrayPool.Pop((ni.noiseGen.Size+1)*(ni.noiseGen.Size+1));
+        ni.lookupTable = pools.FloatArrayPool.Pop((ni.noiseGen.Size + 1) * (ni.noiseGen.Size + 1));
 
 #if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN) && ENABLE_FASTSIMD
         float[] noiseSet = chunk.pools.FloatArrayPool.Pop(ni.noiseGen.Size * ni.noiseGen.Size * ni.noiseGen.Size);
@@ -61,13 +60,13 @@ public class AbsoluteLayer : TerrainLayer
 
         // Generate a lookup table
         int i = 0;
-        for (int z = 0; z<ni.noiseGen.Size; z++)
+        for (int z = 0; z < ni.noiseGen.Size; z++)
         {
-            float zf = (z<<ni.noiseGen.Step)+zOffset;
+            float zf = (z << ni.noiseGen.Step) + zOffset;
 
-            for (int x = 0; x<ni.noiseGen.Size; x++)
+            for (int x = 0; x < ni.noiseGen.Size; x++)
             {
-                float xf = (x<<ni.noiseGen.Step)+xOffset;
+                float xf = (x << ni.noiseGen.Step) + xOffset;
                 ni.lookupTable[i++] = NoiseUtils.GetNoise(noise.Noise, xf, 0, zf, 1f, amplitude, noise.Gain);
             }
         }
@@ -76,22 +75,22 @@ public class AbsoluteLayer : TerrainLayer
 
     public override void PostProcess(Chunk chunk, int layerIndex)
     {
-        var pools = Globals.WorkPool.GetPool(chunk.ThreadID);
-        var ni = pools.noiseItems[layerIndex];
+        Voxelmetric.Code.Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
+        NoiseItem ni = pools.noiseItems[layerIndex];
         pools.FloatArrayPool.Push(ni.lookupTable);
     }
 
     public override float GetHeight(Chunk chunk, int layerIndex, int x, int z, float heightSoFar, float strength)
     {
-        var pools = Globals.WorkPool.GetPool(chunk.ThreadID);
-        var ni = pools.noiseItems[layerIndex];
+        Voxelmetric.Code.Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
+        NoiseItem ni = pools.noiseItems[layerIndex];
 
         // Calculate height to add and sum it with the min height (because the height of this
         // layer should fluctuate between minHeight and minHeight+the max noise) and multiply
         // it by strength so that a fraction of the result that gets used can be decided
         float heightToAdd = ni.noiseGen.Interpolate(x, z, ni.lookupTable);
-        heightToAdd += minHeight;
-        heightToAdd = heightToAdd*strength;
+        heightToAdd += MinHeight;
+        heightToAdd = heightToAdd * strength;
 
         // Absolute layers add from the minY and up but if the layer height is lower than
         // the existing terrain there's nothing to add so just return the initial value
@@ -106,15 +105,15 @@ public class AbsoluteLayer : TerrainLayer
 
     public override float GenerateLayer(Chunk chunk, int layerIndex, int x, int z, float heightSoFar, float strength)
     {
-        var pools = Globals.WorkPool.GetPool(chunk.ThreadID);
-        var ni = pools.noiseItems[layerIndex];
+        Voxelmetric.Code.Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
+        NoiseItem ni = pools.noiseItems[layerIndex];
 
         // Calculate height to add and sum it with the min height (because the height of this
         // layer should fluctuate between minHeight and minHeight+the max noise) and multiply
         // it by strength so that a fraction of the result that gets used can be decided
         float heightToAdd = ni.noiseGen.Interpolate(x, z, ni.lookupTable);
-        heightToAdd += minHeight;
-        heightToAdd = heightToAdd*strength;
+        heightToAdd += MinHeight;
+        heightToAdd = heightToAdd * strength;
 
         // Absolute layers add from the minY and up but if the layer height is lower than
         // the existing terrain there's nothing to add so just return the initial value

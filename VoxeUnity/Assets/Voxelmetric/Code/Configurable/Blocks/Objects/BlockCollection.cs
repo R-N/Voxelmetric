@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Block Collection", menuName = "Voxelmetric/Blocks/Block Collection", order = 0)]
+[CreateAssetMenu(fileName = "New Block Collection", menuName = "Voxelmetric/Blocks/Block Collection", order = -100)]
 public class BlockCollection : ScriptableObject
 {
     [SerializeField]
