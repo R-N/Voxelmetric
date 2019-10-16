@@ -1,0 +1,17 @@
+{
+    "name": "Voxelmetric.Tests",
+    "references": [
+        "GUID:2929cc75620895c44a2e8e8fe425a4d3"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

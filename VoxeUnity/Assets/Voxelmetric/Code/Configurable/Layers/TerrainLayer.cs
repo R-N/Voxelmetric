@@ -31,7 +31,7 @@ public abstract class TerrainLayer : IComparable, IEquatable<TerrainLayer>
         this.world = world;
         index = config.Index;
 
-        noise = new NoiseWrapper(world.name);
+        noise = new NoiseWrapper(world.worldName);
 #if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN) && ENABLE_FASTSIMD
         noiseSIMD = new NoiseWrapperSIMD(world.name);
 #endif

@@ -53,6 +53,8 @@ namespace Voxelmetric.Code
         public static bool UseThreadPool = true;
         public static bool UseThreadedIO = true;
 
+        public static bool UseGreedyMeshing = true;
+
         //! If true, chunk serialization is enabled
         public static bool UseSerialization = true;
         //! If true, chunk will be serialized when it's unloaded

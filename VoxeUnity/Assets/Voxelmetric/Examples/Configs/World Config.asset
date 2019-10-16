@@ -14,14 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minX: 0
   maxX: 0
-  maxY: 1920
   minY: 0
+  maxY: 1920
   minZ: 0
   maxZ: 0
   randomUpdateFrequency: 1
   addAOToMesh: 1
-  ambientOcclusionStrength: 1
-  textureAtlasPadding: 32
-  textureAtlasFiltering: 0
-  textureFormat: 5
+  aOStrength: 1
+  atlasPadding: 32
+  atlasFiltering: 0
+  atlasFormat: 5
   useMipMaps: 1
+  useThreadPool: 1
+  useThreadedIO: 1
+  useSerialization: 1
+  useGreedyMeshing: 0

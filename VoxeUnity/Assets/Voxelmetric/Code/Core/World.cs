@@ -66,6 +66,7 @@ namespace Voxelmetric.Code.Core
             Features.UseThreadPool = config.UseThreadPool;
             Features.UseThreadedIO = config.UseThreadedIO;
             Features.UseSerialization = config.UseSerialization;
+            Features.UseGreedyMeshing = config.UseGreedyMeshing;
         }
 
         public void Configure()

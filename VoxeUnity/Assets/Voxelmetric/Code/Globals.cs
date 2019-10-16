@@ -35,8 +35,28 @@ namespace Voxelmetric.Code
         // Geometry mesh builder used for the terrain
         public static AMeshBuilder ModelMeshBuilder { get; } = new CubeMeshBuilder(Env.BlockSize, Env.ChunkSize) { SideMask = 0 };
 
+        private static AMeshBuilder terrainMeshBuilder;
+
         // Geometry mesh builder used for the terrain
-        public static AMeshBuilder TerrainMeshBuilder { get; } = new CubeMeshBuilder(Env.BlockSize, Env.ChunkSize) { SideMask = Features.DontRenderWorldEdgesMask };
+        public static AMeshBuilder TerrainMeshBuilder
+        {
+            get
+            {
+                if (terrainMeshBuilder == null)
+                {
+                    if (Features.UseGreedyMeshing)
+                    {
+                        terrainMeshBuilder = new CubeMeshBuilder(Env.BlockSize, Env.ChunkSize) { SideMask = Features.DontRenderWorldEdgesMask };
+                    }
+                    else
+                    {
+                        terrainMeshBuilder = new CubeMeshBuilderNaive(Env.BlockSize, Env.ChunkSize) { SideMask = Features.DontRenderWorldEdgesMask };
+                    }
+                }
+
+                return terrainMeshBuilder;
+            }
+        }
 
         // Collider mesh builder used for the terrain
         public static AMeshBuilder TerrainMeshColliderBuilder { get; } = new CubeMeshColliderBuilder(Env.BlockSize, Env.ChunkSize) { SideMask = Features.DontRenderWorldEdgesMask };

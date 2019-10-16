@@ -1026,7 +1026,7 @@ PrefabInstance:
         type: 2}
     - target: {fileID: 11498696, guid: 28fc5073d6f2b5b42acaec530dd745cd, type: 3}
       propertyPath: worldName
-      value: New World
+      value: world
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28fc5073d6f2b5b42acaec530dd745cd, type: 3}
@@ -2385,6 +2385,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 775685701}
     m_Modifications:
+    - target: {fileID: 2015268, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: m_HDR
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015268, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: m_AllowMSAA
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015268, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: m_OcclusionCulling
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 422196, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2428,18 +2440,6 @@ PrefabInstance:
     - target: {fileID: 422196, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 2015268, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: m_HDR
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2015268, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: m_AllowMSAA
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2015268, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: m_OcclusionCulling
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
       propertyPath: world

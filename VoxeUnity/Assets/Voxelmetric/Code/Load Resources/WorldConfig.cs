@@ -74,10 +74,13 @@ namespace Voxelmetric.Code.Load_Resources
         private bool useThreadedIO = true;
         [SerializeField]
         private bool useSerialization = true;
+        [SerializeField]
+        private bool useGreedyMeshing = true;
 
         public bool UseThreadPool { get { return useThreadPool; } set { useThreadPool = value; } }
         public bool UseThreadedIO { get { return useThreadedIO; } set { useThreadedIO = value; } }
         public bool UseSerialization { get { return useSerialization; } set { useSerialization = value; } }
+        public bool UseGreedyMeshing { get { return useGreedyMeshing; } set { useGreedyMeshing = value; } }
 
         public override string ToString()
         {
