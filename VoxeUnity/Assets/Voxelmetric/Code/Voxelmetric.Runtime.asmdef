@@ -1,0 +1,17 @@
+{
+    "name": "Voxelmetric.Runtime",
+    "references": [
+        "GUID:af0d7c39964690448b21bc2ea1eeda95"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [
+        ""
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
