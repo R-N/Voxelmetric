@@ -13,6 +13,7 @@ public class Block
     public int RenderMaterialID;
     public int PhysicMaterialID;
     public bool Solid;
+    public bool Transparent;
     public bool Custom;
 
     public bool CanCollide
@@ -37,6 +38,7 @@ public class Block
 
         Name = config.name;
         Solid = config.solid;
+        Transparent = config.transparent;
         Custom = false;
     }
 
@@ -55,6 +57,11 @@ public class Block
 
     public bool CanBuildFaceWith(Block adjacentBlock)
     {
+        if (adjacentBlock.Transparent)
+        {
+            return !Transparent || adjacentBlock.Type != Type;
+        }
+
         return adjacentBlock.Solid ? !Solid : (Solid || Type != adjacentBlock.Type);
     }
 

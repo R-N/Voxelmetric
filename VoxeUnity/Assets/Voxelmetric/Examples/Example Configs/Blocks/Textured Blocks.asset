@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a72e16115703ae44099e0e9e4f6b4212, type: 3}
+  m_Name: Textured Blocks
+  m_EditorClassIdentifier: 
+  blocks:
+  - {fileID: 11400000, guid: 1445c61b2daede945abc373cf214c92a, type: 2}
+  - {fileID: 11400000, guid: cd2726915f14e6742b79c9958eb0c8b2, type: 2}
+  - {fileID: 11400000, guid: 773aa58ac6d93fb4c9b6ffacec74c487, type: 2}
+  - {fileID: 11400000, guid: 76ad0134bf0733b4b8038bf59ceb7090, type: 2}
+  - {fileID: 11400000, guid: cda9af73a6195174d91605e3dd8bf621, type: 2}
+  - {fileID: 11400000, guid: fba8486fe31e22f4e9790e9ff00f3e5f, type: 2}
+  - {fileID: 11400000, guid: 2b3aae6b38dd2cc4da87caf44e6b67bb, type: 2}
+  - {fileID: 11400000, guid: 2a8117f8e3ad8a44bb19f993d25c028c, type: 2}
+  - {fileID: 11400000, guid: 32e91c4aa43f9e840bb42710712001ed, type: 2}

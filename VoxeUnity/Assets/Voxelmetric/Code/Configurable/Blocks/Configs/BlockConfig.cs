@@ -92,7 +92,7 @@ public class BlockConfig
         transparent = config.Transparent;
 
         // Try to associate requested render materials with one of world's materials
-        renderMaterialID = 0;
+        renderMaterialID = (int)config.TextureType;
         //string materialName = _GetPropertyFromConfig(config, "material", string.Empty);
         //for (int i = 0; i < world.renderMaterials.Length; i++)
         //{

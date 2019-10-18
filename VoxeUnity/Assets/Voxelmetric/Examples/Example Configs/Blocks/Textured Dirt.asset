@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07c6035d42b098a4d892ee9785643afa, type: 3}
+  m_Name: Textured Dirt
+  m_EditorClassIdentifier: 
+  blockName: dirt
+  id: 6
+  solid: 1
+  transparent: 0
+  textureType: 0
+  topTexture: {fileID: 2800000, guid: bb03393c731f63542a16372477d25306, type: 3}
+  topColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  bottomTexture: {fileID: 2800000, guid: bb03393c731f63542a16372477d25306, type: 3}
+  bottomColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  frontTexture: {fileID: 2800000, guid: bb03393c731f63542a16372477d25306, type: 3}
+  frontColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  backTexture: {fileID: 2800000, guid: bb03393c731f63542a16372477d25306, type: 3}
+  backColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  leftTexture: {fileID: 2800000, guid: bb03393c731f63542a16372477d25306, type: 3}
+  leftColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  rightTexture: {fileID: 2800000, guid: bb03393c731f63542a16372477d25306, type: 3}
+  rightColor:
+    serializedVersion: 2
+    rgba: 4294967295
