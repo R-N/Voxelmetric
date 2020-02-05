@@ -10,6 +10,13 @@ This project is a fork of the excellent work by [Richard Biely and his version o
 My goal with Voxelmetric is to remove the dependency on JSON and replace it with ScriptableObjects to make work better with the Unity workflow. Basically completely remove the "Resources" folder and allow everything to be made out of ScriptableObjects. After that, easier ways to configure the asset from the inspector instead of using external files.
 Lastly, do my best to fix [this](https://i.imgur.com/qqwJQW8.png) texture problem.
 
+Progress:
+- [x] Convert JSON files to ScriptableObject
+- [x] Fixed saving
+- [x] Fixed colliders not working properly
+- [ ] Reimplement some block types, like connected textures block
+- [ ] Fix greedy meshing texture problem
+
 ## Features
 
 ### World Management
