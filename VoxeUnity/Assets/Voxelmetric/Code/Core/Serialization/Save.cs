@@ -334,6 +334,7 @@ namespace Voxelmetric.Code.Core.Serialization
                         for (i = 0, j = 0; j < m_positionsModified.Length; i += blockPosSize, j++)
                         {
                             m_positionsModified[j] = *(BlockPos*)&pSrc[i];
+                            Chunk.Blocks.modifiedBlocks.Add(m_positionsModified[j]);
                         }
                     }
                     // Extract block data

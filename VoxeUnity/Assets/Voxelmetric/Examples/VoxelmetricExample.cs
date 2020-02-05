@@ -194,6 +194,5 @@ namespace Voxelmetric.Examples
 
             return saveProgress.GetProgress().ToString() + "%";
         }
-
     }
 }
