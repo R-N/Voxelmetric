@@ -15,7 +15,7 @@ MonoBehaviour:
   minX: 0
   maxX: 0
   minY: 0
-  maxY: 1920
+  maxY: 128
   minZ: 0
   maxZ: 0
   randomUpdateFrequency: 1

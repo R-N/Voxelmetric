@@ -2465,18 +2465,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 775685701}
     m_Modifications:
-    - target: {fileID: 2015268, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: m_HDR
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2015268, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: m_AllowMSAA
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2015268, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: m_OcclusionCulling
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 422196, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2521,37 +2509,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: world
-      value: 
-      objectReference: {fileID: 1856110255}
-    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: UseFrustumCulling
-      value: 1
+    - target: {fileID: 2015268, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: m_HDR
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+    - target: {fileID: 2015268, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: m_AllowMSAA
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2015268, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: m_OcclusionCulling
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9258768, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
       propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: FullLoadOnStartUp
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: Diag_DrawWorldBounds
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: Diag_DrawLoadRange
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: HorizontalChunkLoadRadius
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: HorizontalChunkDeleteRadius
-      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 11422472, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
       propertyPath: world
@@ -2613,9 +2585,37 @@ PrefabInstance:
       propertyPath: world
       value: 
       objectReference: {fileID: 1856110255}
-    - target: {fileID: 9258768, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
-      propertyPath: m_Enabled
+    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: world
+      value: 
+      objectReference: {fileID: 1856110255}
+    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: UseFrustumCulling
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: FullLoadOnStartUp
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: Diag_DrawWorldBounds
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: Diag_DrawLoadRange
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: HorizontalChunkLoadRadius
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 11497504, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: HorizontalChunkDeleteRadius
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11465880, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
@@ -3030,7 +3030,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2107006772
 MonoBehaviour:
   m_ObjectHideFlags: 0
