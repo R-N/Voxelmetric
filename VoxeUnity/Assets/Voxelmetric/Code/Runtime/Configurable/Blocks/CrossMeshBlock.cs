@@ -11,9 +11,9 @@ using Vector3Int = Voxelmetric.Code.Data_types.Vector3Int;
 
 public class CrossMeshBlock : Block
 {
-    private static readonly float coef = 1.0f / 64.0f;
+    private const float COEF = 1.0f / 64.0f;
 
-    public TextureCollection texture { get { return ((CrossMeshBlockConfig)Config).texture; } }
+    public TextureCollection Texture { get { return ((CrossMeshBlockConfig)config).texture; } }
 
     [Preserve]
     public CrossMeshBlock() : base() { }
@@ -22,7 +22,7 @@ public class CrossMeshBlock : Block
     {
         base.OnInit(blockProvider);
 
-        Custom = true;
+        custom = true;
     }
 
     public override void BuildBlock(Chunk chunk, ref Vector3Int localPos, int materialID)
@@ -33,30 +33,30 @@ public class CrossMeshBlock : Block
         // Using the block positions hash is much better for random numbers than saving the offset and height in the block data
         int hash = localPos.GetHashCode();
 
-        float blockHeight = (hash & 63) * coef * Env.BlockSize;
+        float blockHeight = (hash & 63) * COEF * Env.BLOCK_SIZE;
 
         hash *= 39;
-        float offsetX = (hash & 63) * coef * Env.BlockSizeHalf - Env.BlockSizeHalf * 0.5f;
+        float offsetX = (hash & 63) * COEF * Env.BLOCK_SIZE_HALF - Env.BLOCK_SIZE_HALF * 0.5f;
 
         hash *= 39;
-        float offsetZ = (hash & 63) * coef * Env.BlockSizeHalf - Env.BlockSizeHalf * 0.5f;
+        float offsetZ = (hash & 63) * COEF * Env.BLOCK_SIZE_HALF - Env.BLOCK_SIZE_HALF * 0.5f;
 
         // Converting the position to a vector adjusts it based on block size and gives us real world coordinates for x, y and z
         Vector3 vPos = localPos;
         vPos += new Vector3(offsetX, 0, offsetZ);
 
         float x1 = vPos.x - BlockUtils.blockPadding;
-        float x2 = vPos.x + BlockUtils.blockPadding + Env.BlockSize;
+        float x2 = vPos.x + BlockUtils.blockPadding + Env.BLOCK_SIZE;
         float y1 = vPos.y - BlockUtils.blockPadding;
-        float y2 = vPos.y + BlockUtils.blockPadding + Env.BlockSize;
+        float y2 = vPos.y + BlockUtils.blockPadding + Env.BLOCK_SIZE;
         float z1 = vPos.z - BlockUtils.blockPadding;
-        float z2 = vPos.z + BlockUtils.blockPadding + Env.BlockSize;
+        float z2 = vPos.z + BlockUtils.blockPadding + Env.BLOCK_SIZE;
 
-        Vector3[] verts = pools.Vector3ArrayPool.PopExact(4);
-        Vector2[] uvs = pools.Vector2ArrayPool.PopExact(4);
-        Color32[] colors = pools.Color32ArrayPool.PopExact(4);
+        Vector3[] verts = pools.vector3ArrayPool.PopExact(4);
+        Vector4[] uvs = pools.vector4ArrayPool.PopExact(4);
+        Color32[] colors = pools.color32ArrayPool.PopExact(4);
 
-        BlockUtils.PrepareTexture(chunk, ref localPos, uvs, Direction.north, texture, false);
+        BlockUtils.PrepareTexture(chunk, ref localPos, uvs, Direction.north, Texture, false);
 
         // TODO: How do I make sure that if I supply no color value, white is used?
         // TODO: These colors could be removed and memory would be saved
@@ -96,8 +96,8 @@ public class CrossMeshBlock : Block
             batcher.AddFace(materialID, verts, colors, uvs, false);
         }
 
-        pools.Color32ArrayPool.Push(colors);
-        pools.Vector2ArrayPool.Push(uvs);
-        pools.Vector3ArrayPool.Push(verts);
+        pools.color32ArrayPool.Push(colors);
+        pools.vector4ArrayPool.Push(uvs);
+        pools.vector3ArrayPool.Push(verts);
     }
 }

@@ -13,27 +13,27 @@ namespace Voxelmetric.Code.Core
 {
     public sealed class ChunkBlocks
     {
-        public Chunk chunk { get; private set; }
+        public Chunk Chunk { get; private set; }
 
-        private Block[] m_blockTypes;
+        private Block[] blockTypes;
 
-        private readonly int m_sideSize = 0;
-        private readonly int m_pow = 0;
+        private readonly int sideSize = 0;
+        private readonly int pow = 0;
 
         //! Array of block data
-        private readonly IntPtr m_blocksRaw;
-        private readonly unsafe byte* m_blocks;
+        private readonly IntPtr blocksRaw;
+        private readonly unsafe byte* blocks;
         private unsafe BlockData this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                return *((BlockData*)&m_blocks[i << 1]);
+                return *((BlockData*)&blocks[i << 1]);
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                *((BlockData*)&m_blocks[i << 1]) = value;
+                *((BlockData*)&blocks[i << 1]) = value;
             }
         }
 
@@ -45,7 +45,7 @@ namespace Voxelmetric.Code.Core
         }
 
         //! Number of blocks which are not air (non-empty blocks)
-        public int NonEmptyBlocks;
+        public int nonEmptyBlocks;
 
         private byte[] receiveBuffer;
         private int receiveIndex;
@@ -78,48 +78,48 @@ namespace Voxelmetric.Code.Core
 
         public unsafe ChunkBlocks(Chunk chunk, int sideSize)
         {
-            this.chunk = chunk;
+            Chunk = chunk;
 
-            m_sideSize = sideSize;
-            m_pow = 1 + (int)Math.Log(sideSize, 2);
+            this.sideSize = sideSize;
+            pow = 1 + (int)Math.Log(sideSize, 2);
 
-            sideSize = m_sideSize + Env.ChunkPadding2;
+            sideSize = this.sideSize + Env.CHUNK_PADDING_2;
 
             // Allocate the memory aligned to 16B boundaries
             int arrLen = GetDataSize(sideSize);
-            m_blocksRaw = Marshal.AllocHGlobal(arrLen + 8);
-            IntPtr aligned = new IntPtr(16 * (((long)m_blocksRaw + 15) / 16));
-            m_blocks = (byte*)aligned.ToPointer();
-            Utils.ZeroMemory(m_blocks, arrLen);
+            blocksRaw = Marshal.AllocHGlobal(arrLen + 8);
+            IntPtr aligned = new IntPtr(16 * (((long)blocksRaw + 15) / 16));
+            blocks = (byte*)aligned.ToPointer();
+            Utils.ZeroMemory(blocks, arrLen);
         }
 
         ~ChunkBlocks()
         {
-            Marshal.FreeHGlobal(m_blocksRaw);
+            Marshal.FreeHGlobal(blocksRaw);
         }
 
         public void Init()
         {
-            m_blockTypes = chunk.world ? chunk.world.blockProvider.BlockTypes : null;
+            blockTypes = Chunk.World ? Chunk.World.blockProvider.BlockTypes : null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void Copy(ChunkBlocks src, int srcIndex, int dstIndex, int length)
         {
-            Utils.MemoryCopy(&m_blocks[dstIndex << 1], &src.m_blocks[srcIndex << 1], (uint)length << 1);
+            Utils.MemoryCopy(&blocks[dstIndex << 1], &src.blocks[srcIndex << 1], (uint)length << 1);
         }
 
         public unsafe void Reset()
         {
-            NonEmptyBlocks = -1;
+            nonEmptyBlocks = -1;
 
             // Reset internal parts of the chunk buffer
-            int sideSize = m_sideSize + Env.ChunkPadding2;
-            Utils.ZeroMemory(m_blocks, sideSize * sideSize * sideSize * StructSerialization.TSSize<BlockData>.ValueSize);
+            int sideSize = this.sideSize + Env.CHUNK_PADDING_2;
+            Utils.ZeroMemory(blocks, sideSize * sideSize * sideSize * StructSerialization.TSSize<BlockData>.ValueSize);
 
             // We have to reallocate the list. Otherwise, the array could potentially grow
             // to Env.ChunkSizePow3 size.
-            if (modifiedBlocks == null || modifiedBlocks.Count > m_sideSize * 3) // Reallocation threshold
+            if (modifiedBlocks == null || modifiedBlocks.Count > this.sideSize * 3) // Reallocation threshold
             {
                 modifiedBlocks = new List<BlockPos>();
             }
@@ -131,28 +131,28 @@ namespace Voxelmetric.Code.Core
 
         public void CalculateEmptyBlocks()
         {
-            if (NonEmptyBlocks >= 0)
+            if (nonEmptyBlocks >= 0)
             {
                 return;
             }
 
-            NonEmptyBlocks = 0;
+            nonEmptyBlocks = 0;
 
-            int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
+            int sizeWithPadding = sideSize + Env.CHUNK_PADDING_2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
 
-            int index = Env.ChunkPadding + (Env.ChunkPadding << m_pow) + (Env.ChunkPadding << (m_pow << 1));
-            int yOffset = sizeWithPaddingPow2 - m_sideSize * sizeWithPadding;
-            int zOffset = sizeWithPadding - m_sideSize;
-            for (int y = 0; y < m_sideSize; ++y, index += yOffset)
+            int index = Env.CHUNK_PADDING + (Env.CHUNK_PADDING << pow) + (Env.CHUNK_PADDING << (pow << 1));
+            int yOffset = sizeWithPaddingPow2 - sideSize * sizeWithPadding;
+            int zOffset = sizeWithPadding - sideSize;
+            for (int y = 0; y < sideSize; ++y, index += yOffset)
             {
-                for (int z = 0; z < m_sideSize; ++z, index += zOffset)
+                for (int z = 0; z < sideSize; ++z, index += zOffset)
                 {
-                    for (int x = 0; x < m_sideSize; ++x, ++index)
+                    for (int x = 0; x < sideSize; ++x, ++index)
                     {
-                        if (this[index].Type != BlockProvider.AirType)
+                        if (this[index].Type != BlockProvider.AIR_TYPE)
                         {
-                            ++NonEmptyBlocks;
+                            ++nonEmptyBlocks;
                         }
                     }
                 }
@@ -168,24 +168,23 @@ namespace Voxelmetric.Code.Core
                 return;
             }
 
-            int x, y, z;
-            Helpers.GetChunkIndex3DFrom1D(index, out x, out y, out z, m_pow);
+            Helpers.GetChunkIndex3DFrom1D(index, out int x, out int y, out int z, pow);
             Vector3Int pos = new Vector3Int(x, y, z);
 
             // Handle block specific events
-            Block oldBlock = m_blockTypes[oldBlockData.Type];
-            Block newBlock = m_blockTypes[blockData.Type];
-            oldBlock.OnDestroy(chunk, ref pos);
-            newBlock.OnCreate(chunk, ref pos);
+            Block oldBlock = blockTypes[oldBlockData.Type];
+            Block newBlock = blockTypes[blockData.Type];
+            oldBlock.OnDestroy(Chunk, ref pos);
+            newBlock.OnCreate(Chunk, ref pos);
 
             // Update chunk status
-            if (blockData.Type == BlockProvider.AirType)
+            if (blockData.Type == BlockProvider.AIR_TYPE)
             {
-                --NonEmptyBlocks;
+                --nonEmptyBlocks;
             }
-            else if (oldBlockData.Type == BlockProvider.AirType)
+            else if (oldBlockData.Type == BlockProvider.AIR_TYPE)
             {
-                ++NonEmptyBlocks;
+                ++nonEmptyBlocks;
             }
 
             // Update block info
@@ -194,7 +193,7 @@ namespace Voxelmetric.Code.Core
             // Notify about modification
             if (setBlockModified)
             {
-                Vector3Int globalPos = pos + chunk.Pos;
+                Vector3Int globalPos = pos + Chunk.Pos;
                 BlockModified(new BlockPos(pos.x, pos.y, pos.z), ref globalPos, blockData);
             }
         }
@@ -207,7 +206,7 @@ namespace Voxelmetric.Code.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public BlockData Get(ref Vector3Int pos)
         {
-            int index = Helpers.GetChunkIndex1DFrom3D(pos.x, pos.y, pos.z, m_pow);
+            int index = Helpers.GetChunkIndex1DFrom3D(pos.x, pos.y, pos.z, pow);
             return this[index];
         }
 
@@ -219,8 +218,8 @@ namespace Voxelmetric.Code.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Block GetBlock(ref Vector3Int pos)
         {
-            int index = Helpers.GetChunkIndex1DFrom3D(pos.x, pos.y, pos.z, m_pow);
-            return m_blockTypes[this[index].Type];
+            int index = Helpers.GetChunkIndex1DFrom3D(pos.x, pos.y, pos.z, pow);
+            return blockTypes[this[index].Type];
         }
 
         /// <summary>
@@ -242,7 +241,7 @@ namespace Voxelmetric.Code.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Block GetBlock(int index)
         {
-            return m_blockTypes[this[index].Type];
+            return blockTypes[this[index].Type];
         }
 
         /// <summary>
@@ -260,13 +259,13 @@ namespace Voxelmetric.Code.Core
                 return;
             }
 
-            if (type == BlockProvider.AirType)
+            if (type == BlockProvider.AIR_TYPE)
             {
-                --NonEmptyBlocks;
+                --nonEmptyBlocks;
             }
-            else if (oldBlockData.Type == BlockProvider.AirType)
+            else if (oldBlockData.Type == BlockProvider.AIR_TYPE)
             {
-                ++NonEmptyBlocks;
+                ++nonEmptyBlocks;
             }
 
             this[index] = blockData;
@@ -292,10 +291,10 @@ namespace Voxelmetric.Code.Core
         /// <param name="blockData">A block to be placed on a given position</param>
         public void SetRange(ref Vector3Int posFrom, ref Vector3Int posTo, BlockData blockData)
         {
-            int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
+            int sizeWithPadding = sideSize + Env.CHUNK_PADDING_2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
 
-            int index = Helpers.GetChunkIndex1DFrom3D(posFrom.x, posFrom.y, posFrom.z, m_pow);
+            int index = Helpers.GetChunkIndex1DFrom3D(posFrom.x, posFrom.y, posFrom.z, pow);
             int yOffset = sizeWithPaddingPow2 - (posTo.z - posFrom.z + 1) * sizeWithPadding;
             int zOffset = sizeWithPadding - (posTo.x - posFrom.x + 1);
 
@@ -320,10 +319,10 @@ namespace Voxelmetric.Code.Core
         /// <param name="blockData">A block to be placed on a given position</param>
         public void SetRangeRaw(ref Vector3Int posFrom, ref Vector3Int posTo, BlockData blockData)
         {
-            int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
+            int sizeWithPadding = sideSize + Env.CHUNK_PADDING_2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
 
-            int index = Helpers.GetChunkIndex1DFrom3D(posFrom.x, posFrom.y, posFrom.z, m_pow);
+            int index = Helpers.GetChunkIndex1DFrom3D(posFrom.x, posFrom.y, posFrom.z, pow);
             int yOffset = sizeWithPaddingPow2 - (posTo.z - posFrom.z + 1) * sizeWithPadding;
             int zOffset = sizeWithPadding - (posTo.x - posFrom.x + 1);
 
@@ -341,7 +340,7 @@ namespace Voxelmetric.Code.Core
 
         public void BlockModified(BlockPos blockPos, ref Vector3Int globalPos, BlockData blockData)
         {
-            VmNetworking ntw = chunk.world.networking;
+            VmNetworking ntw = Chunk.World.networking;
 
             // If this is the server log the changed block so that it can be saved
             if (ntw.isServer)
@@ -351,7 +350,7 @@ namespace Voxelmetric.Code.Core
                     ntw.server.BroadcastChange(globalPos, blockData, -1);
                 }
 
-                if (Features.UseDifferentialSerialization)
+                if (Features.useDifferentialSerialization)
                 {
                     // TODO: Memory unfriendly. Rethink the strategy
                     modifiedBlocks.Add(blockPos);
@@ -371,15 +370,15 @@ namespace Voxelmetric.Code.Core
 
         public void ReceiveChunkData(byte[] buffer)
         {
-            int index = BitConverter.ToInt32(buffer, VmServer.headerSize);
-            int size = BitConverter.ToInt32(buffer, VmServer.headerSize + 4);
+            int index = BitConverter.ToInt32(buffer, VmServer.HEADER_SIZE);
+            int size = BitConverter.ToInt32(buffer, VmServer.HEADER_SIZE + 4);
 
             if (receiveBuffer == null)
             {
                 InitializeChunkDataReceive(index, size);
             }
 
-            TranscribeChunkData(buffer, VmServer.leaderSize);
+            TranscribeChunkData(buffer, VmServer.LEADER_SIZE);
         }
 
         private void TranscribeChunkData(byte[] buffer, int offset)
@@ -404,7 +403,7 @@ namespace Voxelmetric.Code.Core
                 Reset();
             }
 
-            Chunk.OnGenerateDataOverNetworkDone(chunk);
+            Chunk.OnGenerateDataOverNetworkDone(Chunk);
 
             receiveBuffer = null;
             receiveIndex = 0;
@@ -414,11 +413,11 @@ namespace Voxelmetric.Code.Core
 
         private bool ExpandX(ref bool[] mask, ushort type, int y1, int z1, ref int x2, int y2, int z2)
         {
-            int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
+            int sizeWithPadding = sideSize + Env.CHUNK_PADDING_2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
 
             int yOffset = sizeWithPaddingPow2 - (z2 - z1) * sizeWithPadding;
-            int index0 = Helpers.GetChunkIndex1DFrom3D(x2, y1, z1, m_pow);
+            int index0 = Helpers.GetChunkIndex1DFrom3D(x2, y1, z1, pow);
 
             // Check the quad formed by YZ axes and try to expand the X asix
             int index = index0;
@@ -449,10 +448,10 @@ namespace Voxelmetric.Code.Core
 
         private bool ExpandY(ref bool[] mask, ushort type, int x1, int z1, int x2, ref int y2, int z2)
         {
-            int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
+            int sizeWithPadding = sideSize + Env.CHUNK_PADDING_2;
 
             int zOffset = sizeWithPadding - x2 + x1;
-            int index0 = Helpers.GetChunkIndex1DFrom3D(x1, y2, z1, m_pow);
+            int index0 = Helpers.GetChunkIndex1DFrom3D(x1, y2, z1, pow);
 
             // Check the quad formed by XZ axes and try to expand the Y axis
             int index = index0;
@@ -483,11 +482,11 @@ namespace Voxelmetric.Code.Core
 
         private bool ExpandZ(ref bool[] mask, ushort type, int x1, int y1, int x2, int y2, ref int z2)
         {
-            int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
+            int sizeWithPadding = sideSize + Env.CHUNK_PADDING_2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
 
             int yOffset = sizeWithPaddingPow2 - x2 + x1;
-            int index0 = Helpers.GetChunkIndex1DFrom3D(x1, y1, z2, m_pow);
+            int index0 = Helpers.GetChunkIndex1DFrom3D(x1, y1, z2, pow);
 
             // Check the quad formed by XY axes and try to expand the Z axis
             int index = index0;
@@ -521,13 +520,13 @@ namespace Voxelmetric.Code.Core
         /// </summary>
         public void Compress()
         {
-            int sizePlusPadding = m_sideSize + Env.ChunkPadding;
-            int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
+            int sizePlusPadding = sideSize + Env.CHUNK_PADDING;
+            int sizeWithPadding = sideSize + Env.CHUNK_PADDING_2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
             int sizeWithPaddingPow3 = sizeWithPaddingPow2 * sizeWithPadding;
 
-            Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
-            bool[] mask = pools.BoolArrayPool.PopExact(sizeWithPaddingPow3);
+            Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(Chunk.ThreadID);
+            bool[] mask = pools.boolArrayPool.PopExact(sizeWithPaddingPow3);
 
             Array.Clear(mask, 0, mask.Length);
             blockCompressed.Clear();
@@ -551,8 +550,8 @@ namespace Voxelmetric.Code.Core
 
                         // Skip air data
                         ushort data = this[index].Data;
-                        ushort type = (ushort)(data & BlockData.TypeMask);
-                        if (type == BlockProvider.AirType)
+                        ushort type = (ushort)(data & BlockData.typeMask);
+                        if (type == BlockProvider.AIR_TYPE)
                         {
                             continue;
                         }
@@ -571,21 +570,18 @@ namespace Voxelmetric.Code.Core
 
                             if (expandY)
                             {
-                                expandY = y2 < sizePlusPadding &&
-                                          ExpandY(ref mask, type, x1, z1, x2, ref y2, z2);
+                                expandY = y2 < sizePlusPadding && ExpandY(ref mask, type, x1, z1, x2, ref y2, z2);
                                 expand = expandY;
                             }
                             if (expandZ)
                             {
-                                expandZ = z2 < sizePlusPadding &&
-                                          ExpandZ(ref mask, type, x1, y1, x2, y2, ref z2);
-                                expand = expand | expandZ;
+                                expandZ = z2 < sizePlusPadding && ExpandZ(ref mask, type, x1, y1, x2, y2, ref z2);
+                                expand |= expandZ;
                             }
                             if (expandX)
                             {
-                                expandX = x2 < sizePlusPadding &&
-                                          ExpandX(ref mask, type, y1, z1, ref x2, y2, z2);
-                                expand = expand | expandX;
+                                expandX = x2 < sizePlusPadding && ExpandX(ref mask, type, y1, z1, ref x2, y2, z2);
+                                expand |= expandX;
                             }
                         } while (expand);
 
@@ -604,7 +600,7 @@ namespace Voxelmetric.Code.Core
                 }
             }
 
-            pools.BoolArrayPool.Push(mask);
+            pools.boolArrayPool.Push(mask);
         }
 
         /// <summary>
@@ -612,7 +608,7 @@ namespace Voxelmetric.Code.Core
         /// </summary>
         public void Decompress()
         {
-            int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
+            int sizeWithPadding = sideSize + Env.CHUNK_PADDING_2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
 
             for (int i = 0; i < blockCompressed.Count; i++)
@@ -626,7 +622,7 @@ namespace Voxelmetric.Code.Core
                 int z2 = box.MaxZ;
                 ushort data = box.Data;
 
-                int index = Helpers.GetChunkIndex1DFrom3D(x1, y1, z1, m_pow);
+                int index = Helpers.GetChunkIndex1DFrom3D(x1, y1, z1, pow);
                 int yOffset = sizeWithPaddingPow2 - (z2 - z1) * sizeWithPadding;
                 int zOffset = sizeWithPadding - (x2 - x1);
                 for (int y = y1; y < y2; ++y, index += yOffset)
@@ -649,13 +645,13 @@ namespace Voxelmetric.Code.Core
         public byte[] ToBytes()
         {
             List<byte> buffer = new List<byte>();
-            buffer.AddRange(BitConverter.GetBytes(NonEmptyBlocks));
-            if (NonEmptyBlocks > 0)
+            buffer.AddRange(BitConverter.GetBytes(nonEmptyBlocks));
+            if (nonEmptyBlocks > 0)
             {
                 int sameBlockCount = 1;
                 BlockData lastBlockData = this[0];
 
-                int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
+                int sizeWithPadding = sideSize + Env.CHUNK_PADDING_2;
                 int sizeWithPaddingPow3 = sizeWithPadding * sizeWithPadding * sizeWithPadding;
 
                 for (int index = 1; index < sizeWithPaddingPow3; ++index)
@@ -689,8 +685,8 @@ namespace Voxelmetric.Code.Core
                 return false;
             }
 
-            NonEmptyBlocks = BitConverter.ToInt32(receiveBuffer, 0);
-            if (NonEmptyBlocks > 0)
+            nonEmptyBlocks = BitConverter.ToInt32(receiveBuffer, 0);
+            if (nonEmptyBlocks > 0)
             {
                 int dataOffset = 4;
                 int blockOffset = 0;

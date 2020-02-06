@@ -8,16 +8,16 @@ namespace Voxelmetric.Code.Geometry.Buffers
     /// </summary>
     public class ColliderGeometryBuffer
     {
-        public readonly List<int> Triangles = new List<int>();
-        public readonly List<Vector3> Vertices = new List<Vector3>();
+        public readonly List<int> triangles = new List<int>();
+        public readonly List<Vector3> vertices = new List<Vector3>();
 
         /// <summary>
         ///     Clear the buffers
         /// </summary>
         public void Clear()
         {
-            Vertices.Clear();
-            Triangles.Clear();
+            vertices.Clear();
+            triangles.Clear();
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Voxelmetric.Code.Geometry.Buffers
             get
             {
                 // There will always be at least some triangles so it's safe to check just for them
-                return Triangles.Count <= 0;
+                return triangles.Count <= 0;
             }
         }
 
@@ -40,7 +40,7 @@ namespace Voxelmetric.Code.Geometry.Buffers
             get
             {
                 // There will always be at least some triangles so it's safe to check just for them
-                return Triangles.Capacity > 0;
+                return triangles.Capacity > 0;
             }
         }
 
@@ -55,23 +55,23 @@ namespace Voxelmetric.Code.Geometry.Buffers
             // 3--2
             if (backFace)
             {
-                Triangles.Add(offset - 4); // 0
-                Triangles.Add(offset - 1); // 3
-                Triangles.Add(offset - 2); // 2
+                triangles.Add(offset - 4); // 0
+                triangles.Add(offset - 1); // 3
+                triangles.Add(offset - 2); // 2
 
-                Triangles.Add(offset - 2); // 2
-                Triangles.Add(offset - 3); // 1
-                Triangles.Add(offset - 4); // 0
+                triangles.Add(offset - 2); // 2
+                triangles.Add(offset - 3); // 1
+                triangles.Add(offset - 4); // 0
             }
             else
             {
-                Triangles.Add(offset - 4); // 0
-                Triangles.Add(offset - 3); // 1
-                Triangles.Add(offset - 2); // 2
+                triangles.Add(offset - 4); // 0
+                triangles.Add(offset - 3); // 1
+                triangles.Add(offset - 2); // 2
 
-                Triangles.Add(offset - 2); // 2
-                Triangles.Add(offset - 1); // 3
-                Triangles.Add(offset - 4); // 0
+                triangles.Add(offset - 2); // 2
+                triangles.Add(offset - 1); // 3
+                triangles.Add(offset - 4); // 0
             }
         }
 
@@ -80,7 +80,7 @@ namespace Voxelmetric.Code.Geometry.Buffers
         /// </summary>
         public void AddIndex(int offset)
         {
-            Triangles.Add(offset);
+            triangles.Add(offset);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Voxelmetric.Code.Geometry.Buffers
         /// </summary>
         public void AddVertices(Vector3[] vertices)
         {
-            Vertices.AddRange(vertices);
+            this.vertices.AddRange(vertices);
         }
 
         /// <summary>
@@ -96,14 +96,14 @@ namespace Voxelmetric.Code.Geometry.Buffers
         /// </summary>
         public void AddVertex(ref Vector3 vertex)
         {
-            Vertices.Add(vertex);
+            vertices.Add(vertex);
         }
 
         public void SetupMesh(Mesh mesh, bool calculateBounds)
         {
             // Prepare mesh
-            mesh.SetVertices(Vertices);
-            mesh.SetTriangles(Triangles, 0, calculateBounds);
+            mesh.SetVertices(vertices);
+            mesh.SetTriangles(triangles, 0, calculateBounds);
             mesh.uv = null;
             mesh.uv2 = null;
             mesh.uv3 = null;

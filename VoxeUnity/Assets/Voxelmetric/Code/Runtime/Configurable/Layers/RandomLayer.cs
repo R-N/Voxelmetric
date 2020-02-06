@@ -12,7 +12,7 @@ public class RandomLayer : TerrainLayer
     {
         // Config files for random layers MUST define these properties
         Block block = world.blockProvider.GetBlock(config.BlockName);
-        blockToPlace = new BlockData(block.Type, block.Solid);
+        blockToPlace = new BlockData(block.type, block.solid);
     }
 
     public override float GetHeight(Chunk chunk, int layerIndex, int x, int z, float heightSoFar, float strength)
@@ -20,12 +20,7 @@ public class RandomLayer : TerrainLayer
         Vector3 lpos = new Vector3(chunk.Pos.x + x, heightSoFar + 1f, chunk.Pos.z);
         float posChance = Randomization.Random(lpos.GetHashCode(), 200);
 
-        if (Chance > posChance)
-        {
-            return heightSoFar + 1;
-        }
-
-        return heightSoFar;
+        return Chance > posChance ? heightSoFar + 1 : heightSoFar;
     }
 
     public override float GenerateLayer(Chunk chunk, int layerIndex, int x, int z, float heightSoFar, float strength)

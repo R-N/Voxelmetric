@@ -14,44 +14,44 @@ namespace Voxelmetric.Code.Common.Threading
         //! Each thread contains an object pool
         public LocalPools Pools { get; }
 
-        private readonly object m_lock = new object();
+        private readonly object objectLock = new object();
 
-        private List<ITaskPoolItem> m_items; // list of tasks
-        private List<ITaskPoolItem> m_itemsP; // list of tasks
+        private List<ITaskPoolItem> items; // list of tasks
+        private List<ITaskPoolItem> itemsP; // list of tasks
 
-        private readonly List<ITaskPoolItem> m_itemsTmp; // temporary list of tasks
-        private readonly List<ITaskPoolItem> m_itemsTmpP; // temporary list of tasks
+        private readonly List<ITaskPoolItem> itemsTmp; // temporary list of tasks
+        private readonly List<ITaskPoolItem> itemsTmpP; // temporary list of tasks
 
-        private readonly AutoResetEvent m_event; // event for notifing worker thread about work
-        private readonly Thread m_thread; // worker thread
+        private readonly AutoResetEvent @event; // event for notifing worker thread about work
+        private readonly Thread thread; // worker thread
 
-        private bool m_stop;
-        private bool m_hasPriorityItems;
+        private bool stop;
+        private bool hasPriorityItems;
 
         //! Diagnostics
-        private int m_curr, m_max, m_currP, m_maxP;
-        private readonly StringBuilder m_sb = new StringBuilder(32);
+        private int curr, max, currP, maxP;
+        private readonly StringBuilder sb = new StringBuilder(32);
 
         public TaskPool()
         {
             Pools = new LocalPools();
 
-            m_items = new List<ITaskPoolItem>();
-            m_itemsP = new List<ITaskPoolItem>();
+            items = new List<ITaskPoolItem>();
+            itemsP = new List<ITaskPoolItem>();
 
-            m_itemsTmp = new List<ITaskPoolItem>();
-            m_itemsTmpP = new List<ITaskPoolItem>();
+            itemsTmp = new List<ITaskPoolItem>();
+            itemsTmpP = new List<ITaskPoolItem>();
 
-            m_event = new AutoResetEvent(false);
-            m_thread = new Thread(ThreadFunc)
+            @event = new AutoResetEvent(false);
+            thread = new Thread(ThreadFunc)
             {
                 IsBackground = true
             };
 
-            m_stop = false;
-            m_hasPriorityItems = false;
+            stop = false;
+            hasPriorityItems = false;
 
-            m_curr = m_max = m_currP = m_maxP = 0;
+            curr = max = currP = maxP = 0;
         }
 
         ~TaskPool()
@@ -66,7 +66,7 @@ namespace Voxelmetric.Code.Common.Threading
             if (disposing)
             {
                 // dispose managed resources
-                m_event.Close();
+                @event.Close();
             }
             // free native resources
         }
@@ -79,70 +79,70 @@ namespace Voxelmetric.Code.Common.Threading
 
         public void Start()
         {
-            m_thread.Start();
+            thread.Start();
         }
 
         public void Stop()
         {
-            m_stop = true;
-            m_event.Set();
+            stop = true;
+            @event.Set();
         }
 
         public void AddItem(ITaskPoolItem item)
         {
             Assert.IsNotNull(item);
-            m_itemsTmp.Add(item);
+            itemsTmp.Add(item);
         }
 
         public void AddItem<T>(Action<T> action, long priority = long.MinValue) where T : class
         {
             Assert.IsNotNull(action);
-            m_itemsTmp.Add(new TaskPoolItem<T>(action, null, priority));
+            itemsTmp.Add(new TaskPoolItem<T>(action, null, priority));
         }
 
         public void AddItem<T>(Action<T> action, T arg, long time = long.MinValue)
         {
             Assert.IsNotNull(action);
-            m_itemsTmp.Add(new TaskPoolItem<T>(action, arg, time));
+            itemsTmp.Add(new TaskPoolItem<T>(action, arg, time));
         }
 
         public void AddPriorityItem(ITaskPoolItem item)
         {
             Assert.IsNotNull(item);
-            m_itemsTmpP.Add(item);
+            itemsTmpP.Add(item);
         }
 
         public void AddPriorityItem<T>(Action<T> action, long priority = long.MinValue) where T : class
         {
             Assert.IsNotNull(action);
-            m_itemsTmpP.Add(new TaskPoolItem<T>(action, null, priority));
+            itemsTmpP.Add(new TaskPoolItem<T>(action, null, priority));
         }
 
         public void AddPriorityItem<T>(Action<T> action, T arg, long priority = long.MinValue)
         {
             Assert.IsNotNull(action);
-            m_itemsTmpP.Add(new TaskPoolItem<T>(action, arg, priority));
+            itemsTmpP.Add(new TaskPoolItem<T>(action, arg, priority));
         }
 
         public void Commit()
         {
-            if (m_itemsTmp.Count <= 0 && m_itemsTmpP.Count <= 0)
+            if (itemsTmp.Count <= 0 && itemsTmpP.Count <= 0)
             {
                 return;
             }
 
-            lock (m_lock)
+            lock (objectLock)
             {
-                m_items.AddRange(m_itemsTmp);
-                m_itemsP.AddRange(m_itemsTmpP);
+                items.AddRange(itemsTmp);
+                itemsP.AddRange(itemsTmpP);
 
-                m_hasPriorityItems = m_itemsP.Count > 0;
+                hasPriorityItems = itemsP.Count > 0;
             }
 
-            m_itemsTmp.Clear();
-            m_itemsTmpP.Clear();
+            itemsTmp.Clear();
+            itemsTmpP.Clear();
 
-            m_event.Set();
+            @event.Set();
         }
 
         private void ThreadFunc()
@@ -152,36 +152,36 @@ namespace Voxelmetric.Code.Common.Threading
 
             ITaskPoolItem poolItem;
 
-            while (!m_stop)
+            while (!stop)
             {
                 // Swap action list pointers
-                lock (m_lock)
+                lock (objectLock)
                 {
                     List<ITaskPoolItem> tmp = actions;
-                    actions = m_items;
-                    m_items = tmp;
+                    actions = items;
+                    items = tmp;
 
                     tmp = actionsP;
-                    actionsP = m_itemsP;
-                    m_itemsP = tmp;
+                    actionsP = itemsP;
+                    itemsP = tmp;
 
-                    m_hasPriorityItems = false;
+                    hasPriorityItems = false;
                 }
 
                 // Sort tasks by priority
                 actions.Sort((x, y) => x.Priority.CompareTo(y.Priority));
-                m_max = actions.Count;
-                m_curr = 0;
+                max = actions.Count;
+                curr = 0;
 
             priorityLabel:
                 actionsP.Sort((x, y) => x.Priority.CompareTo(y.Priority));
-                m_maxP = actionsP.Count;
-                m_currP = 0;
+                maxP = actionsP.Count;
+                currP = 0;
 
                 // Process priority tasks first
-                for (; m_currP < m_maxP; m_currP++)
+                for (; currP < maxP; currP++)
                 {
-                    poolItem = actionsP[m_currP];
+                    poolItem = actionsP[currP];
 
 #if DEBUG
                     try
@@ -198,9 +198,9 @@ namespace Voxelmetric.Code.Common.Threading
                 }
 
                 // Process ordinary tasks now
-                for (; m_curr < m_max; m_curr++)
+                for (; curr < max; curr++)
                 {
-                    poolItem = actions[m_curr];
+                    poolItem = actions[curr];
 
 #if DEBUG
                     try
@@ -218,14 +218,14 @@ namespace Voxelmetric.Code.Common.Threading
                     // Let's see if there wasn't a priority action queued in the meantime.
                     // No need to lock these bool variables here. If they're not set yet,
                     // we'll simply read their state in the next iteration
-                    if (!m_stop && m_hasPriorityItems)
+                    if (!stop && hasPriorityItems)
                     {
-                        lock (m_lock)
+                        lock (objectLock)
                         {
-                            actionsP.AddRange(m_itemsP);
-                            m_itemsP.Clear();
+                            actionsP.AddRange(itemsP);
+                            itemsP.Clear();
 
-                            m_hasPriorityItems = false;
+                            hasPriorityItems = false;
                             goto priorityLabel;
                         }
                     }
@@ -234,17 +234,17 @@ namespace Voxelmetric.Code.Common.Threading
                 // Everything processed
                 actions.Clear();
                 actionsP.Clear();
-                m_curr = m_max = m_currP = m_maxP = 0;
+                curr = max = currP = maxP = 0;
 
                 // Wait for new tasks
-                m_event.WaitOne();
+                @event.WaitOne();
             }
         }
 
         public override string ToString()
         {
-            m_sb.Length = 0;
-            return m_sb.ConcatFormat("{0}/{1}, prio:{2}/{3}", m_curr, m_max, m_currP, m_maxP).ToString();
+            sb.Length = 0;
+            return sb.ConcatFormat("{0}/{1}, prio:{2}/{3}", curr, max, currP, maxP).ToString();
         }
     }
 }

@@ -5,20 +5,19 @@ namespace Voxelmetric.Code.Common.Memory
 {
     public class ArrayPoolCollection<T>
     {
-        private readonly Dictionary<int, IArrayPool<T>> m_arrays;
+        private readonly Dictionary<int, IArrayPool<T>> arrays;
 
         public ArrayPoolCollection(int size)
         {
-            m_arrays = new Dictionary<int, IArrayPool<T>>(size);
+            arrays = new Dictionary<int, IArrayPool<T>>(size);
         }
 
         public T[] PopExact(int size)
         {
-            IArrayPool<T> pool;
-            if (!m_arrays.TryGetValue(size, out pool))
+            if (!arrays.TryGetValue(size, out IArrayPool<T> pool))
             {
                 pool = new ArrayPool<T>(size, 4, 1);
-                m_arrays.Add(size, pool);
+                arrays.Add(size, pool);
             }
 
             return pool.Pop();
@@ -34,8 +33,7 @@ namespace Voxelmetric.Code.Common.Memory
         {
             int length = array.Length;
 
-            IArrayPool<T> pool;
-            if (!m_arrays.TryGetValue(length, out pool))
+            if (!arrays.TryGetValue(length, out IArrayPool<T> pool))
             {
                 throw new InvalidOperationException("Couldn't find an array pool of length " + length.ToString());
             }
@@ -43,17 +41,17 @@ namespace Voxelmetric.Code.Common.Memory
             pool.Push(array);
         }
 
-        private static readonly int RoundSizeBy = 100;
+        private const int ROUND_SIZE_BY = 100;
 
         protected static int GetRoundedSize(int size)
         {
-            int rounded = (size / RoundSizeBy) * RoundSizeBy;
-            return rounded + RoundSizeBy;
+            int rounded = (size / ROUND_SIZE_BY) * ROUND_SIZE_BY;
+            return rounded + ROUND_SIZE_BY;
         }
 
         public override string ToString()
         {
-            return m_arrays.Count.ToString();
+            return arrays.Count.ToString();
         }
     }
 }

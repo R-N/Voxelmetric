@@ -10,22 +10,22 @@ public class CustomMeshBlockConfig : BlockConfig
     {
         public int[] tris;
         public Vector3[] verts;
-        public Vector2[] uvs;
+        public Vector4[] uvs;
         public Color32[] colors;
         public TextureCollection textures;
     }
 
     public GameObject meshGO;
 
-    public CustomMeshBlockData data { get; set; } = new CustomMeshBlockData();
+    public CustomMeshBlockData Data { get; set; } = new CustomMeshBlockData();
 
-    protected Vector3 m_meshOffset;
-    protected float m_scale;
+    protected Vector3 meshOffset;
+    protected float scale;
 
     public Vector3 MeshOffset
     {
-        get { return m_meshOffset; }
-        set { m_meshOffset = new Vector3(Env.BlockSizeHalf + value.x, Env.BlockSizeHalf + value.y, Env.BlockSizeHalf + value.z); }
+        get { return meshOffset; }
+        set { meshOffset = new Vector3(Env.BLOCK_SIZE_HALF + value.x, Env.BLOCK_SIZE_HALF + value.y, Env.BLOCK_SIZE_HALF + value.z); }
     }
 
     public override bool OnSetUp(BlockConfigObject config, World world)
@@ -37,12 +37,12 @@ public class CustomMeshBlockConfig : BlockConfig
 
         if (config is CustomMeshConfigObject meshConfig)
         {
-            data.textures = world.textureProvider.GetTextureCollection(meshConfig.Texture);
+            Data.textures = world.textureProvider.GetTextureCollection(meshConfig.Texture);
             meshGO = meshConfig.MeshObject;
             MeshOffset = meshConfig.MeshOffset;
             long scaleInv = 1;
 
-            m_scale = 1f / scaleInv;
+            scale = 1f / scaleInv;
 
             return true;
         }
@@ -59,12 +59,12 @@ public class CustomMeshBlockConfig : BlockConfig
             world,
             meshGO,
             type,
-            m_meshOffset,
-            m_scale,
-            out data.tris,
-            out data.verts,
-            out data.uvs,
-            out data.colors
+            meshOffset,
+            scale,
+            out Data.tris,
+            out Data.verts,
+            out Data.uvs,
+            out Data.colors
         );
     }
 
@@ -74,7 +74,7 @@ public class CustomMeshBlockConfig : BlockConfig
         float meshScale, // TODO: Implement scaling
         out int[] trisOut,
         out Vector3[] vertsOut,
-        out Vector2[] uvsOut,
+        out Vector4[] uvsOut,
         out Color32[] colorsOut
     )
     {
@@ -120,7 +120,7 @@ public class CustomMeshBlockConfig : BlockConfig
         trisOut = new int[triangleCnt];
         vertsOut = new Vector3[vertexCnt];
         //if (hasUVs)
-        uvsOut = new Vector2[vertexCnt];
+        uvsOut = new Vector4[vertexCnt];
         //if (hasColors)
         colorsOut = new Color32[vertexCnt];
 
@@ -294,7 +294,7 @@ public class CustomMeshBlockConfig : BlockConfig
         float meshScale,
         out int[] trisOut,
         out Vector3[] vertsOut,
-        out Vector2[] uvsOut,
+        out Vector4[] uvsOut,
         out Color32[] colorsOut
         )
     {

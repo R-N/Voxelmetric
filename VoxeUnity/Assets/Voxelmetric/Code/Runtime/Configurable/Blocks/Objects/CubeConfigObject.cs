@@ -51,8 +51,8 @@ public class CubeConfigObject : BlockConfigObject
     {
         CubeBlockConfig config = new CubeBlockConfig()
         {
-            raycastHit = true,
-            raycastHitOnRemoval = true
+            RaycastHit = true,
+            RaycastHitOnRemoval = true
         };
 
         return config;

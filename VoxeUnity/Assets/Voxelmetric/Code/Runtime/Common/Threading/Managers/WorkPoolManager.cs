@@ -5,29 +5,22 @@ namespace Voxelmetric.Code.Common.Threading.Managers
 {
     public static class WorkPoolManager
     {
-        private static readonly List<AThreadPoolItem> WorkItems = new List<AThreadPoolItem>(2048);
-        private static readonly List<AThreadPoolItem> WorkItemsP = new List<AThreadPoolItem>(2048);
+        private static readonly List<AThreadPoolItem> workItems = new List<AThreadPoolItem>(2048);
+        private static readonly List<AThreadPoolItem> workItemsP = new List<AThreadPoolItem>(2048);
 
-        private static readonly HashSet<TaskPool> Threads = Features.UseThreadPool
-                                                           ? new HashSet<TaskPool>()
-                                                           : null;
-        private static readonly List<TaskPool> ThreadsIter = Features.UseThreadPool
-                                                            ? new List<TaskPool>()
-                                                            : null;
-
-        private static readonly TimeBudgetHandler TimeBudget = Features.UseThreadPool
-                                                                   ? null
-                                                                   : new TimeBudgetHandler(10);
+        private static readonly HashSet<TaskPool> threads = Features.useThreadPool ? new HashSet<TaskPool>() : null;
+        private static readonly List<TaskPool> threadsIter = Features.useThreadPool ? new List<TaskPool>() : null;
+        private static readonly TimeBudgetHandler timeBudget = Features.useThreadPool ? null : new TimeBudgetHandler(10);
 
         public static void Add(AThreadPoolItem action, bool priority)
         {
             if (priority)
             {
-                WorkItemsP.Add(action);
+                workItemsP.Add(action);
             }
             else
             {
-                WorkItems.Add(action);
+                workItems.Add(action);
             }
         }
 
@@ -64,9 +57,9 @@ namespace Voxelmetric.Code.Common.Threading.Managers
                 {
                     tp.AddPriorityItem(wi[j]);
                 }
-                if (Threads.Add(tp))
+                if (threads.Add(tp))
                 {
-                    ThreadsIter.Add(tp);
+                    threadsIter.Add(tp);
                 }
 
                 from = i + 1;
@@ -78,74 +71,74 @@ namespace Voxelmetric.Code.Common.Threading.Managers
             {
                 tp.AddPriorityItem(wi[j]);
             }
-            if (Threads.Add(tp))
+            if (threads.Add(tp))
             {
-                ThreadsIter.Add(tp);
+                threadsIter.Add(tp);
             }
         }
 
         public static void Commit()
         {
             // Commit all the work we have
-            if (Features.UseThreadPool)
+            if (Features.useThreadPool)
             {
                 // Priority tasks first
-                ProcessWorkItems(WorkItemsP);
+                ProcessWorkItems(workItemsP);
                 // Oridinary tasks second
-                ProcessWorkItems(WorkItems);
+                ProcessWorkItems(workItems);
 
                 // Commit all tasks we collected to their respective threads
-                for (int i = 0; i < ThreadsIter.Count; i++)
+                for (int i = 0; i < threadsIter.Count; i++)
                 {
-                    ThreadsIter[i].Commit();
+                    threadsIter[i].Commit();
                 }
 
-                Threads.Clear();
-                ThreadsIter.Clear();
+                threads.Clear();
+                threadsIter.Clear();
             }
             else
             {
-                WorkItemsP.Sort((x, y) => x.Priority.CompareTo(y.Priority));
-                for (int i = 0; i < WorkItemsP.Count; i++)
+                workItemsP.Sort((x, y) => x.Priority.CompareTo(y.Priority));
+                for (int i = 0; i < workItemsP.Count; i++)
                 {
-                    TimeBudget.StartMeasurement();
-                    WorkItemsP[i].Run();
-                    TimeBudget.StopMeasurement();
+                    timeBudget.StartMeasurement();
+                    workItemsP[i].Run();
+                    timeBudget.StopMeasurement();
 
                     // If the tasks take too much time to finish, spread them out over multiple
                     // frames to avoid performance spikes
-                    if (!TimeBudget.HasTimeBudget)
+                    if (!timeBudget.HasTimeBudget)
                     {
-                        WorkItemsP.RemoveRange(0, i + 1);
+                        workItemsP.RemoveRange(0, i + 1);
                         return;
                     }
                 }
 
-                WorkItems.Sort((x, y) => x.Priority.CompareTo(y.Priority));
-                for (int i = 0; i < WorkItems.Count; i++)
+                workItems.Sort((x, y) => x.Priority.CompareTo(y.Priority));
+                for (int i = 0; i < workItems.Count; i++)
                 {
-                    TimeBudget.StartMeasurement();
-                    WorkItems[i].Run();
-                    TimeBudget.StopMeasurement();
+                    timeBudget.StartMeasurement();
+                    workItems[i].Run();
+                    timeBudget.StopMeasurement();
 
                     // If the tasks take too much time to finish, spread them out over multiple
                     // frames to avoid performance spikes
-                    if (!TimeBudget.HasTimeBudget)
+                    if (!timeBudget.HasTimeBudget)
                     {
-                        WorkItems.RemoveRange(0, i + 1);
+                        workItems.RemoveRange(0, i + 1);
                         return;
                     }
                 }
             }
 
             // Remove processed work items
-            WorkItems.Clear();
-            WorkItemsP.Clear();
+            workItems.Clear();
+            workItemsP.Clear();
         }
 
         public new static string ToString()
         {
-            return Features.UseThreadPool ? Globals.WorkPool.ToString() : WorkItems.Count.ToString();
+            return Features.useThreadPool ? Globals.WorkPool.ToString() : workItems.Count.ToString();
         }
     }
 }

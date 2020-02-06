@@ -178,18 +178,18 @@ namespace Voxelmetric.Code.VM
             SendChunk(pos, data, id);
         }
 
-        public const int headerSize = 13, leaderSize = headerSize + 8;
+        public const int HEADER_SIZE = 13, LEADER_SIZE = HEADER_SIZE + 8;
 
         protected void SendChunk(Vector3Int pos, byte[] chunkData, int id)
         {
             int chunkDataIndex = 0;
             while (chunkDataIndex < chunkData.Length)
             {
-                byte[] message = new byte[VmNetworking.bufferLength];
-                message[0] = VmNetworking.transmitChunkData;
+                byte[] message = new byte[VmNetworking.BUFFER_LENGTH];
+                message[0] = VmNetworking.TRANSMIT_CHUNK_DATA;
                 pos.ToBytes().CopyTo(message, 1);
-                BitConverter.GetBytes(chunkDataIndex).CopyTo(message, headerSize);
-                BitConverter.GetBytes(chunkData.Length).CopyTo(message, headerSize + 4);
+                BitConverter.GetBytes(chunkDataIndex).CopyTo(message, HEADER_SIZE);
+                BitConverter.GetBytes(chunkData.Length).CopyTo(message, HEADER_SIZE + 4);
 
                 if (debugServer)
                 {
@@ -199,7 +199,7 @@ namespace Voxelmetric.Code.VM
                               + ", buffer=" + message.Length);
                 }
 
-                for (int i = leaderSize; i < message.Length; i++)
+                for (int i = LEADER_SIZE; i < message.Length; i++)
                 {
                     message[i] = chunkData[chunkDataIndex];
                     chunkDataIndex++;
@@ -225,7 +225,7 @@ namespace Voxelmetric.Code.VM
 
                 byte[] data = new byte[15];
 
-                data[0] = VmNetworking.SendBlockChange;
+                data[0] = VmNetworking.SEND_BLOCK_CHANGE;
                 pos.ToBytes().CopyTo(data, 1);
                 BlockData.ToByteArray(blockData).CopyTo(data, 13);
 

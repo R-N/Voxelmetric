@@ -47,33 +47,33 @@ public class TerrainGen
             TerrainLayer layer = config.GetLayer();
             layer.BaseSetUp(config, world, this);
 
-            if (layer.isStructure)
+            if (layer.IsStructure)
             {
                 // Do not allow any two layers share the same index
-                if (structLayersIndexes.Contains(layer.index))
+                if (structLayersIndexes.Contains(layer.Index))
                 {
-                    Debug.LogError("Could not create structure layer " + config.LayerName + ". Index " + layer.index.ToString() + " already defined");
+                    Debug.LogError("Could not create structure layer " + config.LayerName + ". Index " + layer.Index.ToString() + " already defined");
                     layersConfigs.RemoveAt(i);
                     continue;
                 }
 
                 // Add layer to layers list
                 structLayers.Add(layer);
-                structLayersIndexes.Add(layer.index);
+                structLayersIndexes.Add(layer.Index);
             }
             else
             {
                 // Do not allow any two layers share the same index
-                if (terrainLayersIndexes.Contains(layer.index))
+                if (terrainLayersIndexes.Contains(layer.Index))
                 {
-                    Debug.LogError("Could not create terrain layer " + config.LayerName + ". Index " + layer.index.ToString() + " already defined");
+                    Debug.LogError("Could not create terrain layer " + config.LayerName + ". Index " + layer.Index.ToString() + " already defined");
                     layersConfigs.RemoveAt(i);
                     continue;
                 }
 
                 // Add layer to layers list
                 terrainLayers.Add(layer);
-                terrainLayersIndexes.Add(layer.index);
+                terrainLayersIndexes.Add(layer.Index);
             }
 
             ++i;
@@ -167,10 +167,10 @@ public class TerrainGen
     /// <param name="chunk">Chunk for which terrain is generated</param>
     public void GenerateTerrainForChunk(Chunk chunk)
     {
-        int maxY = chunk.Pos.y + Env.ChunkSize;
-        for (int z = 0; z < Env.ChunkSize; z++)
+        int maxY = chunk.Pos.y + Env.CHUNK_SIZE;
+        for (int z = 0; z < Env.CHUNK_SIZE; z++)
         {
-            for (int x = 0; x < Env.ChunkSize; x++)
+            for (int x = 0; x < Env.CHUNK_SIZE; x++)
             {
                 float height = 0f;
                 for (int i = 0; i < TerrainLayers.Length; i++)
@@ -192,5 +192,4 @@ public class TerrainGen
             StructureLayers[i].GenerateStructures(chunk, i);
         }
     }
-
 }

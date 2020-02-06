@@ -19,55 +19,42 @@ public class BlockConfig
     #region Parameters read from config
 
     //! Unique identifier of block config
-    public ushort typeInConfig { get; set; }
+    public ushort TypeInConfig { get; set; }
     //! Unique identifier of block config
-    public string name { get; set; }
+    public string Name { get; set; }
 
-    private string m_className;
-    public string className
+    private string className;
+    public string ClassName
     {
-        get { return m_className; }
+        get { return className; }
         set
         {
-            m_className = value;
-            blockClass = Type.GetType(value + ", " + typeof(Block).Assembly, false);
+            className = value;
+            BlockClass = Type.GetType(value + ", " + typeof(Block).Assembly, false);
         }
     }
 
-    public Type blockClass { get; set; }
+    public Type BlockClass { get; set; }
 
-    public bool solid { get; set; }
-    public bool transparent { get; set; }
-    public bool raycastHit { get; set; }
-    public bool raycastHitOnRemoval { get; set; }
-    public int renderMaterialID { get; set; }
-    public int physicMaterialID { get; set; }
+    public bool Solid { get; set; }
+    public bool Transparent { get; set; }
+    public bool RaycastHit { get; set; }
+    public bool RaycastHitOnRemoval { get; set; }
+    public int RenderMaterialID { get; set; }
+    public int PhysicMaterialID { get; set; }
 
     #endregion
 
-    public static BlockConfig CreateAirBlockConfig(World world)
+    public static BlockConfig CreateAirBlockConfig()
     {
         return new BlockConfig
         {
-            name = "air",
-            typeInConfig = BlockProvider.AirType,
-            className = "Block",
-            solid = false,
-            transparent = true,
-            physicMaterialID = -1
-        };
-    }
-
-    public static BlockConfig CreateColorBlockConfig(World world, ushort type)
-    {
-        return new BlockConfig
-        {
-            name = string.Format("simple_{0}", type),
-            typeInConfig = type,
-            className = "SimpleBlock",
-            solid = true,
-            transparent = false,
-            physicMaterialID = 0
+            Name = "air",
+            TypeInConfig = BlockProvider.AIR_TYPE,
+            ClassName = "Block",
+            Solid = false,
+            Transparent = true,
+            PhysicMaterialID = -1
         };
     }
 
@@ -80,19 +67,19 @@ public class BlockConfig
     public virtual bool OnSetUp(BlockConfigObject config, World world)
     {
         // Obligatory parameters
-        name = config.BlockName;
-        if (string.IsNullOrWhiteSpace(name))
+        Name = config.BlockName;
+        if (string.IsNullOrWhiteSpace(Name))
         {
             Debug.LogError(config.name + " can't have a empty block name!");
             return false;
         }
 
-        typeInConfig = (ushort)(config.ID + BlockProvider.LastReservedType);
-        solid = config.Solid;
-        transparent = config.Transparent;
+        TypeInConfig = (ushort)(config.ID + BlockProvider.lastReservedType);
+        Solid = config.Solid;
+        Transparent = config.Transparent;
 
         // Try to associate requested render materials with one of world's materials
-        renderMaterialID = (int)config.TextureType;
+        RenderMaterialID = (int)config.TextureType;
         //string materialName = _GetPropertyFromConfig(config, "material", string.Empty);
         //for (int i = 0; i < world.renderMaterials.Length; i++)
         //{
@@ -104,7 +91,7 @@ public class BlockConfig
         //}
 
         // Try to associate requested physic materials with one of world's materials
-        physicMaterialID = solid ? 0 : -1; // solid objects will collide by default
+        PhysicMaterialID = Solid ? 0 : -1; // solid objects will collide by default
                                            //string materialName = _GetPropertyFromConfig(config, "materialPx", string.Empty);
                                            //for (int i = 0; i < world.physicsMaterials.Length; i++)
                                            //{
@@ -125,6 +112,6 @@ public class BlockConfig
 
     public override string ToString()
     {
-        return name;
+        return Name;
     }
 }

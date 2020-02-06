@@ -7,22 +7,22 @@ namespace Voxelmetric.Code.Utilities
 {
     public static class ChunkLoadOrder
     {
-        private static List<Vector3Int> s_chunkLoads = new List<Vector3Int>();
+        private static List<Vector3Int> chunkLoads = new List<Vector3Int>();
 
         public static Vector3Int[] ChunkPositions(int chunkLoadRadius)
         {
-            s_chunkLoads.Clear();
+            chunkLoads.Clear();
 
             for (int z = -chunkLoadRadius; z <= chunkLoadRadius; z++)
             {
                 for (int x = -chunkLoadRadius; x <= chunkLoadRadius; x++)
                 {
-                    s_chunkLoads.Add(new Vector3Int(x, 0, z));
+                    chunkLoads.Add(new Vector3Int(x, 0, z));
                 }
             }
 
             // Sort 2D vectors by closeness to the center
-            return s_chunkLoads
+            return chunkLoads
                 .Where(pos => CheckXZ(pos.x, pos.z, chunkLoadRadius))
                 // Smallest magnitude vectors first
                 .OrderBy(pos => Helpers.Abs(pos.x) + Helpers.Abs(pos.z))

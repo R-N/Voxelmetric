@@ -81,9 +81,9 @@ namespace Voxelmetric.Code.Common.Collections
 
         public static bool operator ==(Tuple<T1, T2> a, Tuple<T1, T2> b)
         {
-            if (ReferenceEquals(a, null))
+            if (a is null)
             {
-                return ReferenceEquals(b, null);
+                return b is null;
             }
 
             if (a.item1 == null && b.item1 != null)

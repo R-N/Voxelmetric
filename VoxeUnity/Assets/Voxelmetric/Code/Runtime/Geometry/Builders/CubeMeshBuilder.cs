@@ -22,12 +22,12 @@ namespace Voxelmetric.Code.Builders
         protected override bool CanConsiderBlock(Block block)
         {
             // Skip air data
-            return block.Type != BlockProvider.AirType;
+            return block.type != BlockProvider.AIR_TYPE;
         }
 
         protected override bool CanCreateBox(Block block, Block neighbor)
         {
-            return block.Type == neighbor.Type;
+            return block.type == neighbor.type;
         }
 
         protected override void BuildBox(Chunk chunk, Block block, int minX, int minY, int minZ, int maxX, int maxY, int maxZ)
@@ -38,7 +38,7 @@ namespace Voxelmetric.Code.Builders
             //     |  |
             //     0--3
 
-            int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
+            int sizeWithPadding = sideSize + Env.CHUNK_PADDING_2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
 
             Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
@@ -46,7 +46,7 @@ namespace Voxelmetric.Code.Builders
             Chunk[] listeners = chunk.Neighbors;
 
             // Custom blocks have their own rules
-            if (block.Custom)
+            if (block.custom)
             {
                 for (int yy = minY; yy < maxY; yy++)
                 {
@@ -55,7 +55,7 @@ namespace Voxelmetric.Code.Builders
                         for (int xx = minX; xx < maxX; xx++)
                         {
                             Vector3Int pos = new Vector3Int(xx, yy, zz);
-                            block.BuildBlock(chunk, ref pos, block.RenderMaterialID);
+                            block.BuildBlock(chunk, ref pos, block.renderMaterialID);
                         }
                     }
                 }
@@ -66,28 +66,28 @@ namespace Voxelmetric.Code.Builders
             int n, w, h, l, k, maskIndex;
             Vector3Int texturePos = new Vector3Int(minX, minY, minZ);
 
-            Vector3[] face = pools.Vector3ArrayPool.PopExact(4);
-            BlockFace[] mask = pools.BlockFaceArrayPool.PopExact(m_sideSize * m_sideSize);
+            Vector3[] face = pools.vector3ArrayPool.PopExact(4);
+            BlockFace[] mask = pools.blockFaceArrayPool.PopExact(sideSize * sideSize);
 
             #region Top face
 
             if (listeners[(int)Direction.up] != null ||
                 // Don't render faces on edges for chunks with no neighbor
                 (SideMask & Side.up) == 0 ||
-                maxY != m_sideSize)
+                maxY != sideSize)
             {
                 Array.Clear(mask, 0, mask.Length);
 
                 // x axis - width
                 // z axis - height
 
-                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX, maxY, minZ, m_pow);
+                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX, maxY, minZ, pow);
                 int zOffset = sizeWithPadding - maxX + minX;
 
                 // Build the mask
                 for (int zz = minZ; zz < maxZ; ++zz, neighborIndex += zOffset)
                 {
-                    n = minX + zz * m_sideSize;
+                    n = minX + zz * sideSize;
                     for (int xx = minX; xx < maxX; ++xx, ++n, ++neighborIndex)
                     {
                         int currentIndex = neighborIndex - sizeWithPaddingPow2; // (xx, maxY-1, zz);
@@ -102,7 +102,7 @@ namespace Voxelmetric.Code.Builders
                                 pos = texturePos,
                                 side = Direction.up,
                                 light = BlockUtils.CalculateColors(chunk, currentIndex, Direction.up),
-                                materialID = block.RenderMaterialID
+                                materialID = block.renderMaterialID
                             };
                         }
                     }
@@ -111,7 +111,7 @@ namespace Voxelmetric.Code.Builders
                 // Build faces from the mask if it's possible
                 for (int zz = minZ; zz < maxZ; ++zz)
                 {
-                    n = minX + zz * m_sideSize;
+                    n = minX + zz * sideSize;
                     for (int xx = minX; xx < maxX;)
                     {
                         if (mask[n].block == null)
@@ -123,11 +123,11 @@ namespace Voxelmetric.Code.Builders
 
                         // Compute width
                         maskIndex = n + 1;
-                        for (w = 1; xx + w < m_sideSize;)
+                        for (w = 1; xx + w < sideSize;)
                         {
                             Block blk = mask[maskIndex].block;
                             if (blk == null ||
-                                blk.Type != mask[n].block.Type ||
+                                blk.type != mask[n].block.type ||
                                 !mask[maskIndex].light.Equals(mask[n].light))
                             {
                                 break;
@@ -138,14 +138,14 @@ namespace Voxelmetric.Code.Builders
                         }
 
                         // Compute height
-                        for (h = 1; zz + h < m_sideSize; h++)
+                        for (h = 1; zz + h < sideSize; h++)
                         {
-                            maskIndex = n + h * m_sideSize;
+                            maskIndex = n + h * sideSize;
                             for (k = 0; k < w; k++, maskIndex++)
                             {
                                 Block blk = mask[maskIndex].block;
                                 if (blk == null ||
-                                    blk.Type != mask[n].block.Type ||
+                                    blk.type != mask[n].block.type ||
                                     !mask[maskIndex].light.Equals(mask[n].light))
                                 {
                                     goto cont;
@@ -158,25 +158,25 @@ namespace Voxelmetric.Code.Builders
                         bool rotated = mask[n].light.FaceRotationNecessary;
                         if (!rotated)
                         {
-                            face[0] = new Vector3(xx, maxY, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.up][0];
-                            face[1] = new Vector3(xx, maxY, zz + h) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.up][1];
-                            face[2] = new Vector3(xx + w, maxY, zz + h) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.up][2];
-                            face[3] = new Vector3(xx + w, maxY, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.up][3];
+                            face[0] = new Vector3(xx, maxY, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.up][0];
+                            face[1] = new Vector3(xx, maxY, zz + h) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.up][1];
+                            face[2] = new Vector3(xx + w, maxY, zz + h) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.up][2];
+                            face[3] = new Vector3(xx + w, maxY, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.up][3];
                         }
                         else
                         {
-                            face[0] = new Vector3(xx, maxY, zz + h) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.up][1];
-                            face[1] = new Vector3(xx + w, maxY, zz + h) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.up][2];
-                            face[2] = new Vector3(xx + w, maxY, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.up][3];
-                            face[3] = new Vector3(xx, maxY, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.up][0];
+                            face[0] = new Vector3(xx, maxY, zz + h) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.up][1];
+                            face[1] = new Vector3(xx + w, maxY, zz + h) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.up][2];
+                            face[2] = new Vector3(xx + w, maxY, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.up][3];
+                            face[3] = new Vector3(xx, maxY, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.up][0];
                         }
 
                         block.BuildFace(chunk, face, Palette, ref mask[n], rotated);
@@ -184,7 +184,7 @@ namespace Voxelmetric.Code.Builders
                         // Zero out the mask. We don't need to process the same fields again
                         for (l = 0; l < h; ++l)
                         {
-                            maskIndex = n + l * m_sideSize;
+                            maskIndex = n + l * sideSize;
                             for (k = 0; k < w; ++k, ++maskIndex)
                             {
                                 mask[maskIndex] = new BlockFace();
@@ -211,13 +211,13 @@ namespace Voxelmetric.Code.Builders
                 // x axis - width
                 // z axis - height
 
-                int currentIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY, minZ, m_pow);
+                int currentIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY, minZ, pow);
                 int zOffset = sizeWithPadding - maxX + minX;
 
                 // Build the mask
                 for (int zz = minZ; zz < maxZ; ++zz, currentIndex += zOffset)
                 {
-                    n = minX + zz * m_sideSize;
+                    n = minX + zz * sideSize;
                     for (int xx = minX; xx < maxX; ++xx, ++n, ++currentIndex)
                     {
                         int neighborIndex = currentIndex - sizeWithPaddingPow2;
@@ -232,7 +232,7 @@ namespace Voxelmetric.Code.Builders
                                 pos = texturePos,
                                 side = Direction.down,
                                 light = BlockUtils.CalculateColors(chunk, currentIndex, Direction.down),
-                                materialID = block.RenderMaterialID
+                                materialID = block.renderMaterialID
                             };
                         }
                     }
@@ -241,7 +241,7 @@ namespace Voxelmetric.Code.Builders
                 // Build faces from the mask if it's possible
                 for (int zz = minZ; zz < maxZ; ++zz)
                 {
-                    n = minX + zz * m_sideSize;
+                    n = minX + zz * sideSize;
                     for (int xx = minX; xx < maxX;)
                     {
                         if (mask[n].block == null)
@@ -253,11 +253,11 @@ namespace Voxelmetric.Code.Builders
 
                         // Compute width
                         maskIndex = n + 1;
-                        for (w = 1; xx + w < m_sideSize;)
+                        for (w = 1; xx + w < sideSize;)
                         {
                             Block blk = mask[maskIndex].block;
                             if (blk == null ||
-                                blk.Type != mask[n].block.Type ||
+                                blk.type != mask[n].block.type ||
                                 !mask[maskIndex].light.Equals(mask[n].light))
                             {
                                 break;
@@ -268,14 +268,14 @@ namespace Voxelmetric.Code.Builders
                         }
 
                         // Compute height
-                        for (h = 1; zz + h < m_sideSize; h++)
+                        for (h = 1; zz + h < sideSize; h++)
                         {
-                            maskIndex = n + h * m_sideSize;
+                            maskIndex = n + h * sideSize;
                             for (k = 0; k < w; k++, maskIndex++)
                             {
                                 Block blk = mask[maskIndex].block;
                                 if (blk == null ||
-                                    blk.Type != mask[n].block.Type ||
+                                    blk.type != mask[n].block.type ||
                                     !mask[maskIndex].light.Equals(mask[n].light))
                                 {
                                     goto cont;
@@ -288,25 +288,25 @@ namespace Voxelmetric.Code.Builders
                         bool rotated = mask[n].light.FaceRotationNecessary;
                         if (!rotated)
                         {
-                            face[0] = new Vector3(xx, minY, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.down][0];
-                            face[1] = new Vector3(xx, minY, zz + h) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.down][1];
-                            face[2] = new Vector3(xx + w, minY, zz + h) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.down][2];
-                            face[3] = new Vector3(xx + w, minY, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.down][3];
+                            face[0] = new Vector3(xx, minY, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.down][0];
+                            face[1] = new Vector3(xx, minY, zz + h) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.down][1];
+                            face[2] = new Vector3(xx + w, minY, zz + h) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.down][2];
+                            face[3] = new Vector3(xx + w, minY, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.down][3];
                         }
                         else
                         {
-                            face[0] = new Vector3(xx, minY, zz + h) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.down][1];
-                            face[1] = new Vector3(xx + w, minY, zz + h) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.down][2];
-                            face[2] = new Vector3(xx + w, minY, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.down][3];
-                            face[3] = new Vector3(xx, minY, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.down][0];
+                            face[0] = new Vector3(xx, minY, zz + h) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.down][1];
+                            face[1] = new Vector3(xx + w, minY, zz + h) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.down][2];
+                            face[2] = new Vector3(xx + w, minY, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.down][3];
+                            face[3] = new Vector3(xx, minY, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.down][0];
                         }
 
                         block.BuildFace(chunk, face, Palette, ref mask[n], rotated);
@@ -314,7 +314,7 @@ namespace Voxelmetric.Code.Builders
                         // Zero out the mask. We don't need to process the same fields again
                         for (l = 0; l < h; ++l)
                         {
-                            maskIndex = n + l * m_sideSize;
+                            maskIndex = n + l * sideSize;
                             for (k = 0; k < w; ++k, ++maskIndex)
                             {
                                 mask[maskIndex] = new BlockFace();
@@ -334,20 +334,20 @@ namespace Voxelmetric.Code.Builders
             if (listeners[(int)Direction.east] != null ||
                 // Don't render faces on edges for chunks with no neighbor
                 (SideMask & Side.east) == 0 ||
-                maxX != m_sideSize)
+                maxX != sideSize)
             {
                 Array.Clear(mask, 0, mask.Length);
 
                 // y axis - height
                 // z axis - width
 
-                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(maxX, minY, minZ, m_pow);
+                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(maxX, minY, minZ, pow);
                 int yOffset = sizeWithPaddingPow2 - (maxZ - minZ) * sizeWithPadding;
 
                 // Build the mask
                 for (int yy = minY; yy < maxY; ++yy, neighborIndex += yOffset)
                 {
-                    n = minZ + yy * m_sideSize;
+                    n = minZ + yy * sideSize;
                     for (int zz = minZ; zz < maxZ; ++zz, ++n, neighborIndex += sizeWithPadding)
                     {
                         int currentIndex = neighborIndex - 1;
@@ -362,7 +362,7 @@ namespace Voxelmetric.Code.Builders
                                 pos = texturePos,
                                 side = Direction.east,
                                 light = BlockUtils.CalculateColors(chunk, currentIndex, Direction.east),
-                                materialID = block.RenderMaterialID
+                                materialID = block.renderMaterialID
                             };
                         }
                     }
@@ -371,7 +371,7 @@ namespace Voxelmetric.Code.Builders
                 // Build faces from the mask if it's possible
                 for (int yy = minY; yy < maxY; ++yy)
                 {
-                    n = minZ + yy * m_sideSize;
+                    n = minZ + yy * sideSize;
                     for (int zz = minZ; zz < maxZ;)
                     {
                         if (mask[n].block == null)
@@ -383,11 +383,11 @@ namespace Voxelmetric.Code.Builders
 
                         // Compute width
                         maskIndex = n + 1;
-                        for (w = 1; zz + w < m_sideSize;)
+                        for (w = 1; zz + w < sideSize;)
                         {
                             Block blk = mask[maskIndex].block;
                             if (blk == null ||
-                                blk.Type != mask[n].block.Type ||
+                                blk.type != mask[n].block.type ||
                                 !mask[maskIndex].light.Equals(mask[n].light))
                             {
                                 break;
@@ -398,14 +398,14 @@ namespace Voxelmetric.Code.Builders
                         }
 
                         // Compute height
-                        for (h = 1; yy + h < m_sideSize; h++)
+                        for (h = 1; yy + h < sideSize; h++)
                         {
-                            maskIndex = n + h * m_sideSize;
+                            maskIndex = n + h * sideSize;
                             for (k = 0; k < w; k++, maskIndex++)
                             {
                                 Block blk = mask[maskIndex].block;
                                 if (blk == null ||
-                                    blk.Type != mask[n].block.Type ||
+                                    blk.type != mask[n].block.type ||
                                     !mask[maskIndex].light.Equals(mask[n].light))
                                 {
                                     goto cont;
@@ -418,25 +418,25 @@ namespace Voxelmetric.Code.Builders
                         bool rotated = mask[n].light.FaceRotationNecessary;
                         if (!rotated)
                         {
-                            face[0] = new Vector3(maxX, yy, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.east][0];
-                            face[1] = new Vector3(maxX, yy + h, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.east][1];
-                            face[2] = new Vector3(maxX, yy + h, zz + w) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.east][2];
-                            face[3] = new Vector3(maxX, yy, zz + w) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.east][3];
+                            face[0] = new Vector3(maxX, yy, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.east][0];
+                            face[1] = new Vector3(maxX, yy + h, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.east][1];
+                            face[2] = new Vector3(maxX, yy + h, zz + w) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.east][2];
+                            face[3] = new Vector3(maxX, yy, zz + w) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.east][3];
                         }
                         else
                         {
-                            face[0] = new Vector3(maxX, yy + h, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.east][1];
-                            face[1] = new Vector3(maxX, yy + h, zz + w) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.east][2];
-                            face[2] = new Vector3(maxX, yy, zz + w) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.east][3];
-                            face[3] = new Vector3(maxX, yy, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.east][0];
+                            face[0] = new Vector3(maxX, yy + h, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.east][1];
+                            face[1] = new Vector3(maxX, yy + h, zz + w) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.east][2];
+                            face[2] = new Vector3(maxX, yy, zz + w) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.east][3];
+                            face[3] = new Vector3(maxX, yy, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.east][0];
                         }
 
                         block.BuildFace(chunk, face, Palette, ref mask[n], rotated);
@@ -444,7 +444,7 @@ namespace Voxelmetric.Code.Builders
                         // Zero out the mask. We don't need to process the same fields again
                         for (l = 0; l < h; ++l)
                         {
-                            maskIndex = n + l * m_sideSize;
+                            maskIndex = n + l * sideSize;
                             for (k = 0; k < w; ++k, ++maskIndex)
                             {
                                 mask[maskIndex] = new BlockFace();
@@ -471,13 +471,13 @@ namespace Voxelmetric.Code.Builders
                 // y axis - height
                 // z axis - width
 
-                int currentIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY, minZ, m_pow);
+                int currentIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY, minZ, pow);
                 int yOffset = sizeWithPaddingPow2 - (maxZ - minZ) * sizeWithPadding;
 
                 // Build the mask
                 for (int yy = minY; yy < maxY; ++yy, currentIndex += yOffset)
                 {
-                    n = minZ + yy * m_sideSize;
+                    n = minZ + yy * sideSize;
                     for (int zz = minZ; zz < maxZ; ++zz, ++n, currentIndex += sizeWithPadding)
                     {
                         int neighborIndex = currentIndex - 1;
@@ -492,7 +492,7 @@ namespace Voxelmetric.Code.Builders
                                 pos = texturePos,
                                 side = Direction.west,
                                 light = BlockUtils.CalculateColors(chunk, currentIndex, Direction.west),
-                                materialID = block.RenderMaterialID
+                                materialID = block.renderMaterialID
                             };
                         }
                     }
@@ -501,7 +501,7 @@ namespace Voxelmetric.Code.Builders
                 // Build faces from the mask if it's possible
                 for (int yy = minY; yy < maxY; ++yy)
                 {
-                    n = minZ + yy * m_sideSize;
+                    n = minZ + yy * sideSize;
                     for (int zz = minZ; zz < maxZ;)
                     {
                         if (mask[n].block == null)
@@ -513,11 +513,11 @@ namespace Voxelmetric.Code.Builders
 
                         // Compute width
                         maskIndex = n + 1;
-                        for (w = 1; zz + w < m_sideSize;)
+                        for (w = 1; zz + w < sideSize;)
                         {
                             Block blk = mask[maskIndex].block;
                             if (blk == null ||
-                                blk.Type != mask[n].block.Type ||
+                                blk.type != mask[n].block.type ||
                                 !mask[maskIndex].light.Equals(mask[n].light))
                             {
                                 break;
@@ -528,14 +528,14 @@ namespace Voxelmetric.Code.Builders
                         }
 
                         // Compute height
-                        for (h = 1; yy + h < m_sideSize; h++)
+                        for (h = 1; yy + h < sideSize; h++)
                         {
-                            maskIndex = n + h * m_sideSize;
+                            maskIndex = n + h * sideSize;
                             for (k = 0; k < w; k++, maskIndex++)
                             {
                                 Block blk = mask[maskIndex].block;
                                 if (blk == null ||
-                                    blk.Type != mask[n].block.Type ||
+                                    blk.type != mask[n].block.type ||
                                     !mask[maskIndex].light.Equals(mask[n].light))
                                 {
                                     goto cont;
@@ -548,25 +548,25 @@ namespace Voxelmetric.Code.Builders
                         bool rotated = mask[n].light.FaceRotationNecessary;
                         if (!rotated)
                         {
-                            face[0] = new Vector3(minX, yy, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.west][0];
-                            face[1] = new Vector3(minX, yy + h, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.west][1];
-                            face[2] = new Vector3(minX, yy + h, zz + w) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.west][2];
-                            face[3] = new Vector3(minX, yy, zz + w) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.west][3];
+                            face[0] = new Vector3(minX, yy, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.west][0];
+                            face[1] = new Vector3(minX, yy + h, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.west][1];
+                            face[2] = new Vector3(minX, yy + h, zz + w) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.west][2];
+                            face[3] = new Vector3(minX, yy, zz + w) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.west][3];
                         }
                         else
                         {
-                            face[0] = new Vector3(minX, yy + h, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.west][1];
-                            face[1] = new Vector3(minX, yy + h, zz + w) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.west][2];
-                            face[2] = new Vector3(minX, yy, zz + w) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.west][3];
-                            face[3] = new Vector3(minX, yy, zz) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.west][0];
+                            face[0] = new Vector3(minX, yy + h, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.west][1];
+                            face[1] = new Vector3(minX, yy + h, zz + w) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.west][2];
+                            face[2] = new Vector3(minX, yy, zz + w) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.west][3];
+                            face[3] = new Vector3(minX, yy, zz) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.west][0];
                         }
 
                         block.BuildFace(chunk, face, Palette, ref mask[n], rotated);
@@ -574,7 +574,7 @@ namespace Voxelmetric.Code.Builders
                         // Zero out the mask. We don't need to process the same fields again
                         for (l = 0; l < h; ++l)
                         {
-                            maskIndex = n + l * m_sideSize;
+                            maskIndex = n + l * sideSize;
                             for (k = 0; k < w; ++k, ++maskIndex)
                             {
                                 mask[maskIndex] = new BlockFace();
@@ -594,20 +594,20 @@ namespace Voxelmetric.Code.Builders
             if (listeners[(int)Direction.north] != null ||
                 // Don't render faces on edges for chunks with no neighbor
                 (SideMask & Side.north) == 0 ||
-                maxZ != m_sideSize)
+                maxZ != sideSize)
             {
                 Array.Clear(mask, 0, mask.Length);
 
                 // x axis - width
                 // y axis - height
 
-                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY, maxZ, m_pow);
+                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY, maxZ, pow);
                 int yOffset = sizeWithPaddingPow2 - maxX + minX;
 
                 // Build the mask
                 for (int yy = minY; yy < maxY; ++yy, neighborIndex += yOffset)
                 {
-                    n = minX + yy * m_sideSize;
+                    n = minX + yy * sideSize;
                     for (int xx = minX; xx < maxX; ++xx, ++n, ++neighborIndex)
                     {
                         int currentIndex = neighborIndex - sizeWithPadding;
@@ -622,7 +622,7 @@ namespace Voxelmetric.Code.Builders
                                 pos = texturePos,
                                 side = Direction.north,
                                 light = BlockUtils.CalculateColors(chunk, currentIndex, Direction.north),
-                                materialID = block.RenderMaterialID
+                                materialID = block.renderMaterialID
                             };
                         }
                     }
@@ -631,7 +631,7 @@ namespace Voxelmetric.Code.Builders
                 // Build faces from the mask if it's possible
                 for (int yy = minY; yy < maxY; ++yy)
                 {
-                    n = minX + yy * m_sideSize;
+                    n = minX + yy * sideSize;
                     for (int xx = minX; xx < maxX;)
                     {
                         if (mask[n].block == null)
@@ -643,11 +643,11 @@ namespace Voxelmetric.Code.Builders
 
                         // Compute width
                         maskIndex = n + 1;
-                        for (w = 1; xx + w < m_sideSize;)
+                        for (w = 1; xx + w < sideSize;)
                         {
                             Block blk = mask[maskIndex].block;
                             if (blk == null ||
-                                blk.Type != mask[n].block.Type ||
+                                blk.type != mask[n].block.type ||
                                 !mask[maskIndex].light.Equals(mask[n].light))
                             {
                                 break;
@@ -658,14 +658,14 @@ namespace Voxelmetric.Code.Builders
                         }
 
                         // Compute height
-                        for (h = 1; yy + h < m_sideSize; h++)
+                        for (h = 1; yy + h < sideSize; h++)
                         {
-                            maskIndex = n + h * m_sideSize;
+                            maskIndex = n + h * sideSize;
                             for (k = 0; k < w; k++, maskIndex++)
                             {
                                 Block blk = mask[maskIndex].block;
                                 if (blk == null ||
-                                    blk.Type != mask[n].block.Type ||
+                                    blk.type != mask[n].block.type ||
                                     !mask[maskIndex].light.Equals(mask[n].light))
                                 {
                                     goto cont;
@@ -678,25 +678,25 @@ namespace Voxelmetric.Code.Builders
                         bool rotated = mask[n].light.FaceRotationNecessary;
                         if (!rotated)
                         {
-                            face[0] = new Vector3(xx, yy, maxZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.north][0];
-                            face[1] = new Vector3(xx, yy + h, maxZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.north][1];
-                            face[2] = new Vector3(xx + w, yy + h, maxZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.north][2];
-                            face[3] = new Vector3(xx + w, yy, maxZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.north][3];
+                            face[0] = new Vector3(xx, yy, maxZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.north][0];
+                            face[1] = new Vector3(xx, yy + h, maxZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.north][1];
+                            face[2] = new Vector3(xx + w, yy + h, maxZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.north][2];
+                            face[3] = new Vector3(xx + w, yy, maxZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.north][3];
                         }
                         else
                         {
-                            face[0] = new Vector3(xx, yy + h, maxZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.north][1];
-                            face[1] = new Vector3(xx + w, yy + h, maxZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.north][2];
-                            face[2] = new Vector3(xx + w, yy, maxZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.north][3];
-                            face[3] = new Vector3(xx, yy, maxZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.north][0];
+                            face[0] = new Vector3(xx, yy + h, maxZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.north][1];
+                            face[1] = new Vector3(xx + w, yy + h, maxZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.north][2];
+                            face[2] = new Vector3(xx + w, yy, maxZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.north][3];
+                            face[3] = new Vector3(xx, yy, maxZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.north][0];
                         }
 
                         block.BuildFace(chunk, face, Palette, ref mask[n], rotated);
@@ -704,7 +704,7 @@ namespace Voxelmetric.Code.Builders
                         // Zero out the mask. We don't need to process the same fields again
                         for (l = 0; l < h; ++l)
                         {
-                            maskIndex = n + l * m_sideSize;
+                            maskIndex = n + l * sideSize;
                             for (k = 0; k < w; ++k, ++maskIndex)
                             {
                                 mask[maskIndex] = new BlockFace();
@@ -731,13 +731,13 @@ namespace Voxelmetric.Code.Builders
                 // x axis - width
                 // y axis - height
 
-                int currentIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY, minZ, m_pow);
+                int currentIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY, minZ, pow);
                 int yOffset = sizeWithPaddingPow2 - maxX + minX;
 
                 // Build the mask
                 for (int yy = minY; yy < maxY; ++yy, currentIndex += yOffset)
                 {
-                    n = minX + yy * m_sideSize;
+                    n = minX + yy * sideSize;
                     for (int xx = minX; xx < maxX; ++xx, ++n, ++currentIndex)
                     {
                         int neighborIndex = currentIndex - sizeWithPadding;
@@ -752,7 +752,7 @@ namespace Voxelmetric.Code.Builders
                                 pos = texturePos,
                                 side = Direction.south,
                                 light = BlockUtils.CalculateColors(chunk, currentIndex, Direction.south),
-                                materialID = block.RenderMaterialID
+                                materialID = block.renderMaterialID
                             };
                         }
                     }
@@ -761,7 +761,7 @@ namespace Voxelmetric.Code.Builders
                 // Build faces from the mask if it's possible
                 for (int yy = minY; yy < maxY; ++yy)
                 {
-                    n = minX + yy * m_sideSize;
+                    n = minX + yy * sideSize;
                     for (int xx = minX; xx < maxX;)
                     {
                         if (mask[n].block == null)
@@ -773,11 +773,11 @@ namespace Voxelmetric.Code.Builders
 
                         // Compute width
                         maskIndex = n + 1;
-                        for (w = 1; xx + w < m_sideSize;)
+                        for (w = 1; xx + w < sideSize;)
                         {
                             Block blk = mask[maskIndex].block;
                             if (blk == null ||
-                                blk.Type != mask[n].block.Type ||
+                                blk.type != mask[n].block.type ||
                                 !mask[maskIndex].light.Equals(mask[n].light))
                             {
                                 break;
@@ -788,14 +788,14 @@ namespace Voxelmetric.Code.Builders
                         }
 
                         // Compute height
-                        for (h = 1; yy + h < m_sideSize; h++)
+                        for (h = 1; yy + h < sideSize; h++)
                         {
-                            maskIndex = n + h * m_sideSize;
+                            maskIndex = n + h * sideSize;
                             for (k = 0; k < w; k++, maskIndex++)
                             {
                                 Block blk = mask[maskIndex].block;
                                 if (blk == null ||
-                                    blk.Type != mask[n].block.Type ||
+                                    blk.type != mask[n].block.type ||
                                     !mask[maskIndex].light.Equals(mask[n].light))
                                 {
                                     goto cont;
@@ -808,25 +808,25 @@ namespace Voxelmetric.Code.Builders
                         bool rotated = mask[n].light.FaceRotationNecessary;
                         if (!rotated)
                         {
-                            face[0] = new Vector3(xx, yy, minZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.south][0];
-                            face[1] = new Vector3(xx, yy + h, minZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.south][1];
-                            face[2] = new Vector3(xx + w, yy + h, minZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.south][2];
-                            face[3] = new Vector3(xx + w, yy, minZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.south][3];
+                            face[0] = new Vector3(xx, yy, minZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.south][0];
+                            face[1] = new Vector3(xx, yy + h, minZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.south][1];
+                            face[2] = new Vector3(xx + w, yy + h, minZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.south][2];
+                            face[3] = new Vector3(xx + w, yy, minZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.south][3];
                         }
                         else
                         {
-                            face[0] = new Vector3(xx, yy + h, minZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.south][1];
-                            face[1] = new Vector3(xx + w, yy + h, minZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.south][2];
-                            face[2] = new Vector3(xx + w, yy, minZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.south][3];
-                            face[3] = new Vector3(xx, yy, minZ) * m_scale +
-                                      BlockUtils.PaddingOffsets[(int)Direction.south][0];
+                            face[0] = new Vector3(xx, yy + h, minZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.south][1];
+                            face[1] = new Vector3(xx + w, yy + h, minZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.south][2];
+                            face[2] = new Vector3(xx + w, yy, minZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.south][3];
+                            face[3] = new Vector3(xx, yy, minZ) * scale +
+                                      BlockUtils.paddingOffsets[(int)Direction.south][0];
                         }
 
                         block.BuildFace(chunk, face, Palette, ref mask[n], rotated);
@@ -834,7 +834,7 @@ namespace Voxelmetric.Code.Builders
                         // Zero out the mask. We don't need to process the same fields again
                         for (l = 0; l < h; ++l)
                         {
-                            maskIndex = n + l * m_sideSize;
+                            maskIndex = n + l * sideSize;
                             for (k = 0; k < w; ++k, ++maskIndex)
                             {
                                 mask[maskIndex] = new BlockFace();
@@ -849,8 +849,8 @@ namespace Voxelmetric.Code.Builders
 
             #endregion
 
-            pools.BlockFaceArrayPool.Push(mask);
-            pools.Vector3ArrayPool.Push(face);
+            pools.blockFaceArrayPool.Push(mask);
+            pools.vector3ArrayPool.Push(face);
         }
     }
 }

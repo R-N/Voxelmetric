@@ -12,10 +12,7 @@ namespace Voxelmetric.Code.Data_types
          */
         private readonly byte mask;
 
-        public BlockLightData(
-            bool nwSolid, bool nSolid, bool neSolid, bool eSolid,
-            bool seSolid, bool sSolid, bool swSolid, bool wSolid
-        )
+        public BlockLightData(bool nwSolid, bool nSolid, bool neSolid, bool eSolid, bool seSolid, bool sSolid, bool swSolid, bool wSolid)
         {
             int _nwSolid = nwSolid ? 1 : 0;
             int _nSolid = nSolid ? 1 : 0;
@@ -43,29 +40,29 @@ namespace Voxelmetric.Code.Data_types
             return (side1 + side2 == 2) ? 3 : side1 + side2 + corner;
         }
 
-        public int swAO
+        public int SwAO
         {
             get { return (mask & 3); }
         }
 
-        public int nwAO
+        public int NwAO
         {
             get { return (mask >> 2) & 3; }
         }
 
-        public int neAO
+        public int NeAO
         {
             get { return (mask >> 4) & 3; }
         }
 
-        public int seAO
+        public int SeAO
         {
             get { return (mask >> 6) & 3; }
         }
 
         public bool FaceRotationNecessary
         {
-            get { return swAO + neAO > nwAO + seAO; }
+            get { return SwAO + NeAO > NwAO + SeAO; }
         }
 
         public override bool Equals(object obj)
@@ -87,6 +84,16 @@ namespace Voxelmetric.Code.Data_types
         public override int GetHashCode()
         {
             return mask.GetHashCode();
+        }
+
+        public static bool operator ==(BlockLightData left, BlockLightData right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(BlockLightData left, BlockLightData right)
+        {
+            return !(left == right);
         }
     }
 }

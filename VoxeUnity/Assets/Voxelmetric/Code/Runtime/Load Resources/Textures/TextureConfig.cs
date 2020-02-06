@@ -10,7 +10,6 @@ namespace Voxelmetric.Code.Load_Resources.Textures
 
     public struct TextureConfig
     {
-
         public string name;
         public TextureConfigType type;
 

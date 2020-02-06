@@ -61,7 +61,7 @@ namespace Voxelmetric.Code.VM
                 connected = true;
 
                 VmSocketState socketState = new VmSocketState(this);
-                clientSocket.BeginReceive(socketState.buffer, 0, VmNetworking.bufferLength, SocketFlags.None, OnReceiveFromServer, socketState);
+                clientSocket.BeginReceive(socketState.buffer, 0, VmNetworking.BUFFER_LENGTH, SocketFlags.None, OnReceiveFromServer, socketState);
             }
             catch (Exception ex)
             {
@@ -98,7 +98,7 @@ namespace Voxelmetric.Code.VM
                 if (clientSocket != null && clientSocket.Connected)
                 {
                     // Should be able to use a mutex but unity doesn't seem to like it
-                    clientSocket.BeginReceive(socketState.buffer, 0, VmNetworking.bufferLength, SocketFlags.None, OnReceiveFromServer, socketState);
+                    clientSocket.BeginReceive(socketState.buffer, 0, VmNetworking.BUFFER_LENGTH, SocketFlags.None, OnReceiveFromServer, socketState);
                 }
             }
             catch (Exception ex)
@@ -145,12 +145,12 @@ namespace Voxelmetric.Code.VM
         {
             switch (messageType)
             {
-                case VmNetworking.SendBlockChange:
+                case VmNetworking.SEND_BLOCK_CHANGE:
                     return 15;
-                case VmNetworking.transmitChunkData:
+                case VmNetworking.TRANSMIT_CHUNK_DATA:
                     //TODO TCD So that small chunks don't need 1025 bytes to be sent...
                     //return -VmServer.leaderSize;
-                    return VmNetworking.bufferLength;
+                    return VmNetworking.BUFFER_LENGTH;
                 default:
                     return 0;
             }
@@ -160,12 +160,12 @@ namespace Voxelmetric.Code.VM
         {
             switch (receivedData[0])
             {
-                case VmNetworking.SendBlockChange:
+                case VmNetworking.SEND_BLOCK_CHANGE:
                     Vector3Int pos = Vector3Int.FromBytes(receivedData, 1);
                     ushort data = BitConverter.ToUInt16(receivedData, 13);
                     ReceiveChange(ref pos, new BlockData(data));
                     break;
-                case VmNetworking.transmitChunkData:
+                case VmNetworking.TRANSMIT_CHUNK_DATA:
                     ReceiveChunk(receivedData);
                     break;
             }
@@ -179,7 +179,7 @@ namespace Voxelmetric.Code.VM
             }
 
             byte[] message = new byte[13];
-            message[0] = VmNetworking.RequestChunkData;
+            message[0] = VmNetworking.REQUEST_CHUNK_DATA;
             pos.ToBytes().CopyTo(message, 1);
             Send(message);
         }
@@ -202,9 +202,9 @@ namespace Voxelmetric.Code.VM
 
         public void BroadcastChange(Vector3Int pos, BlockData blockData)
         {
-            byte[] data = new byte[GetExpectedSize(VmNetworking.SendBlockChange)];
+            byte[] data = new byte[GetExpectedSize(VmNetworking.SEND_BLOCK_CHANGE)];
 
-            data[0] = VmNetworking.SendBlockChange; // 1 B
+            data[0] = VmNetworking.SEND_BLOCK_CHANGE; // 1 B
             pos.ToBytes().CopyTo(data, 1); // 3*4B = 12 B
             BlockData.ToByteArray(blockData).CopyTo(data, 13); // 2 B
 

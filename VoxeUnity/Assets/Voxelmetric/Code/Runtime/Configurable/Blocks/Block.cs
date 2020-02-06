@@ -7,91 +7,74 @@ using Vector3Int = Voxelmetric.Code.Data_types.Vector3Int;
 
 public class Block
 {
-    protected BlockConfig Config;
-    public string Name;
-    public ushort Type;
-    public int RenderMaterialID;
-    public int PhysicMaterialID;
-    public bool Solid;
-    public bool Transparent;
-    public bool Custom;
+    protected BlockConfig config;
+    public string name;
+    public ushort type;
+    public int renderMaterialID;
+    public int physicMaterialID;
+    public bool solid;
+    public bool transparent;
+    public bool custom;
 
-    public bool CanCollide
-    {
-        get { return PhysicMaterialID >= 0; }
-    }
+    public bool CanCollide { get { return physicMaterialID >= 0; } }
 
     [Preserve]
     public Block()
     {
-        Type = 0;
-        Config = null;
+        type = 0;
+        config = null;
     }
 
     public void Init(ushort type, BlockConfig config)
     {
-        Type = type;
-        Config = config;
+        this.type = type;
+        this.config = config;
 
-        RenderMaterialID = config.renderMaterialID;
-        PhysicMaterialID = config.physicMaterialID;
+        renderMaterialID = config.RenderMaterialID;
+        physicMaterialID = config.PhysicMaterialID;
 
-        Name = config.name;
-        Solid = config.solid;
-        Transparent = config.transparent;
-        Custom = false;
+        name = config.Name;
+        solid = config.Solid;
+        transparent = config.Transparent;
+        custom = false;
     }
 
     public virtual string DisplayName
     {
-        get { return Name; }
+        get { return name; }
     }
 
-    public virtual void OnInit(BlockProvider blockProvider)
-    {
-    }
+    public virtual void OnInit(BlockProvider blockProvider) { }
 
-    public virtual void BuildBlock(Chunk chunk, ref Vector3Int localpos, int materialID)
-    {
-    }
+    public virtual void BuildBlock(Chunk chunk, ref Vector3Int localpos, int materialID) { }
 
     public bool CanBuildFaceWith(Block adjacentBlock)
     {
-        if (adjacentBlock.Transparent)
+        if (adjacentBlock.transparent)
         {
-            return !Transparent || adjacentBlock.Type != Type;
+            return !transparent || adjacentBlock.type != type;
         }
 
-        return adjacentBlock.Solid ? !Solid : (Solid || Type != adjacentBlock.Type);
+        return adjacentBlock.solid ? !solid : (solid || type != adjacentBlock.type);
     }
 
-    public virtual void BuildFace(Chunk chunk, Vector3[] vertices, Color32[] palette, ref BlockFace face, bool rotated)
-    {
-    }
+    public virtual void BuildFace(Chunk chunk, Vector3[] vertices, Color32[] palette, ref BlockFace face, bool rotated) { }
 
-    public virtual void OnCreate(Chunk chunk, ref Vector3Int localPos)
-    {
-    }
+    public virtual void OnCreate(Chunk chunk, ref Vector3Int localPos) { }
 
-    public virtual void OnDestroy(Chunk chunk, ref Vector3Int localPos)
-    {
-    }
+    public virtual void OnDestroy(Chunk chunk, ref Vector3Int localPos) { }
 
-    public virtual void RandomUpdate(Chunk chunk, ref Vector3Int localPos)
-    {
-    }
+    public virtual void RandomUpdate(Chunk chunk, ref Vector3Int localPos) { }
 
-    public virtual void ScheduledUpdate(Chunk chunk, ref Vector3Int localPos)
-    {
-    }
+    public virtual void ScheduledUpdate(Chunk chunk, ref Vector3Int localPos) { }
 
     public bool RaycastHit(ref Vector3 pos, ref Vector3 dir, ref Vector3Int bPos, bool removalRequested)
     {
-        return removalRequested ? Config.raycastHitOnRemoval : Config.raycastHit;
+        return removalRequested ? config.RaycastHitOnRemoval : config.RaycastHit;
     }
 
     public override string ToString()
     {
-        return Name;
+        return name;
     }
 }

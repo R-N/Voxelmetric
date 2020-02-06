@@ -17,7 +17,7 @@ namespace Voxelmetric.Code.Utilities
 
             //Transform the ray to match the rotation and position of the world:
             pos -= world.transform.position;
-            pos -= new Vector3(Env.BlockSizeHalf, Env.BlockSizeHalf, Env.BlockSizeHalf);
+            pos -= new Vector3(Env.BLOCK_SIZE_HALF, Env.BLOCK_SIZE_HALF, Env.BLOCK_SIZE_HALF);
             pos = Quaternion.Inverse(world.gameObject.transform.rotation) * pos;
             dir = Quaternion.Inverse(world.transform.rotation) * dir;
 
@@ -52,9 +52,9 @@ namespace Voxelmetric.Code.Utilities
                 // Divide the distance by the strength of the corresponding direction, the
                 // lowest number will be the boundary we will hit first. This is like distance
                 // over speed = time where dirP is the speed and the it's time to reach the boundary
-                dist.x = dist.x / dirP.x;
-                dist.y = dist.y / dirP.y;
-                dist.z = dist.z / dirP.z;
+                dist.x /= dirP.x;
+                dist.y /= dirP.y;
+                dist.z /= dirP.z;
 
                 // Use the shortest distance as the distance to travel this step times each direction
                 // to give us the position where the ray intersects the closest boundary
@@ -102,12 +102,7 @@ namespace Voxelmetric.Code.Utilities
 
             if (Math.Abs(fPos - iPos) < 0.001f)
             {
-                if (dirS == 1)
-                {
-                    return iPos;
-                }
-
-                return iPos - 1;
+                return dirS == 1 ? iPos : iPos - 1;
             }
 
             return Mathf.RoundToInt(pos);

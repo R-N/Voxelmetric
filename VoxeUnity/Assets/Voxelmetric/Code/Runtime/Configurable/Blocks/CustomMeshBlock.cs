@@ -11,21 +11,21 @@ public class CustomMeshBlock : Block
     [Preserve]
     public CustomMeshBlock() : base() { }
 
-    public CustomMeshBlockConfig meshConfig
+    public CustomMeshBlockConfig MeshConfig
     {
-        get { return (CustomMeshBlockConfig)Config; }
+        get { return (CustomMeshBlockConfig)config; }
     }
 
     public override void OnInit(BlockProvider blockProvider)
     {
         base.OnInit(blockProvider);
 
-        Custom = true;
+        custom = true;
     }
 
     public override void BuildBlock(Chunk chunk, ref Vector3Int localPos, int materialID)
     {
-        CustomMeshBlockConfig.CustomMeshBlockData data = meshConfig.data;
+        CustomMeshBlockConfig.CustomMeshBlockData data = MeshConfig.Data;
         Rect texture = data.textures != null
                            ? data.textures.GetTexture(chunk, ref localPos, Direction.down)
                            : new Rect();

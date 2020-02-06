@@ -33,7 +33,7 @@ namespace Voxelmetric.Code
         }
 
         // Geometry mesh builder used for the terrain
-        public static AMeshBuilder ModelMeshBuilder { get; } = new CubeMeshBuilder(Env.BlockSize, Env.ChunkSize) { SideMask = 0 };
+        public static AMeshBuilder ModelMeshBuilder { get; } = new CubeMeshBuilder(Env.BLOCK_SIZE, Env.CHUNK_SIZE) { SideMask = 0 };
 
         private static AMeshBuilder terrainMeshBuilder;
 
@@ -44,13 +44,13 @@ namespace Voxelmetric.Code
             {
                 if (terrainMeshBuilder == null)
                 {
-                    if (Features.UseGreedyMeshing)
+                    if (Features.useGreedyMeshing)
                     {
-                        terrainMeshBuilder = new CubeMeshBuilder(Env.BlockSize, Env.ChunkSize) { SideMask = Features.DontRenderWorldEdgesMask };
+                        terrainMeshBuilder = new CubeMeshBuilder(Env.BLOCK_SIZE, Env.CHUNK_SIZE) { SideMask = Features.DONT_RENDER_WORLD_EDGES_MASK };
                     }
                     else
                     {
-                        terrainMeshBuilder = new CubeMeshBuilderNaive(Env.BlockSize, Env.ChunkSize) { SideMask = Features.DontRenderWorldEdgesMask };
+                        terrainMeshBuilder = new CubeMeshBuilderNaive(Env.BLOCK_SIZE, Env.CHUNK_SIZE) { SideMask = Features.DONT_RENDER_WORLD_EDGES_MASK };
                     }
                 }
 
@@ -59,7 +59,7 @@ namespace Voxelmetric.Code
         }
 
         // Collider mesh builder used for the terrain
-        public static AMeshBuilder TerrainMeshColliderBuilder { get; } = new CubeMeshColliderBuilder(Env.BlockSize, Env.ChunkSize) { SideMask = Features.DontRenderWorldEdgesMask };
+        public static AMeshBuilder TerrainMeshColliderBuilder { get; } = new CubeMeshColliderBuilder(Env.BLOCK_SIZE, Env.CHUNK_SIZE) { SideMask = Features.DONT_RENDER_WORLD_EDGES_MASK };
 
         // Global object pools
         public static GlobalPools MemPools { get; private set; }

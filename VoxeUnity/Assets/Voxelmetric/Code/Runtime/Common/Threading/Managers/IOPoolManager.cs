@@ -5,60 +5,58 @@ namespace Voxelmetric.Code.Common.Threading.Managers
 {
     public static class IOPoolManager
     {
-        private static readonly List<ITaskPoolItem> WorkItems = new List<ITaskPoolItem>(2048);
+        private static readonly List<ITaskPoolItem> workItems = new List<ITaskPoolItem>(2048);
 
-        private static readonly TimeBudgetHandler TimeBudget = Features.UseThreadedIO
-                                                                   ? null
-                                                                   : new TimeBudgetHandler(10);
+        private static readonly TimeBudgetHandler timeBudget = Features.useThreadedIO ? null : new TimeBudgetHandler(10);
 
         public static void Add(ITaskPoolItem action)
         {
-            WorkItems.Add(action);
+            workItems.Add(action);
         }
 
         public static void Commit()
         {
-            if (WorkItems.Count <= 0)
+            if (workItems.Count <= 0)
             {
                 return;
             }
 
             // Commit all the work we have
-            if (Features.UseThreadedIO)
+            if (Features.useThreadedIO)
             {
                 TaskPool pool = Globals.IOPool;
 
-                for (int i = 0; i < WorkItems.Count; i++)
+                for (int i = 0; i < workItems.Count; i++)
                 {
-                    pool.AddItem(WorkItems[i]);
+                    pool.AddItem(workItems[i]);
                 }
                 pool.Commit();
             }
             else
             {
-                for (int i = 0; i < WorkItems.Count; i++)
+                for (int i = 0; i < workItems.Count; i++)
                 {
-                    TimeBudget.StartMeasurement();
-                    WorkItems[i].Run();
-                    TimeBudget.StopMeasurement();
+                    timeBudget.StartMeasurement();
+                    workItems[i].Run();
+                    timeBudget.StopMeasurement();
 
                     // If the tasks take too much time to finish, spread them out over multiple
                     // frames to avoid performance spikes
-                    if (!TimeBudget.HasTimeBudget)
+                    if (!timeBudget.HasTimeBudget)
                     {
-                        WorkItems.RemoveRange(0, i + 1);
+                        workItems.RemoveRange(0, i + 1);
                         return;
                     }
                 }
             }
 
             // Remove processed work items
-            WorkItems.Clear();
+            workItems.Clear();
         }
 
         public new static string ToString()
         {
-            return Features.UseThreadedIO ? Globals.IOPool.ToString() : WorkItems.Count.ToString();
+            return Features.useThreadedIO ? Globals.IOPool.ToString() : workItems.Count.ToString();
         }
     }
 }

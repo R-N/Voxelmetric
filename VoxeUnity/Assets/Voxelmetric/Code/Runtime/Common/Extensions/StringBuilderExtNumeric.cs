@@ -20,8 +20,8 @@ namespace Voxelmetric.Code.Common.Extensions
         // Since A-Z don't sit next to 0-9 in the ascii table.
         private static readonly char[] ms_digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
-        private static readonly uint ms_default_decimal_places = 5; //< Matches standard .NET formatting dp's
-        private static readonly char ms_default_pad_char = '0';
+        private const uint MS_DEFAULT_DECIMAL_PLACES = 5; //< Matches standard .NET formatting dp's
+        private const char MS_DEFAULT_PAD_CHAR = '0';
 
         //! Convert a given unsigned integer value to a string and concatenate onto the stringbuilder. Any base value allowed.
         public static StringBuilder Concat(this StringBuilder string_builder, uint uint_val, uint pad_amount, char pad_char, uint base_val)
@@ -63,14 +63,14 @@ namespace Voxelmetric.Code.Common.Extensions
         //! Convert a given unsigned integer value to a string and concatenate onto the stringbuilder. Assume no padding and base ten.
         public static StringBuilder Concat(this StringBuilder string_builder, uint uint_val)
         {
-            string_builder.Concat(uint_val, 0, ms_default_pad_char, 10);
+            string_builder.Concat(uint_val, 0, MS_DEFAULT_PAD_CHAR, 10);
             return string_builder;
         }
 
         //! Convert a given unsigned integer value to a string and concatenate onto the stringbuilder. Assume base ten.
         public static StringBuilder Concat(this StringBuilder string_builder, uint uint_val, uint pad_amount)
         {
-            string_builder.Concat(uint_val, pad_amount, ms_default_pad_char, 10);
+            string_builder.Concat(uint_val, pad_amount, MS_DEFAULT_PAD_CHAR, 10);
             return string_builder;
         }
 
@@ -105,14 +105,14 @@ namespace Voxelmetric.Code.Common.Extensions
         //! Convert a given signed integer value to a string and concatenate onto the stringbuilder. Assume no padding and base ten.
         public static StringBuilder Concat(this StringBuilder string_builder, int int_val)
         {
-            string_builder.Concat(int_val, 0, ms_default_pad_char, 10);
+            string_builder.Concat(int_val, 0, MS_DEFAULT_PAD_CHAR, 10);
             return string_builder;
         }
 
         //! Convert a given signed integer value to a string and concatenate onto the stringbuilder. Assume base ten.
         public static StringBuilder Concat(this StringBuilder string_builder, int int_val, uint pad_amount)
         {
-            string_builder.Concat(int_val, pad_amount, ms_default_pad_char, 10);
+            string_builder.Concat(int_val, pad_amount, MS_DEFAULT_PAD_CHAR, 10);
             return string_builder;
         }
 
@@ -180,21 +180,21 @@ namespace Voxelmetric.Code.Common.Extensions
         //! Convert a given float value to a string and concatenate onto the stringbuilder. Assumes five decimal places, and no padding.
         public static StringBuilder Concat(this StringBuilder string_builder, float float_val)
         {
-            string_builder.Concat(float_val, ms_default_decimal_places, 0, ms_default_pad_char);
+            string_builder.Concat(float_val, MS_DEFAULT_DECIMAL_PLACES, 0, MS_DEFAULT_PAD_CHAR);
             return string_builder;
         }
 
         //! Convert a given float value to a string and concatenate onto the stringbuilder. Assumes no padding.
         public static StringBuilder Concat(this StringBuilder string_builder, float float_val, uint decimal_places)
         {
-            string_builder.Concat(float_val, decimal_places, 0, ms_default_pad_char);
+            string_builder.Concat(float_val, decimal_places, 0, MS_DEFAULT_PAD_CHAR);
             return string_builder;
         }
 
         //! Convert a given float value to a string and concatenate onto the stringbuilder.
         public static StringBuilder Concat(this StringBuilder string_builder, float float_val, uint decimal_places, uint pad_amount)
         {
-            string_builder.Concat(float_val, decimal_places, pad_amount, ms_default_pad_char);
+            string_builder.Concat(float_val, decimal_places, pad_amount, MS_DEFAULT_PAD_CHAR);
             return string_builder;
         }
     }

@@ -132,7 +132,7 @@ namespace Voxelmetric.Code.Load_Resources.Textures
             int value = pos + offset;
             if (value > max)
             {
-                value = value - max;
+                value -= max;
             }
             else if (value < 0)
             {

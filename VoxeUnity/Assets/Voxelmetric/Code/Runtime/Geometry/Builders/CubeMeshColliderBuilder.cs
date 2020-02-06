@@ -23,7 +23,7 @@ namespace Voxelmetric.Code.Builders
 
         protected override bool CanCreateBox(Block block, Block neighbor)
         {
-            return block.PhysicMaterialID == neighbor.PhysicMaterialID;
+            return block.physicMaterialID == neighbor.physicMaterialID;
         }
 
         protected override void BuildBox(Chunk chunk, Block block, int minX, int minY, int minZ, int maxX, int maxY,
@@ -35,7 +35,7 @@ namespace Voxelmetric.Code.Builders
             //     |  |
             //     0--3
 
-            int sizeWithPadding = m_sideSize + Env.ChunkPadding2;
+            int sizeWithPadding = sideSize + Env.CHUNK_PADDING_2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
 
             Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
@@ -60,8 +60,8 @@ namespace Voxelmetric.Code.Builders
                 return;
             }*/
 
-            Vector3[] vertexData = pools.Vector3ArrayPool.PopExact(4);
-            bool[] mask = pools.BoolArrayPool.PopExact(m_sideSize * m_sideSize);
+            Vector3[] vertexData = pools.vector3ArrayPool.PopExact(4);
+            bool[] mask = pools.boolArrayPool.PopExact(sideSize * sideSize);
 
             int n, w, h, l, k, maskIndex;
 
@@ -69,20 +69,20 @@ namespace Voxelmetric.Code.Builders
 
             if (listeners[(int)Direction.up] != null ||
                 // Don't render faces on world's edges for chunks with no neighbor
-                maxY != m_sideSize)
+                maxY != sideSize)
             {
                 Array.Clear(mask, 0, mask.Length);
 
                 // x axis - width
                 // z axis - height
 
-                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX, maxY, minZ, m_pow);
+                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX, maxY, minZ, pow);
                 int zOffset = sizeWithPadding - maxX + minX;
 
                 // Build the mask
                 for (int zz = minZ; zz < maxZ; ++zz, neighborIndex += zOffset)
                 {
-                    n = minX + zz * m_sideSize;
+                    n = minX + zz * sideSize;
                     for (int xx = minX; xx < maxX; ++xx, ++n, ++neighborIndex)
                     {
                         // Let's see whether we can merge the faces
@@ -96,7 +96,7 @@ namespace Voxelmetric.Code.Builders
                 // Build faces from the mask if it's possible
                 for (int zz = minZ; zz < maxZ; ++zz)
                 {
-                    n = minX + zz * m_sideSize;
+                    n = minX + zz * sideSize;
                     for (int xx = minX; xx < maxX;)
                     {
                         if (mask[n] == false)
@@ -109,16 +109,16 @@ namespace Voxelmetric.Code.Builders
                         bool m = mask[n];
 
                         // Compute width
-                        for (w = 1; xx + w < m_sideSize && mask[n + w] == m; w++)
+                        for (w = 1; xx + w < sideSize && mask[n + w] == m; w++)
                         {
                         }
 
                         // Compute height
-                        for (h = 1; zz + h < m_sideSize; h++)
+                        for (h = 1; zz + h < sideSize; h++)
                         {
                             for (k = 0; k < w; k++)
                             {
-                                maskIndex = n + k + h * m_sideSize;
+                                maskIndex = n + k + h * sideSize;
                                 if (mask[maskIndex] == false || mask[maskIndex] != m)
                                 {
                                     goto cont;
@@ -129,22 +129,22 @@ namespace Voxelmetric.Code.Builders
 
                         // Build the face
                         {
-                            vertexData[0] = new Vector3(xx, maxY, zz) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.up][0];
-                            vertexData[1] = new Vector3(xx, maxY, zz + h) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.up][1];
-                            vertexData[2] = new Vector3(xx + w, maxY, zz + h) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.up][2];
-                            vertexData[3] = new Vector3(xx + w, maxY, zz) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.up][3];
+                            vertexData[0] = new Vector3(xx, maxY, zz) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.up][0];
+                            vertexData[1] = new Vector3(xx, maxY, zz + h) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.up][1];
+                            vertexData[2] = new Vector3(xx + w, maxY, zz + h) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.up][2];
+                            vertexData[3] = new Vector3(xx + w, maxY, zz) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.up][3];
 
-                            chunk.ColliderGeometryHandler.Batcher.AddFace(block.PhysicMaterialID, vertexData, DirectionUtils.IsBackface(Direction.up));
+                            chunk.ColliderGeometryHandler.Batcher.AddFace(block.physicMaterialID, vertexData, DirectionUtils.IsBackface(Direction.up));
                         }
 
                         // Zero out the mask. We don't need to process the same fields again
                         for (l = 0; l < h; ++l)
                         {
-                            maskIndex = n + l * m_sideSize;
+                            maskIndex = n + l * sideSize;
                             for (k = 0; k < w; ++k, ++maskIndex)
                             {
                                 mask[maskIndex] = false;
@@ -170,13 +170,13 @@ namespace Voxelmetric.Code.Builders
                 // x axis - width
                 // z axis - height
 
-                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY - 1, minZ, m_pow);
+                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY - 1, minZ, pow);
                 int zOffset = sizeWithPadding - maxX + minX;
 
                 // Build the mask
                 for (int zz = minZ; zz < maxZ; ++zz, neighborIndex += zOffset)
                 {
-                    n = minX + zz * m_sideSize;
+                    n = minX + zz * sideSize;
                     for (int xx = minX; xx < maxX; ++xx, ++n, ++neighborIndex)
                     {
                         // Let's see whether we can merge the faces
@@ -190,7 +190,7 @@ namespace Voxelmetric.Code.Builders
                 // Build faces from the mask if it's possible
                 for (int zz = minZ; zz < maxZ; ++zz)
                 {
-                    n = minX + zz * m_sideSize;
+                    n = minX + zz * sideSize;
                     for (int xx = minX; xx < maxX;)
                     {
                         if (mask[n] == false)
@@ -203,16 +203,16 @@ namespace Voxelmetric.Code.Builders
                         bool m = mask[n];
 
                         // Compute width
-                        for (w = 1; xx + w < m_sideSize && mask[n + w] == m; w++)
+                        for (w = 1; xx + w < sideSize && mask[n + w] == m; w++)
                         {
                         }
 
                         // Compute height
-                        for (h = 1; zz + h < m_sideSize; h++)
+                        for (h = 1; zz + h < sideSize; h++)
                         {
                             for (k = 0; k < w; k++)
                             {
-                                maskIndex = n + k + h * m_sideSize;
+                                maskIndex = n + k + h * sideSize;
                                 if (mask[maskIndex] == false || mask[maskIndex] != m)
                                 {
                                     goto cont;
@@ -223,22 +223,22 @@ namespace Voxelmetric.Code.Builders
 
                         // Build the face
                         {
-                            vertexData[0] = new Vector3(xx, minY, zz) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.down][0];
-                            vertexData[1] = new Vector3(xx, minY, zz + h) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.down][1];
-                            vertexData[2] = new Vector3(xx + w, minY, zz + h) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.down][2];
-                            vertexData[3] = new Vector3(xx + w, minY, zz) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.down][3];
+                            vertexData[0] = new Vector3(xx, minY, zz) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.down][0];
+                            vertexData[1] = new Vector3(xx, minY, zz + h) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.down][1];
+                            vertexData[2] = new Vector3(xx + w, minY, zz + h) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.down][2];
+                            vertexData[3] = new Vector3(xx + w, minY, zz) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.down][3];
 
-                            chunk.ColliderGeometryHandler.Batcher.AddFace(block.PhysicMaterialID, vertexData, DirectionUtils.IsBackface(Direction.down));
+                            chunk.ColliderGeometryHandler.Batcher.AddFace(block.physicMaterialID, vertexData, DirectionUtils.IsBackface(Direction.down));
                         }
 
                         // Zero out the mask. We don't need to process the same fields again
                         for (l = 0; l < h; ++l)
                         {
-                            maskIndex = n + l * m_sideSize;
+                            maskIndex = n + l * sideSize;
                             for (k = 0; k < w; ++k, ++maskIndex)
                             {
                                 mask[maskIndex] = false;
@@ -257,20 +257,20 @@ namespace Voxelmetric.Code.Builders
 
             if (listeners[(int)Direction.east] != null ||
                 // Don't render faces on world's edges for chunks with no neighbor
-                maxX != m_sideSize)
+                maxX != sideSize)
             {
                 Array.Clear(mask, 0, mask.Length);
 
                 // y axis - height
                 // z axis - width
 
-                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(maxX, minY, minZ, m_pow);
+                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(maxX, minY, minZ, pow);
                 int yOffset = sizeWithPaddingPow2 - (maxZ - minZ) * sizeWithPadding;
 
                 // Build the mask
                 for (int yy = minY; yy < maxY; ++yy, neighborIndex += yOffset)
                 {
-                    n = minZ + yy * m_sideSize;
+                    n = minZ + yy * sideSize;
                     for (int zz = minZ; zz < maxZ; ++zz, ++n, neighborIndex += sizeWithPadding)
                     {
                         // Let's see whether we can merge the faces
@@ -284,7 +284,7 @@ namespace Voxelmetric.Code.Builders
                 // Build faces from the mask if it's possible
                 for (int yy = minY; yy < maxY; ++yy)
                 {
-                    n = minZ + yy * m_sideSize;
+                    n = minZ + yy * sideSize;
                     for (int zz = minZ; zz < maxZ;)
                     {
                         if (mask[n] == false)
@@ -297,16 +297,16 @@ namespace Voxelmetric.Code.Builders
                         bool m = mask[n];
 
                         // Compute width
-                        for (w = 1; zz + w < m_sideSize && mask[n + w] == m; w++)
+                        for (w = 1; zz + w < sideSize && mask[n + w] == m; w++)
                         {
                         }
 
                         // Compute height
-                        for (h = 1; yy + h < m_sideSize; h++)
+                        for (h = 1; yy + h < sideSize; h++)
                         {
                             for (k = 0; k < w; k++)
                             {
-                                maskIndex = n + k + h * m_sideSize;
+                                maskIndex = n + k + h * sideSize;
                                 if (mask[maskIndex] == false || mask[maskIndex] != m)
                                 {
                                     goto cont;
@@ -317,22 +317,22 @@ namespace Voxelmetric.Code.Builders
 
                         // Build the face
                         {
-                            vertexData[0] = new Vector3(maxX, yy, zz) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.east][0];
-                            vertexData[1] = new Vector3(maxX, yy + h, zz) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.east][1];
-                            vertexData[2] = new Vector3(maxX, yy + h, zz + w) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.east][2];
-                            vertexData[3] = new Vector3(maxX, yy, zz + w) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.east][3];
+                            vertexData[0] = new Vector3(maxX, yy, zz) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.east][0];
+                            vertexData[1] = new Vector3(maxX, yy + h, zz) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.east][1];
+                            vertexData[2] = new Vector3(maxX, yy + h, zz + w) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.east][2];
+                            vertexData[3] = new Vector3(maxX, yy, zz + w) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.east][3];
 
-                            chunk.ColliderGeometryHandler.Batcher.AddFace(block.PhysicMaterialID, vertexData, DirectionUtils.IsBackface(Direction.east));
+                            chunk.ColliderGeometryHandler.Batcher.AddFace(block.physicMaterialID, vertexData, DirectionUtils.IsBackface(Direction.east));
                         }
 
                         // Zero out the mask. We don't need to process the same fields again
                         for (l = 0; l < h; ++l)
                         {
-                            maskIndex = n + l * m_sideSize;
+                            maskIndex = n + l * sideSize;
                             for (k = 0; k < w; ++k, ++maskIndex)
                             {
                                 mask[maskIndex] = false;
@@ -358,13 +358,13 @@ namespace Voxelmetric.Code.Builders
                 // y axis - height
                 // z axis - width
 
-                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX - 1, minY, minZ, m_pow);
+                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX - 1, minY, minZ, pow);
                 int yOffset = sizeWithPaddingPow2 - (maxZ - minZ) * sizeWithPadding;
 
                 // Build the mask
                 for (int yy = minY; yy < maxY; ++yy, neighborIndex += yOffset)
                 {
-                    n = minZ + yy * m_sideSize;
+                    n = minZ + yy * sideSize;
                     for (int zz = minZ; zz < maxZ; ++zz, ++n, neighborIndex += sizeWithPadding)
                     {
                         // Let's see whether we can merge the faces
@@ -378,7 +378,7 @@ namespace Voxelmetric.Code.Builders
                 // Build faces from the mask if it's possible
                 for (int yy = minY; yy < maxY; ++yy)
                 {
-                    n = minZ + yy * m_sideSize;
+                    n = minZ + yy * sideSize;
                     for (int zz = minZ; zz < maxZ;)
                     {
                         if (mask[n] == false)
@@ -391,16 +391,16 @@ namespace Voxelmetric.Code.Builders
                         bool m = mask[n];
 
                         // Compute width
-                        for (w = 1; zz + w < m_sideSize && mask[n + w] == m; w++)
+                        for (w = 1; zz + w < sideSize && mask[n + w] == m; w++)
                         {
                         }
 
                         // Compute height
-                        for (h = 1; yy + h < m_sideSize; h++)
+                        for (h = 1; yy + h < sideSize; h++)
                         {
                             for (k = 0; k < w; k++)
                             {
-                                maskIndex = n + k + h * m_sideSize;
+                                maskIndex = n + k + h * sideSize;
                                 if (mask[maskIndex] == false || mask[maskIndex] != m)
                                 {
                                     goto cont;
@@ -411,22 +411,22 @@ namespace Voxelmetric.Code.Builders
 
                         // Build the face
                         {
-                            vertexData[0] = new Vector3(minX, yy, zz) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.west][0];
-                            vertexData[1] = new Vector3(minX, yy + h, zz) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.west][1];
-                            vertexData[2] = new Vector3(minX, yy + h, zz + w) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.west][2];
-                            vertexData[3] = new Vector3(minX, yy, zz + w) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.west][3];
+                            vertexData[0] = new Vector3(minX, yy, zz) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.west][0];
+                            vertexData[1] = new Vector3(minX, yy + h, zz) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.west][1];
+                            vertexData[2] = new Vector3(minX, yy + h, zz + w) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.west][2];
+                            vertexData[3] = new Vector3(minX, yy, zz + w) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.west][3];
 
-                            chunk.ColliderGeometryHandler.Batcher.AddFace(block.PhysicMaterialID, vertexData, DirectionUtils.IsBackface(Direction.west));
+                            chunk.ColliderGeometryHandler.Batcher.AddFace(block.physicMaterialID, vertexData, DirectionUtils.IsBackface(Direction.west));
                         }
 
                         // Zero out the mask. We don't need to process the same fields again
                         for (l = 0; l < h; ++l)
                         {
-                            maskIndex = n + l * m_sideSize;
+                            maskIndex = n + l * sideSize;
                             for (k = 0; k < w; ++k, ++maskIndex)
                             {
                                 mask[maskIndex] = false;
@@ -445,20 +445,20 @@ namespace Voxelmetric.Code.Builders
 
             if (listeners[(int)Direction.north] != null ||
                 // Don't render faces on world's edges for chunks with no neighbor
-                maxZ != m_sideSize)
+                maxZ != sideSize)
             {
                 Array.Clear(mask, 0, mask.Length);
 
                 // x axis - width
                 // y axis - height
 
-                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY, maxZ, m_pow);
+                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY, maxZ, pow);
                 int yOffset = sizeWithPaddingPow2 - maxX + minX;
 
                 // Build the mask
                 for (int yy = minY; yy < maxY; ++yy, neighborIndex += yOffset)
                 {
-                    n = minX + yy * m_sideSize;
+                    n = minX + yy * sideSize;
                     for (int xx = minX; xx < maxX; ++xx, ++n, ++neighborIndex)
                     {
                         // Let's see whether we can merge the faces
@@ -472,7 +472,7 @@ namespace Voxelmetric.Code.Builders
                 // Build faces from the mask if it's possible
                 for (int yy = minY; yy < maxY; ++yy)
                 {
-                    n = minX + yy * m_sideSize;
+                    n = minX + yy * sideSize;
                     for (int xx = minX; xx < maxX;)
                     {
                         if (mask[n] == false)
@@ -485,16 +485,16 @@ namespace Voxelmetric.Code.Builders
                         bool m = mask[n];
 
                         // Compute width
-                        for (w = 1; xx + w < m_sideSize && mask[n + w] == m; w++)
+                        for (w = 1; xx + w < sideSize && mask[n + w] == m; w++)
                         {
                         }
 
                         // Compute height
-                        for (h = 1; yy + h < m_sideSize; h++)
+                        for (h = 1; yy + h < sideSize; h++)
                         {
                             for (k = 0; k < w; k++)
                             {
-                                maskIndex = n + k + h * m_sideSize;
+                                maskIndex = n + k + h * sideSize;
                                 if (mask[maskIndex] == false || mask[maskIndex] != m)
                                 {
                                     goto cont;
@@ -505,22 +505,22 @@ namespace Voxelmetric.Code.Builders
 
                         // Build the face
                         {
-                            vertexData[0] = new Vector3(xx, yy, maxZ) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.north][0];
-                            vertexData[1] = new Vector3(xx, yy + h, maxZ) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.north][1];
-                            vertexData[2] = new Vector3(xx + w, yy + h, maxZ) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.north][2];
-                            vertexData[3] = new Vector3(xx + w, yy, maxZ) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.north][3];
+                            vertexData[0] = new Vector3(xx, yy, maxZ) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.north][0];
+                            vertexData[1] = new Vector3(xx, yy + h, maxZ) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.north][1];
+                            vertexData[2] = new Vector3(xx + w, yy + h, maxZ) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.north][2];
+                            vertexData[3] = new Vector3(xx + w, yy, maxZ) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.north][3];
 
-                            chunk.ColliderGeometryHandler.Batcher.AddFace(block.PhysicMaterialID, vertexData, DirectionUtils.IsBackface(Direction.north));
+                            chunk.ColliderGeometryHandler.Batcher.AddFace(block.physicMaterialID, vertexData, DirectionUtils.IsBackface(Direction.north));
                         }
 
                         // Zero out the mask. We don't need to process the same fields again
                         for (l = 0; l < h; ++l)
                         {
-                            maskIndex = n + l * m_sideSize;
+                            maskIndex = n + l * sideSize;
                             for (k = 0; k < w; ++k, ++maskIndex)
                             {
                                 mask[maskIndex] = false;
@@ -546,13 +546,13 @@ namespace Voxelmetric.Code.Builders
                 // x axis - width
                 // y axis - height
 
-                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY, minZ - 1, m_pow);
+                int neighborIndex = Helpers.GetChunkIndex1DFrom3D(minX, minY, minZ - 1, pow);
                 int yOffset = sizeWithPaddingPow2 - maxX + minX;
 
                 // Build the mask
                 for (int yy = minY; yy < maxY; ++yy, neighborIndex += yOffset)
                 {
-                    n = minX + yy * m_sideSize;
+                    n = minX + yy * sideSize;
                     for (int xx = minX; xx < maxX; ++xx, ++n, ++neighborIndex)
                     {
                         // Let's see whether we can merge the faces
@@ -566,7 +566,7 @@ namespace Voxelmetric.Code.Builders
                 // Build faces from the mask if it's possible
                 for (int yy = minY; yy < maxY; ++yy)
                 {
-                    n = minX + yy * m_sideSize;
+                    n = minX + yy * sideSize;
                     for (int xx = minX; xx < maxX;)
                     {
                         if (mask[n] == false)
@@ -579,16 +579,16 @@ namespace Voxelmetric.Code.Builders
                         bool m = mask[n];
 
                         // Compute width
-                        for (w = 1; xx + w < m_sideSize && mask[n + w] == m; w++)
+                        for (w = 1; xx + w < sideSize && mask[n + w] == m; w++)
                         {
                         }
 
                         // Compute height
-                        for (h = 1; yy + h < m_sideSize; h++)
+                        for (h = 1; yy + h < sideSize; h++)
                         {
                             for (k = 0; k < w; k++)
                             {
-                                maskIndex = n + k + h * m_sideSize;
+                                maskIndex = n + k + h * sideSize;
                                 if (mask[maskIndex] == false || mask[maskIndex] != m)
                                 {
                                     goto cont;
@@ -599,22 +599,22 @@ namespace Voxelmetric.Code.Builders
 
                         // Build the face
                         {
-                            vertexData[0] = new Vector3(xx, yy, minZ) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.south][0];
-                            vertexData[1] = new Vector3(xx, yy + h, minZ) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.south][1];
-                            vertexData[2] = new Vector3(xx + w, yy + h, minZ) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.south][2];
-                            vertexData[3] = new Vector3(xx + w, yy, minZ) * m_scale +
-                                            BlockUtils.PaddingOffsets[(int)Direction.south][3];
+                            vertexData[0] = new Vector3(xx, yy, minZ) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.south][0];
+                            vertexData[1] = new Vector3(xx, yy + h, minZ) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.south][1];
+                            vertexData[2] = new Vector3(xx + w, yy + h, minZ) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.south][2];
+                            vertexData[3] = new Vector3(xx + w, yy, minZ) * scale +
+                                            BlockUtils.paddingOffsets[(int)Direction.south][3];
 
-                            chunk.ColliderGeometryHandler.Batcher.AddFace(block.PhysicMaterialID, vertexData, DirectionUtils.IsBackface(Direction.south));
+                            chunk.ColliderGeometryHandler.Batcher.AddFace(block.physicMaterialID, vertexData, DirectionUtils.IsBackface(Direction.south));
                         }
 
                         // Zero out the mask. We don't need to process the same fields again
                         for (l = 0; l < h; ++l)
                         {
-                            maskIndex = n + l * m_sideSize;
+                            maskIndex = n + l * sideSize;
                             for (k = 0; k < w; ++k, ++maskIndex)
                             {
                                 mask[maskIndex] = false;
@@ -629,8 +629,8 @@ namespace Voxelmetric.Code.Builders
 
             #endregion
 
-            pools.BoolArrayPool.Push(mask);
-            pools.Vector3ArrayPool.Push(vertexData);
+            pools.boolArrayPool.Push(mask);
+            pools.vector3ArrayPool.Push(vertexData);
         }
     }
 }

@@ -6,14 +6,14 @@ namespace Voxelmetric.Code.Common
     {
         //protected static bool s_instanceIsNull = true;
 
-        private static readonly object SLock = new object();
+        private static readonly object sLock = new object();
 
         // Unity objects cannot be compared outside the main thread. Because of that we use a helper
         // variable which tells whether the object instance has already been created. First call has
         // to be made from the main thread, though.
-        private static T s_instance;
+        private static T instance;
 
-        public bool DestroyOnLoad = false;
+        public bool destroyOnLoad = false;
 
         // Protected constructor, access possible via Instance field only
         protected MonoSingleton()
@@ -24,12 +24,12 @@ namespace Voxelmetric.Code.Common
         {
             get
             {
-                lock (SLock)
+                lock (sLock)
                 {
                     // No instance of this class created yet
-                    if (s_instance != null)
+                    if (instance != null)
                     {
-                        return s_instance;
+                        return instance;
                     }
 
                     //if (s_instanceIsNull) {
@@ -39,25 +39,25 @@ namespace Voxelmetric.Code.Common
 
                     // Find an instance of this class in the project
                     // If no other instance is found create a new object
-                    s_instance = FindObjectOfType<T>();
-                    if (s_instance != null)
+                    instance = FindObjectOfType<T>();
+                    if (instance != null)
                     {
-                        return s_instance;
+                        return instance;
                     }
 
                     //s_instanceIsNull = false;
 
                     GameObject go = new GameObject("Singleton " + typeof(T));
-                    s_instance = go.AddComponent<T>();
+                    instance = go.AddComponent<T>();
 
-                    if (!s_instance.DestroyOnLoad)
+                    if (!instance.destroyOnLoad)
                     {
                         DontDestroyOnLoad(go);
                     }
                     //else
                     //	s_instanceIsNull = false;
 
-                    return s_instance;
+                    return instance;
                 }
             }
         }

@@ -1278,6 +1278,11 @@ PrefabInstance:
       propertyPath: ObjectPools.Array.size
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 11406898, guid: 28fc5073d6f2b5b42acaec530dd745cd, type: 3}
+      propertyPath: objectPools.Array.data[2].Prefab
+      value: 
+      objectReference: {fileID: 1832366311677851370, guid: 33ab748682ed16143994641784b76716,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28fc5073d6f2b5b42acaec530dd745cd, type: 3}
 --- !u!4 &759343523 stripped
@@ -2573,6 +2578,18 @@ PrefabInstance:
       propertyPath: FollowCameraZ
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11422472, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: useFrustumCulling
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11422472, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: horizontalChunkLoadRadius
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11422472, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
+      propertyPath: verticalChunkLoadRadius
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 11465880, guid: 5fb0c4eef722bd7449de294d0744b781, type: 3}
       propertyPath: selectedBlockText
       value: 
@@ -3030,7 +3047,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2107006772
 MonoBehaviour:
   m_ObjectHideFlags: 0

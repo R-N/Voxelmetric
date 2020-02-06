@@ -8,15 +8,15 @@ public class ConnectedMeshBlockConfig : CustomMeshBlockConfig
     public string[] connectsToNames;
     public bool connectsToSolid;
 
-    private readonly CustomMeshBlockData[] m_datas = new CustomMeshBlockData[6];
-    public CustomMeshBlockData[] dataDir { get { return m_datas; } }
+    private readonly CustomMeshBlockData[] datas = new CustomMeshBlockData[6];
+    public CustomMeshBlockData[] DataDir { get { return datas; } }
 
     private class MeshBlockInfo
     {
         public string fileLocation = string.Empty;
         public Vector3 meshOffset = Vector3.zero;
     }
-    private readonly MeshBlockInfo[] m_info = new MeshBlockInfo[6];
+    private readonly MeshBlockInfo[] info = new MeshBlockInfo[6];
 
     public override bool OnSetUp(BlockConfigObject config, World world)
     {
@@ -63,8 +63,8 @@ public class ConnectedMeshBlockConfig : CustomMeshBlockConfig
 
         for (int dir = 0; dir < 6; dir++)
         {
-            CustomMeshBlockData d = m_datas[dir];
-            MeshBlockInfo i = m_info[dir];
+            CustomMeshBlockData d = datas[dir];
+            MeshBlockInfo i = info[dir];
 
             if (string.IsNullOrEmpty(i.fileLocation))
             {

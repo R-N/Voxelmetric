@@ -12,7 +12,7 @@ public class SurfaceLayer : TerrainLayer
     protected override void SetUp(LayerConfigObject config)
     {
         Block block = world.blockProvider.GetBlock(config.BlockName);
-        blockToPlace = new BlockData(block.Type, block.Solid);
+        blockToPlace = new BlockData(block.type, block.solid);
     }
 
     public override float GetHeight(Chunk chunk, int layerIndex, int x, int z, float heightSoFar, float strength)

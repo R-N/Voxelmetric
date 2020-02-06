@@ -26,14 +26,14 @@ namespace Voxelmetric.Code.Core
         public void Update()
         {
             randomUpdateTime += Time.deltaTime;
-            if (randomUpdateTime >= chunk.world.config.RandomUpdateFrequency)
+            if (randomUpdateTime >= chunk.World.config.RandomUpdateFrequency)
             {
                 randomUpdateTime = 0;
 
                 Vector3Int randomVector3Int = new Vector3Int(
-                    Voxelmetric.resources.random.Next(0, Env.ChunkSize),
-                    Voxelmetric.resources.random.Next(0, Env.ChunkSize),
-                    Voxelmetric.resources.random.Next(0, Env.ChunkSize)
+                    Voxelmetric.resources.random.Next(0, Env.CHUNK_SIZE),
+                    Voxelmetric.resources.random.Next(0, Env.CHUNK_SIZE),
+                    Voxelmetric.resources.random.Next(0, Env.CHUNK_SIZE)
                     );
 
                 chunk.Blocks.GetBlock(ref randomVector3Int).RandomUpdate(chunk, ref randomVector3Int);
@@ -43,7 +43,7 @@ namespace Voxelmetric.Code.Core
                 {
                     scheduledUpdates[i] = new BlockAndTimer(
                         scheduledUpdates[i].pos,
-                        scheduledUpdates[i].time - chunk.world.config.RandomUpdateFrequency
+                        scheduledUpdates[i].time - chunk.World.config.RandomUpdateFrequency
                         );
 
                     if (scheduledUpdates[i].time <= 0)

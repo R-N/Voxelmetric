@@ -19,11 +19,11 @@ public class GrassBlock : CubeBlock
     {
         base.OnInit(blockProvider);
 
-        air = BlockProvider.AirBlock;
+        air = BlockProvider.airBlock;
         Block blk = blockProvider.GetBlock("dirt");
-        dirt = new BlockData(blk.Type, blk.Solid);
+        dirt = new BlockData(blk.type, blk.solid);
         blk = blockProvider.GetBlock("grass");
-        grass = new BlockData(blk.Type, blk.Solid);
+        grass = new BlockData(blk.type, blk.solid);
     }
 
     // On random Update spread grass to any nearby dirt blocks on the surface
@@ -33,11 +33,11 @@ public class GrassBlock : CubeBlock
 
         // Let's stay inside bounds
         int minX = localPos.x <= 0 ? 0 : 1;
-        int maxX = localPos.x >= Env.ChunkSize1 ? 0 : 1;
+        int maxX = localPos.x >= Env.CHUNK_SIZE_1 ? 0 : 1;
         int minY = localPos.y <= 0 ? 0 : 1;
-        int maxY = localPos.y >= Env.ChunkSize1 ? 0 : 1;
+        int maxY = localPos.y >= Env.CHUNK_SIZE_1 ? 0 : 1;
         int minZ = localPos.z <= 0 ? 0 : 1;
-        int maxZ = localPos.z >= Env.ChunkSize1 ? 0 : 1;
+        int maxZ = localPos.z >= Env.CHUNK_SIZE_1 ? 0 : 1;
 
         for (int y = -minY; y <= maxY; y++)
         {
@@ -53,10 +53,10 @@ public class GrassBlock : CubeBlock
                     }
 
                     // There has to be air above the dirt
-                    int airIndex = grassIndex + Env.ChunkSizePow2;
+                    int airIndex = grassIndex + Env.CHUNK_SIZE_POW_2;
                     if (blocks.Get(airIndex).Equals(air))
                     {
-                        blocks.chunk.Modify(new ModifyOpBlock(grass, grassIndex, true));
+                        blocks.Chunk.Modify(new ModifyOpBlock(grass, grassIndex, true));
                     }
                 }
             }

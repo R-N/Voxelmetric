@@ -17,7 +17,7 @@ public class AbsoluteLayer : TerrainLayer
     {
         // Config files for absolute layers MUST define these properties
         Block block = world.blockProvider.GetBlock(config.BlockName);
-        blockToPlace = new BlockData(block.Type, block.Solid);
+        blockToPlace = new BlockData(block.type, block.solid);
 
         noise.Frequency = 1f / Frequency; // Frequency in configs is in fast 1/frequency
         noise.Gain = Exponent;
@@ -33,8 +33,8 @@ public class AbsoluteLayer : TerrainLayer
     {
         Voxelmetric.Code.Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
         NoiseItem ni = pools.noiseItems[layerIndex];
-        ni.noiseGen.SetInterpBitStep(Env.ChunkSizeWithPadding, 2);
-        ni.lookupTable = pools.FloatArrayPool.Pop((ni.noiseGen.Size + 1) * (ni.noiseGen.Size + 1));
+        ni.noiseGen.SetInterpBitStep(Env.CHUNK_SIZE_WITH_PADDING, 2);
+        ni.lookupTable = pools.floatArrayPool.Pop((ni.noiseGen.Size + 1) * (ni.noiseGen.Size + 1));
 
 #if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN) && ENABLE_FASTSIMD
         float[] noiseSet = chunk.pools.FloatArrayPool.Pop(ni.noiseGen.Size * ni.noiseGen.Size * ni.noiseGen.Size);
@@ -77,7 +77,7 @@ public class AbsoluteLayer : TerrainLayer
     {
         Voxelmetric.Code.Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
         NoiseItem ni = pools.noiseItems[layerIndex];
-        pools.FloatArrayPool.Push(ni.lookupTable);
+        pools.floatArrayPool.Push(ni.lookupTable);
     }
 
     public override float GetHeight(Chunk chunk, int layerIndex, int x, int z, float heightSoFar, float strength)
@@ -90,7 +90,7 @@ public class AbsoluteLayer : TerrainLayer
         // it by strength so that a fraction of the result that gets used can be decided
         float heightToAdd = ni.noiseGen.Interpolate(x, z, ni.lookupTable);
         heightToAdd += MinHeight;
-        heightToAdd = heightToAdd * strength;
+        heightToAdd *= strength;
 
         // Absolute layers add from the minY and up but if the layer height is lower than
         // the existing terrain there's nothing to add so just return the initial value
@@ -113,7 +113,7 @@ public class AbsoluteLayer : TerrainLayer
         // it by strength so that a fraction of the result that gets used can be decided
         float heightToAdd = ni.noiseGen.Interpolate(x, z, ni.lookupTable);
         heightToAdd += MinHeight;
-        heightToAdd = heightToAdd * strength;
+        heightToAdd *= strength;
 
         // Absolute layers add from the minY and up but if the layer height is lower than
         // the existing terrain there's nothing to add so just return the initial value

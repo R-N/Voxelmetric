@@ -14,9 +14,9 @@ namespace Voxelmetric.Code.VM
             void HandleMessage(byte[] message);
         }
 
-        public byte[] buffer = new byte[VmNetworking.bufferLength];
+        public byte[] buffer = new byte[VmNetworking.BUFFER_LENGTH];
 
-        private byte[] message = new byte[VmNetworking.bufferLength];
+        private byte[] message = new byte[VmNetworking.BUFFER_LENGTH];
         private int messageOffset = 0;
         private int expectedSize = 0;
         private bool tmpExpectedSize;

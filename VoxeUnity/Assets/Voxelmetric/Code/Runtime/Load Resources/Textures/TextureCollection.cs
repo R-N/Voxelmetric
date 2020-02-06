@@ -9,35 +9,37 @@ namespace Voxelmetric.Code.Load_Resources.Textures
 {
     public class TextureCollection
     {
-        public readonly string m_textureName;
-        private readonly TextureConfigType m_textureType;
-        private readonly List<Rect> m_uvs;
+        public readonly string textureName;
+        private readonly TextureConfigType textureType;
+        private readonly List<Rect> uvs;
+        private Vector2Int coords;
 
         public TextureCollection(string name, TextureConfigType type)
         {
-            m_textureName = name;
-            m_textureType = type;
+            textureName = name;
+            textureType = type;
 
-            if (m_textureType == TextureConfigType.Connected)
+            if (textureType == TextureConfigType.Connected)
             {
-                m_uvs = new List<Rect>(48);
+                uvs = new List<Rect>(48);
                 for (int i = 0; i < 48; i++)
                 {
-                    m_uvs.Add(new Rect());
+                    uvs.Add(new Rect());
                 }
             }
             else
             {
-                m_uvs = new List<Rect>();
+                uvs = new List<Rect>();
             }
         }
 
+        [System.Obsolete("Use 'AddTexture' with Vector2Int instead.")]
         public void AddTexture(Rect uvs, TextureConfig.Texture texture)
         {
-            switch (m_textureType)
+            switch (textureType)
             {
                 case TextureConfigType.Connected:
-                    m_uvs[texture.index] = uvs;
+                    this.uvs[texture.index] = uvs;
                     break;
                 default:
                     if (texture.weight <= 0)
@@ -47,21 +49,27 @@ namespace Voxelmetric.Code.Load_Resources.Textures
                     // Add the texture multiple times to raise the chance it's selected randomly
                     for (int i = 0; i < texture.weight; i++)
                     {
-                        m_uvs.Add(uvs);
+                        this.uvs.Add(uvs);
                     }
 
                     break;
             }
         }
 
+        public void AddTexture(Vector2Int coords)
+        {
+            this.coords = coords;
+        }
+
+        [System.Obsolete("Use 'GetTexture' that returns Vector2Int.")]
         public Rect GetTexture(Chunk chunk, ref Vector3Int localPos, Direction direction)
         {
-            if (m_uvs.Count == 1)
+            if (uvs.Count == 1)
             {
-                return m_uvs[0];
+                return uvs[0];
             }
 
-            if (m_textureType == TextureConfigType.Connected)
+            if (textureType == TextureConfigType.Connected)
             {
                 ChunkBlocks blocks = chunk.Blocks;
                 int localPosIndex = Helpers.GetChunkIndex1DFrom3D(localPos.x, localPos.y, localPos.z);
@@ -73,7 +81,7 @@ namespace Voxelmetric.Code.Load_Resources.Textures
                 bool nw, ne, se, sw;
 
                 int index1, index2, index3;
-                int sizeWithPadding = chunk.SideSize + Env.ChunkPadding2;
+                int sizeWithPadding = chunk.SideSize + Env.CHUNK_PADDING_2;
                 int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
 
                 switch (direction)
@@ -165,10 +173,10 @@ namespace Voxelmetric.Code.Load_Resources.Textures
                 }
 
                 int uvIndex = ConnectedTextures.GetTexture(n_, _e, s_, _w, nw, ne, se, sw);
-                return m_uvs[uvIndex];
+                return uvs[uvIndex];
             }
 
-            if (m_uvs.Count > 1)
+            if (uvs.Count > 1)
             {
                 int hash = localPos.GetHashCode();
                 if (hash < 0)
@@ -177,13 +185,18 @@ namespace Voxelmetric.Code.Load_Resources.Textures
                 }
 
                 float randomNumber = (hash % 100) / 100f;
-                randomNumber *= m_uvs.Count;
+                randomNumber *= uvs.Count;
 
-                return m_uvs[(int)randomNumber];
+                return uvs[(int)randomNumber];
             }
 
-            Debug.LogError("There were no textures for " + m_textureName);
+            Debug.LogError("There were no textures for " + textureName);
             return new Rect();
+        }
+
+        public Vector2Int GetTexture()
+        {
+            return coords;
         }
     }
 }

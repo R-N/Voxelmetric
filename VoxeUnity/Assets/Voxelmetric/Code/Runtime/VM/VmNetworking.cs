@@ -7,7 +7,6 @@ namespace Voxelmetric.Code.VM
     [Serializable]
     public class VmNetworking
     {
-
         public VmClient client;
         public VmServer server;
 
@@ -15,11 +14,11 @@ namespace Voxelmetric.Code.VM
         public IPAddress serverIP;
         //public int serverPort = 11000;
 
-        public const int bufferLength = 1024;
+        public const int BUFFER_LENGTH = 1024;
 
-        public const byte SendBlockChange = 1;
-        public const byte RequestChunkData = 2;
-        public const byte transmitChunkData = 3;
+        public const byte SEND_BLOCK_CHANGE = 1;
+        public const byte REQUEST_CHUNK_DATA = 2;
+        public const byte TRANSMIT_CHUNK_DATA = 3;
 
         /// <summary> True if this world is hosted by the player, not someone else </summary>
         public bool isServer = true;

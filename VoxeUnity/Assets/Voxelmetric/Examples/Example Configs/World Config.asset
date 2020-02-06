@@ -19,7 +19,7 @@ MonoBehaviour:
   minZ: 0
   maxZ: 0
   randomUpdateFrequency: 1
-  addAOToMesh: 1
+  addAOToMesh: 0
   aOStrength: 0.5
   atlasPadding: 32
   atlasFiltering: 0
@@ -28,4 +28,4 @@ MonoBehaviour:
   useThreadPool: 1
   useThreadedIO: 1
   useSerialization: 1
-  useGreedyMeshing: 0
+  useGreedyMeshing: 1

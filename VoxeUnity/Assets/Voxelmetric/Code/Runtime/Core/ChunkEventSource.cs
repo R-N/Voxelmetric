@@ -7,7 +7,7 @@ namespace Voxelmetric.Code.Core
     public class ChunkEventSource : IEventSource<ChunkStateExternal>
     {
         //! List of external listeners
-        private List<IEventListener<ChunkStateExternal>> m_listenersExternal;
+        private List<IEventListener<ChunkStateExternal>> listenersExternal;
 
         protected ChunkEventSource()
         {
@@ -17,7 +17,7 @@ namespace Voxelmetric.Code.Core
         public void Clear()
         {
 
-            m_listenersExternal = new List<IEventListener<ChunkStateExternal>>();
+            listenersExternal = new List<IEventListener<ChunkStateExternal>>();
         }
 
         #region IEventSource<ChunkStateExternal>
@@ -25,9 +25,9 @@ namespace Voxelmetric.Code.Core
         public bool Register(IEventListener<ChunkStateExternal> listener)
         {
             Assert.IsTrue(listener != null);
-            if (!m_listenersExternal.Contains(listener))
+            if (!listenersExternal.Contains(listener))
             {
-                m_listenersExternal.Add(listener);
+                listenersExternal.Add(listener);
                 return true;
             }
 
@@ -37,14 +37,14 @@ namespace Voxelmetric.Code.Core
         public bool Unregister(IEventListener<ChunkStateExternal> listener)
         {
             Assert.IsTrue(listener != null);
-            return m_listenersExternal.Remove(listener);
+            return listenersExternal.Remove(listener);
         }
 
         public void NotifyAll(ChunkStateExternal evt)
         {
-            for (int i = 0; i < m_listenersExternal.Count; i++)
+            for (int i = 0; i < listenersExternal.Count; i++)
             {
-                IEventListener<ChunkStateExternal> listener = m_listenersExternal[i];
+                IEventListener<ChunkStateExternal> listener = listenersExternal[i];
                 listener.OnNotified(this, evt);
             }
         }

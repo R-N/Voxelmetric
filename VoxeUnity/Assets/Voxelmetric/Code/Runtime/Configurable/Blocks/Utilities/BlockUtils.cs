@@ -17,9 +17,9 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
 
         //Adding a tiny overlap between block meshes may solve floating point imprecision
         //errors causing pixel size gaps between blocks when looking closely
-        public static readonly float blockPadding = Env.BlockFacePadding;
+        public static readonly float blockPadding = Env.BLOCK_FACE_PADDING;
 
-        public static readonly Vector3[][] PaddingOffsets =
+        public static readonly Vector3[][] paddingOffsets =
         {
             new[]
             {
@@ -75,9 +75,9 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
 
         public static void PrepareColors(Chunk chunk, Color32[] data, BlockLightData light)
         {
-            if (chunk.world.config.AddAOToMesh)
+            if (chunk.World.config.AddAOToMesh)
             {
-                SetColorsAO(data, light, chunk.world.config.AOStrength);
+                SetColorsAO(data, light, chunk.World.config.AOStrength);
             }
             else
             {
@@ -88,7 +88,7 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
         public static BlockLightData CalculateColors(Chunk chunk, int localPosIndex, Direction direction)
         {
             // With AO turned off, do not generate any fancy data
-            if (!chunk.world.config.AddAOToMesh)
+            if (!chunk.World.config.AddAOToMesh)
             {
                 return new BlockLightData();
             }
@@ -101,7 +101,7 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
             ChunkBlocks blocks = chunk.Blocks;
             int index1, index2, index3;
 
-            int sizeWithPadding = chunk.SideSize + Env.ChunkPadding2;
+            int sizeWithPadding = chunk.SideSize + Env.CHUNK_PADDING_2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
 
             switch (direction)
@@ -197,74 +197,76 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
 
         public static void AdjustColors(Chunk chunk, Color32[] data, BlockLightData light)
         {
-            if (!chunk.world.config.AddAOToMesh)
+            if (!chunk.World.config.AddAOToMesh)
             {
                 return;
             }
 
-            AdjustColorsAO(data, light, chunk.world.config.AOStrength);
+            AdjustColorsAO(data, light, chunk.World.config.AOStrength);
         }
 
-        private static void PrepareTexture(Vector2[] data, ref Rect texture, bool rotated, bool backface)
+        private static void PrepareTexture(Vector4[] data, Vector2Int texture, bool rotated, bool backface)
         {
             if (!rotated)
             {
                 if (backface)
                 {
-                    data[0] = new Vector2(texture.x + texture.width, texture.y);
-                    data[1] = new Vector2(texture.x + texture.width, texture.y + texture.height);
-                    data[2] = new Vector2(texture.x, texture.y + texture.height);
-                    data[3] = new Vector2(texture.x, texture.y);
+                    data[0] = new Vector4(1, 0, texture.x, texture.y);
+                    data[1] = new Vector4(1, 1, texture.x, texture.y);
+                    data[2] = new Vector4(0, 1, texture.x, texture.y);
+                    data[3] = new Vector4(0, 0, texture.x, texture.y);
                 }
                 else
                 {
-                    data[0] = new Vector2(texture.x, texture.y);
-                    data[1] = new Vector2(texture.x, texture.y + texture.height);
-                    data[2] = new Vector2(texture.x + texture.width, texture.y + texture.height);
-                    data[3] = new Vector2(texture.x + texture.width, texture.y);
+                    data[0] = new Vector4(0, 0, texture.x, texture.y);
+                    data[1] = new Vector4(0, 1, texture.x, texture.y);
+                    data[2] = new Vector4(1, 1, texture.x, texture.y);
+                    data[3] = new Vector4(1, 0, texture.x, texture.y);
                 }
             }
             else
             {
                 if (backface)
                 {
-                    data[0] = new Vector2(texture.x + texture.width, texture.y + texture.height);
-                    data[1] = new Vector2(texture.x, texture.y + texture.height);
-                    data[2] = new Vector2(texture.x, texture.y);
-                    data[3] = new Vector2(texture.x + texture.width, texture.y);
+                    data[0] = new Vector4(1, 1, texture.x, texture.y);
+                    data[1] = new Vector4(0, 1, texture.x, texture.y);
+                    data[2] = new Vector4(0, 0, texture.x, texture.y);
+                    data[3] = new Vector4(1, 0, texture.x, texture.y);
                 }
                 else
                 {
-                    data[0] = new Vector2(texture.x, texture.y + texture.height);
-                    data[1] = new Vector2(texture.x + texture.width, texture.y + texture.height);
-                    data[2] = new Vector2(texture.x + texture.width, texture.y);
-                    data[3] = new Vector2(texture.x, texture.y);
+                    data[0] = new Vector4(0, 1, texture.x, texture.y);
+                    data[1] = new Vector4(1, 1, texture.x, texture.y);
+                    data[2] = new Vector4(1, 0, texture.x, texture.y);
+                    data[3] = new Vector4(0, 0, texture.x, texture.y);
                 }
             }
         }
 
-        public static void PrepareTexture(Chunk chunk, ref Vector3Int localPos, Vector2[] data, Direction direction, TextureCollection textureCollection, bool rotated)
+        public static void PrepareTexture(Chunk chunk, ref Vector3Int localPos, Vector4[] data, Direction direction, TextureCollection textureCollection, bool rotated)
         {
-            Rect texture = textureCollection.GetTexture(chunk, ref localPos, direction);
+            //Rect texture = textureCollection.GetTexture(chunk, ref localPos, direction);
+            Vector2Int texture = textureCollection.GetTexture();
             bool backface = DirectionUtils.IsBackface(direction);
-            PrepareTexture(data, ref texture, rotated, backface);
+            PrepareTexture(data, texture, rotated, backface);
         }
 
-        public static void PrepareTexture(Chunk chunk, ref Vector3Int localPos, Vector2[] data, Direction direction, TextureCollection[] textureCollections, bool rotated)
+        public static void PrepareTexture(Chunk chunk, ref Vector3Int localPos, Vector4[] data, Direction direction, TextureCollection[] textureCollections, bool rotated)
         {
-            Rect texture = textureCollections[(int)direction].GetTexture(chunk, ref localPos, direction);
+            //Rect texture = textureCollections[(int)direction].GetTexture(chunk, ref localPos, direction);
+            Vector2Int texture = textureCollections[(int)direction].GetTexture();
             bool backface = DirectionUtils.IsBackface(direction);
-            PrepareTexture(data, ref texture, rotated, backface);
+            PrepareTexture(data, texture, rotated, backface);
         }
 
         private static void SetColorsAO(Color32[] data, BlockLightData light, float strength)
         {
             // 0.33f for there are 3 degrees of AO darkening (0.33f * 3 =~ 1f)
             float str = 0.33f * strength;
-            float ne = 1f - light.neAO * str;
-            float se = 1f - light.seAO * str;
-            float sw = 1f - light.swAO * str;
-            float nw = 1f - light.nwAO * str;
+            float ne = 1f - light.NeAO * str;
+            float se = 1f - light.SeAO * str;
+            float sw = 1f - light.SwAO * str;
+            float nw = 1f - light.NwAO * str;
 
             SetColors(data, sw, nw, ne, se, light.FaceRotationNecessary);
         }
@@ -273,10 +275,10 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
         {
             // 0.33f for there are 3 degrees of AO darkening (0.33f * 3 =~ 1f)
             float str = 0.33f * strength;
-            float ne = 1f - light.neAO * str;
-            float se = 1f - light.seAO * str;
-            float sw = 1f - light.swAO * str;
-            float nw = 1f - light.nwAO * str;
+            float ne = 1f - light.NeAO * str;
+            float se = 1f - light.SeAO * str;
+            float sw = 1f - light.SwAO * str;
+            float nw = 1f - light.NwAO * str;
 
             AdjustColors(data, sw, nw, ne, se, light.FaceRotationNecessary);
         }

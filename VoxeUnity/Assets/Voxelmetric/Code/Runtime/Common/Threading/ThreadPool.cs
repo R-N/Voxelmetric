@@ -8,80 +8,80 @@ namespace Voxelmetric.Code.Common.Threading
 {
     public class ThreadPool
     {
-        private bool m_started;
-        private volatile int m_nextThreadIndex = 0;
+        private bool started;
+        private volatile int nextThreadIndex = 0;
 
         //! Threads used by thread pool
-        private readonly TaskPool[] m_pools;
+        private readonly TaskPool[] pools;
 
         //! Diagnostics
-        private readonly StringBuilder m_sb = new StringBuilder(128);
+        private readonly StringBuilder sb = new StringBuilder(128);
 
         public ThreadPool()
         {
-            m_started = false;
+            started = false;
 
             // If the number of threads is not correctly specified, create as many as possible minus one (taking
             // all available core is not effective - there's still the main thread we should not forget).
             // Allways create at least one thread, however.
-            int threadCnt = Features.UseThreadPool ? Mathf.Max(Environment.ProcessorCount - 1, 1) : 1;
-            m_pools = Helpers.CreateArray1D<TaskPool>(threadCnt);
+            int threadCnt = Features.useThreadPool ? Mathf.Max(Environment.ProcessorCount - 1, 1) : 1;
+            pools = Helpers.CreateArray1D<TaskPool>(threadCnt);
             // NOTE: Normally, I would simply call CreateAndInitArray1D, however, any attempt to allocate memory
             // for TaskPool in this contructor ends up with Unity3D crashing :(
         }
 
         public int GenerateThreadID()
         {
-            m_nextThreadIndex = GetThreadIDFromIndex(m_nextThreadIndex + 1);
-            return m_nextThreadIndex;
+            nextThreadIndex = GetThreadIDFromIndex(nextThreadIndex + 1);
+            return nextThreadIndex;
         }
 
         public int GetThreadIDFromIndex(int index)
         {
-            return Helpers.Mod(index, m_pools.Length);
+            return Helpers.Mod(index, pools.Length);
         }
 
         public LocalPools GetPool(int index)
         {
             int id = GetThreadIDFromIndex(index);
-            return m_pools[id].Pools;
+            return pools[id].Pools;
         }
 
         public TaskPool GetTaskPool(int index)
         {
-            return m_pools[index];
+            return pools[index];
         }
 
         public void Start()
         {
-            if (m_started)
+            if (started)
             {
                 return;
             }
 
-            m_started = true;
+            started = true;
 
-            for (int i = 0; i < m_pools.Length; i++)
+            for (int i = 0; i < pools.Length; i++)
             {
-                m_pools[i] = new TaskPool();
-                m_pools[i].Start();
+                pools[i] = new TaskPool();
+                pools[i].Start();
             }
         }
 
         public int Size
         {
-            get { return m_pools.Length; }
+            get { return pools.Length; }
         }
 
         public override string ToString()
         {
-            m_sb.Length = 0;
-            for (int i = 0; i < m_pools.Length - 1; i++)
+            sb.Length = 0;
+            for (int i = 0; i < pools.Length - 1; i++)
             {
-                m_sb.ConcatFormat("{0}, ", m_pools[i].ToString());
+                sb.ConcatFormat("{0}, ", pools[i].ToString());
             }
 
-            return m_sb.ConcatFormat("{0}", m_pools[m_pools.Length - 1].ToString()).ToString();
+            return sb.ConcatFormat("{0}", pools[pools.Length - 1].ToString()).ToString();
         }
     }
 }

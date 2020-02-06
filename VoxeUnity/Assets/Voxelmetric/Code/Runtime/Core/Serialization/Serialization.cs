@@ -8,7 +8,7 @@ namespace Voxelmetric.Code.Core.Serialization
     {
         private static string SaveLocation(string worldName)
         {
-            string saveLocation = Directories.SaveFolder + "/" + worldName + "/";
+            string saveLocation = Directories.SAVE_FOLDER + "/" + worldName + "/";
 
             if (!Directory.Exists(saveLocation))
             {
@@ -26,7 +26,7 @@ namespace Voxelmetric.Code.Core.Serialization
 
         private static string SaveFileName(Chunk chunk)
         {
-            string saveFile = SaveLocation(chunk.world.worldName);
+            string saveFile = SaveLocation(chunk.World.worldName);
             saveFile += FileName(chunk.Pos);
             return saveFile;
         }

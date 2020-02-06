@@ -29,8 +29,8 @@ public class CustomMeshConfigObject : BlockConfigObject
 
         return new CustomMeshBlockConfig()
         {
-            raycastHit = true,
-            raycastHitOnRemoval = true,
+            RaycastHit = true,
+            RaycastHitOnRemoval = true,
         };
     }
 }

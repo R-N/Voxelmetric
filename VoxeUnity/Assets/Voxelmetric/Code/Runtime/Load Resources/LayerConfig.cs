@@ -23,5 +23,39 @@ namespace Voxelmetric.Code.Load_Resources
         {
             return name;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj is LayerConfig config)
+            {
+                return config.name == name && config.index == index && config.layerType == layerType && config.structure == structure;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 23 * name.GetHashCode();
+                hash = hash * 23 * index.GetHashCode();
+                hash = hash * 23 * layerType.GetHashCode();
+                hash = hash * 23 * structure.GetHashCode();
+
+                return hash;
+            }
+        }
+
+        public static bool operator ==(LayerConfig left, LayerConfig right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(LayerConfig left, LayerConfig right)
+        {
+            return !(left == right);
+        }
     }
 }

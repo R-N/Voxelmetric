@@ -5,7 +5,7 @@ using UnityEngine;
 public class BlockCollection : ScriptableObject
 {
     [SerializeField]
-    private BlockConfigObject[] blocks = new BlockConfigObject[0];
+    private BlockConfigObject[] blocks = null;
 
     public BlockConfigObject[] Blocks { get { return blocks; } }
 

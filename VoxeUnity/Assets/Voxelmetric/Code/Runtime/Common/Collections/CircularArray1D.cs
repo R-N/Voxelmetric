@@ -7,13 +7,13 @@ namespace Voxelmetric.Code.Common.Collections
     /// </summary>
     public sealed class CircularArray1D<T> : IEnumerable
     {
-        private readonly T[] m_items;
+        private readonly T[] items;
 
         public CircularArray1D(int width)
         {
             Offset = 0;
 
-            m_items = Helpers.CreateArray1D<T>(width);
+            items = Helpers.CreateArray1D<T>(width);
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Voxelmetric.Code.Common.Collections
         {
             get
             {
-                return m_items.Length;
+                return items.Length;
             }
         }
 
@@ -39,19 +39,19 @@ namespace Voxelmetric.Code.Common.Collections
         {
             get
             {
-                int pos = Helpers.Mod(i + Offset, m_items.Length);
-                return m_items[pos];
+                int pos = Helpers.Mod(i + Offset, items.Length);
+                return items[pos];
             }
             set
             {
-                int pos = Helpers.Mod(i + Offset, m_items.Length);
-                m_items[pos] = value;
+                int pos = Helpers.Mod(i + Offset, items.Length);
+                items[pos] = value;
             }
         }
 
         public IEnumerator GetEnumerator()
         {
-            return m_items.GetEnumerator();
+            return items.GetEnumerator();
         }
     }
 }

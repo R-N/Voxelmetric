@@ -34,5 +34,41 @@ namespace Voxelmetric.Code.Data_types
                    pos.y > minY && pos.y < maxY &&
                    pos.z > minZ && pos.z < maxZ;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj is AABB item)
+            {
+                return item.minX == minX && item.minY == minY && item.minZ == minZ &&
+                    item.maxX == maxX && item.maxY == maxY && item.maxZ == maxZ;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 23 + minX.GetHashCode();
+                hash = hash * 23 + minY.GetHashCode();
+                hash = hash * 23 + minZ.GetHashCode();
+                hash = hash * 23 + maxX.GetHashCode();
+                hash = hash * 23 + maxY.GetHashCode();
+                hash = hash * 23 + maxZ.GetHashCode();
+                return hash;
+            }
+        }
+
+        public static bool operator ==(AABB left, AABB right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(AABB left, AABB right)
+        {
+            return !(left == right);
+        }
     }
 }

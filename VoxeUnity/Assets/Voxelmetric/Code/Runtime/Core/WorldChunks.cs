@@ -76,8 +76,7 @@ namespace Voxelmetric.Code.Core
         {
             Assert.IsTrue(Helpers.ContainingChunkPos(ref pos) == pos);
 
-            Chunk containerChunk;
-            chunks.TryGetValue(pos, out containerChunk);
+            chunks.TryGetValue(pos, out Chunk containerChunk);
             return containerChunk;
         }
     }

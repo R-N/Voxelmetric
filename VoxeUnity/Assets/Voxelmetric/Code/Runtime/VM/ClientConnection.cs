@@ -28,7 +28,7 @@ namespace Voxelmetric.Code.VM
             }
 
             VmSocketState socketState = new VmSocketState(this);
-            socket.BeginReceive(socketState.buffer, 0, VmNetworking.bufferLength, SocketFlags.None, OnReceiveFromClient, socketState);
+            socket.BeginReceive(socketState.buffer, 0, VmNetworking.BUFFER_LENGTH, SocketFlags.None, OnReceiveFromClient, socketState);
         }
 
         private void OnReceiveFromClient(IAsyncResult ar)
@@ -60,7 +60,7 @@ namespace Voxelmetric.Code.VM
                 if (socket != null && socket.Connected)
                 {
                     // Should be able to use a mutex but unity doesn't seem to like it
-                    socket.BeginReceive(socketState.buffer, 0, VmNetworking.bufferLength, SocketFlags.None, OnReceiveFromClient, socketState);
+                    socket.BeginReceive(socketState.buffer, 0, VmNetworking.BUFFER_LENGTH, SocketFlags.None, OnReceiveFromClient, socketState);
                 }
             }
             catch (Exception ex)
@@ -73,9 +73,9 @@ namespace Voxelmetric.Code.VM
         {
             switch (type)
             {
-                case VmNetworking.SendBlockChange:
+                case VmNetworking.SEND_BLOCK_CHANGE:
                     return 17;
-                case VmNetworking.RequestChunkData:
+                case VmNetworking.REQUEST_CHUNK_DATA:
                     return 13;
                 default:
                     return 0;
@@ -88,12 +88,12 @@ namespace Voxelmetric.Code.VM
 
             switch (receivedData[0])
             {
-                case VmNetworking.SendBlockChange:
+                case VmNetworking.SEND_BLOCK_CHANGE:
                     pos = Vector3Int.FromBytes(receivedData, 1);
                     ushort data = BlockData.RestoreBlockData(receivedData, 13);
                     server.ReceiveChange(ref pos, data, ID);
                     break;
-                case VmNetworking.RequestChunkData:
+                case VmNetworking.REQUEST_CHUNK_DATA:
                     pos = Vector3Int.FromBytes(receivedData, 1);
 
                     if (debugClientConnection)

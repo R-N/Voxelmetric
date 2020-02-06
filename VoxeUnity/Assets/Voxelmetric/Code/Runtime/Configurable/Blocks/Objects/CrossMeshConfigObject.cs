@@ -17,8 +17,8 @@ public class CrossMeshConfigObject : BlockConfigObject
     {
         return new CrossMeshBlockConfig()
         {
-            raycastHit = true,
-            raycastHitOnRemoval = true
+            RaycastHit = true,
+            RaycastHitOnRemoval = true
         };
     }
 

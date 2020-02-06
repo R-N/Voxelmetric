@@ -63,10 +63,10 @@ namespace Voxelmetric.Code.Core
 
         private void SetFeatures()
         {
-            Features.UseThreadPool = config.UseThreadPool;
-            Features.UseThreadedIO = config.UseThreadedIO;
-            Features.UseSerialization = config.UseSerialization;
-            Features.UseGreedyMeshing = config.UseGreedyMeshing;
+            Features.useThreadPool = config.UseThreadPool;
+            Features.useThreadedIO = config.UseThreadedIO;
+            Features.useSerialization = config.UseSerialization;
+            Features.useGreedyMeshing = config.UseGreedyMeshing;
         }
 
         public void Configure()
@@ -80,9 +80,15 @@ namespace Voxelmetric.Code.Core
             textureProvider.Init(blocks, config);
             blockProvider.Init(blocks, this);
 
+            int xSize = textureProvider.atlas.width / 128;
+            int ySize = textureProvider.atlas.height / 128;
+
             foreach (Material renderMaterial in renderMaterials)
             {
                 renderMaterial.mainTexture = textureProvider.atlas;
+                renderMaterial.SetInt("_AtlasX", xSize);
+                renderMaterial.SetInt("_AtlasY", ySize);
+                renderMaterial.SetVector("_AtlasRec", new Vector4(1.0f / xSize, 1.0f / ySize));
             }
         }
 
@@ -99,9 +105,9 @@ namespace Voxelmetric.Code.Core
             if (config.MinX != config.MaxX)
             {
                 // Make sure there is at least one chunk worth of space in the world on the X axis
-                if (config.MaxX - config.MinX < Env.ChunkSize)
+                if (config.MaxX - config.MinX < Env.CHUNK_SIZE)
                 {
-                    config.MaxX = config.MinX + Env.ChunkSize;
+                    config.MaxX = config.MinX + Env.CHUNK_SIZE;
                 }
             }
 
@@ -116,9 +122,9 @@ namespace Voxelmetric.Code.Core
             if (config.MinY != config.MaxY)
             {
                 // Make sure there is at least one chunk worth of space in the world on the Y axis
-                if (config.MaxY - config.MinY < Env.ChunkSize)
+                if (config.MaxY - config.MinY < Env.CHUNK_SIZE)
                 {
-                    config.MaxY = config.MinY + Env.ChunkSize;
+                    config.MaxY = config.MinY + Env.CHUNK_SIZE;
                 }
             }
 
@@ -133,9 +139,9 @@ namespace Voxelmetric.Code.Core
             if (config.MinZ != config.MaxZ)
             {
                 // Make sure there is at least one chunk worth of space in the world on the Z axis
-                if (config.MaxZ - config.MinZ < Env.ChunkSize)
+                if (config.MaxZ - config.MinZ < Env.CHUNK_SIZE)
                 {
-                    config.MaxZ = config.MinZ + Env.ChunkSize;
+                    config.MaxZ = config.MinZ + Env.CHUNK_SIZE;
                 }
             }
         }
@@ -232,8 +238,7 @@ namespace Voxelmetric.Code.Core
                     }
                 }
 
-                List<StructureContext> list;
-                if (pendingStructures.TryGetValue(context.chunkPos, out list))
+                if (pendingStructures.TryGetValue(context.chunkPos, out List<StructureContext> list))
                 {
                     list.Add(context);
                 }
@@ -252,7 +257,7 @@ namespace Voxelmetric.Code.Core
                 }
                 if (chunk != null)
                 {
-                    chunk.NeedApplyStructure = true;
+                    chunk.needApplyStructure = true;
                 }
             }
         }
@@ -282,14 +287,13 @@ namespace Voxelmetric.Code.Core
                     }
 
                     // Structure removed. We need to remove any associated world positions now
-                    for (int y = info.bounds.minY; y < info.bounds.maxY; y += Env.ChunkSize)
+                    for (int y = info.bounds.minY; y < info.bounds.maxY; y += Env.CHUNK_SIZE)
                     {
-                        for (int z = info.bounds.minZ; z < info.bounds.maxZ; z += Env.ChunkSize)
+                        for (int z = info.bounds.minZ; z < info.bounds.maxZ; z += Env.CHUNK_SIZE)
                         {
-                            for (int x = info.bounds.minX; x < info.bounds.maxX; x += Env.ChunkSize)
+                            for (int x = info.bounds.minX; x < info.bounds.maxX; x += Env.CHUNK_SIZE)
                             {
-                                List<StructureContext> list;
-                                if (!pendingStructures.TryGetValue(new Vector3Int(x, y, z), out list) || list.Count <= 0)
+                                if (!pendingStructures.TryGetValue(new Vector3Int(x, y, z), out List<StructureContext> list) || list.Count <= 0)
                                 {
                                     continue;
                                 }
@@ -316,7 +320,7 @@ namespace Voxelmetric.Code.Core
         public void ApplyPendingStructures(Chunk chunk)
         {
             // Check this unlocked first
-            if (!chunk.NeedApplyStructure)
+            if (!chunk.needApplyStructure)
             {
                 return;
             }
@@ -326,13 +330,13 @@ namespace Voxelmetric.Code.Core
 
             lock (pendingStructureMutex)
             {
-                if (!chunk.NeedApplyStructure)
+                if (!chunk.needApplyStructure)
                 {
                     return;
                 }
 
                 // Consume the event
-                chunk.NeedApplyStructure = false;
+                chunk.needApplyStructure = false;
 
                 if (!pendingStructures.TryGetValue(chunk.Pos, out list))
                 {
@@ -343,12 +347,12 @@ namespace Voxelmetric.Code.Core
             }
 
             // Apply changes to the chunk
-            for (int i = chunk.MaxPendingStructureListIndex; i < cnt; i++)
+            for (int i = chunk.maxPendingStructureListIndex; i < cnt; i++)
             {
                 list[i].Apply(chunk);
             }
 
-            chunk.MaxPendingStructureListIndex = cnt - 1;
+            chunk.maxPendingStructureListIndex = cnt - 1;
         }
 
         public bool CheckInsideWorld(Vector3Int pos)
@@ -356,13 +360,13 @@ namespace Voxelmetric.Code.Core
             int offsetX = (Bounds.maxX + Bounds.minX) >> 1;
             int offsetZ = (Bounds.maxZ + Bounds.minZ) >> 1;
 
-            int xx = (pos.x - offsetX) / Env.ChunkSize;
-            int zz = (pos.z - offsetZ) / Env.ChunkSize;
-            int yy = pos.y / Env.ChunkSize;
-            int horizontalRadius = (Bounds.maxX - Bounds.minX) / (2 * Env.ChunkSize);
+            int xx = (pos.x - offsetX) / Env.CHUNK_SIZE;
+            int zz = (pos.z - offsetZ) / Env.CHUNK_SIZE;
+            int yy = pos.y / Env.CHUNK_SIZE;
+            int horizontalRadius = (Bounds.maxX - Bounds.minX) / (2 * Env.CHUNK_SIZE);
 
             return ChunkLoadOrder.CheckXZ(xx, zz, horizontalRadius) &&
-                   yy >= (Bounds.minY / Env.ChunkSize) && yy <= (Bounds.maxY / Env.ChunkSize);
+                   yy >= (Bounds.minY / Env.CHUNK_SIZE) && yy <= (Bounds.maxY / Env.CHUNK_SIZE);
         }
     }
 }

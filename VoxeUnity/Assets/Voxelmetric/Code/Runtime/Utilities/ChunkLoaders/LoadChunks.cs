@@ -16,18 +16,13 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
     /// </summary>
     public class LoadChunks : LoadChunksBase
     {
-        private Clipmap m_clipmap;
+        private Clipmap clipmap;
 
         protected override void OnPreProcessChunks()
         {
             // Update clipmap offsets based on the viewer position
-            m_clipmap.SetOffset(
-                m_viewerPos.x / Env.ChunkSize,
-                m_viewerPos.y / Env.ChunkSize,
-                m_viewerPos.z / Env.ChunkSize
-                );
+            clipmap.SetOffset(viewerPos.x / Env.CHUNK_SIZE, viewerPos.y / Env.CHUNK_SIZE, viewerPos.z / Env.CHUNK_SIZE);
         }
-
 
         protected override void UpdateVisibility(int x, int y, int z, int rangeX, int rangeY, int rangeZ)
         {
@@ -40,9 +35,9 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
 
             bool isLast = rangeX == 1 && rangeY == 1 && rangeZ == 1;
 
-            int wx = x * Env.ChunkSize;
-            int wy = y * Env.ChunkSize;
-            int wz = z * Env.ChunkSize;
+            int wx = x * Env.CHUNK_SIZE;
+            int wy = y * Env.CHUNK_SIZE;
+            int wz = z * Env.CHUNK_SIZE;
 
             // Stop if there is no further subdivision possible
             if (isLast)
@@ -55,18 +50,18 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
                 if (chunk != null)
                 {
 
-                    int tx = m_clipmap.TransformX(x);
-                    int ty = m_clipmap.TransformY(y);
-                    int tz = m_clipmap.TransformZ(z);
+                    int tx = clipmap.TransformX(x);
+                    int ty = clipmap.TransformY(y);
+                    int tz = clipmap.TransformZ(z);
 
                     // Skip chunks which are too far away
-                    if (m_clipmap.IsInsideBounds_Transformed(tx, ty, tz))
+                    if (clipmap.IsInsideBounds_Transformed(tx, ty, tz))
                     {
                         // Update visibility information
-                        ClipmapItem item = m_clipmap.Get_Transformed(tx, ty, tz);
-                        bool isVisible = Planes.TestPlanesAABB(m_cameraPlanes, ref chunk.WorldBounds);
+                        ClipmapItem item = clipmap.Get_Transformed(tx, ty, tz);
+                        bool isVisible = Planes.TestPlanesAABB(cameraPlanes, ref chunk.worldBounds);
 
-                        chunk.NeedsRenderGeometry = isVisible && item.IsInVisibleRange;
+                        chunk.NeedsRenderGeometry = isVisible && item.isInVisibleRange;
                         chunk.PossiblyVisible = isVisible;
                     }
                 }
@@ -76,13 +71,13 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
                 return;
             }
 
-            int rx = rangeX * Env.ChunkSize;
-            int ry = rangeY * Env.ChunkSize;
-            int rz = rangeZ * Env.ChunkSize;
+            int rx = rangeX * Env.CHUNK_SIZE;
+            int ry = rangeY * Env.CHUNK_SIZE;
+            int rz = rangeZ * Env.CHUNK_SIZE;
 
             // Check whether the bouding box lies inside the camera's frustum
             AABB bounds2 = new AABB(wx, wy, wz, wx + rx, wy + ry, wz + rz);
-            Planes.TestPlanesResult res = Planes.TestPlanesAABB2(m_cameraPlanes, ref bounds2);
+            Planes.TestPlanesResult res = Planes.TestPlanesAABB2(cameraPlanes, ref bounds2);
 
             #region Full invisibility
 
@@ -102,11 +97,11 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
                 Profiler.BeginSample("CullFullInside");
 
                 // Full visibility. All chunks in this area need to be made visible
-                for (int cy = wy; cy < wy + ry; cy += Env.ChunkSize)
+                for (int cy = wy; cy < wy + ry; cy += Env.CHUNK_SIZE)
                 {
-                    for (int cz = wz; cz < wz + rz; cz += Env.ChunkSize)
+                    for (int cz = wz; cz < wz + rz; cz += Env.CHUNK_SIZE)
                     {
-                        for (int cx = wx; cx < wx + rx; cx += Env.ChunkSize)
+                        for (int cx = wx; cx < wx + rx; cx += Env.CHUNK_SIZE)
                         {
                             // Update chunk's visibility information
                             Vector3Int chunkPos = new Vector3Int(cx, cy, cz);
@@ -116,14 +111,14 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
                                 continue;
                             }
 
-                            int tx = m_clipmap.TransformX(x);
-                            int ty = m_clipmap.TransformY(y);
-                            int tz = m_clipmap.TransformZ(z);
+                            int tx = clipmap.TransformX(x);
+                            int ty = clipmap.TransformY(y);
+                            int tz = clipmap.TransformZ(z);
 
                             // Update visibility information
-                            ClipmapItem item = m_clipmap.Get_Transformed(tx, ty, tz);
+                            ClipmapItem item = clipmap.Get_Transformed(tx, ty, tz);
 
-                            chunk.NeedsRenderGeometry = item.IsInVisibleRange;
+                            chunk.NeedsRenderGeometry = item.isInVisibleRange;
                             chunk.PossiblyVisible = true;
                         }
                     }
@@ -142,19 +137,19 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
             if (rangeX > 1)
             {
                 offX = rangeX >> 1;
-                rangeX = rangeX - offX;
+                rangeX -= offX;
             }
             int offY = rangeY;
             if (rangeY > 1)
             {
                 offY = rangeY >> 1;
-                rangeY = rangeY - offY;
+                rangeY -= offY;
             }
             int offZ = rangeZ;
             if (rangeZ > 1)
             {
                 offZ = rangeZ >> 1;
-                rangeZ = rangeZ - offZ;
+                rangeZ -= offZ;
             }
 
             Profiler.EndSample();
@@ -177,29 +172,28 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
         {
             Profiler.BeginSample("ProcessChunk");
 
-            int tx = m_clipmap.TransformX(chunk.Pos.x / Env.ChunkSize);
-            int ty = m_clipmap.TransformY(chunk.Pos.y / Env.ChunkSize);
-            int tz = m_clipmap.TransformZ(chunk.Pos.z / Env.ChunkSize);
+            int tx = clipmap.TransformX(chunk.Pos.x / Env.CHUNK_SIZE);
+            int ty = clipmap.TransformY(chunk.Pos.y / Env.CHUNK_SIZE);
+            int tz = clipmap.TransformZ(chunk.Pos.z / Env.CHUNK_SIZE);
 
             // Chunk is too far away. Remove it
-            if (!m_clipmap.IsInsideBounds_Transformed(tx, ty, tz))
+            if (!clipmap.IsInsideBounds_Transformed(tx, ty, tz))
             {
                 chunk.RequestRemoval();
             }
             else
             {
                 // Dummy collider example - create a collider for chunks directly surrounding the viewer
-                int xd = Helpers.Abs((m_viewerPos.x - chunk.Pos.x) / Env.ChunkSize);
-                int yd = Helpers.Abs((m_viewerPos.y - chunk.Pos.y) / Env.ChunkSize);
-                int zd = Helpers.Abs((m_viewerPos.z - chunk.Pos.z) / Env.ChunkSize);
+                int xd = Helpers.Abs((viewerPos.x - chunk.Pos.x) / Env.CHUNK_SIZE);
+                int zd = Helpers.Abs((viewerPos.z - chunk.Pos.z) / Env.CHUNK_SIZE);
                 chunk.NeedsColliderGeometry = xd <= 1 && zd <= 1;
 
-                if (!UseFrustumCulling)
+                if (!useFrustumCulling)
                 {
-                    ClipmapItem item = m_clipmap.Get_Transformed(tx, ty, tz);
+                    ClipmapItem item = clipmap.Get_Transformed(tx, ty, tz);
 
                     // Chunk is in visibilty range. Full update with geometry generation is possible
-                    if (item.IsInVisibleRange)
+                    if (item.isInVisibleRange)
                     {
                         //chunk.LOD = item.LOD;
                         chunk.PossiblyVisible = true;
@@ -218,12 +212,12 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
 
         protected override void OnUpdateRanges()
         {
-            m_clipmap = new Clipmap(
-                            HorizontalChunkLoadRadius,
-                            VerticalChunkLoadRadius,
-                            VerticalChunkLoadRadius + 1
+            clipmap = new Clipmap(
+                            horizontalChunkLoadRadius,
+                            verticalChunkLoadRadius,
+                            verticalChunkLoadRadius + 1
                             );
-            m_clipmap.Init(0, 0);
+            clipmap.Init(0, 0);
         }
 
         private void OnDrawGizmosSelected()
@@ -233,39 +227,39 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
                 return;
             }
 
-            float size = Env.ChunkSize * Env.BlockSize;
+            float size = Env.CHUNK_SIZE * Env.BLOCK_SIZE;
             float halfSize = size * 0.5f;
             float smallSize = size * 0.25f;
 
-            if (world != null && (Diag_DrawWorldBounds || Diag_DrawLoadRange))
+            if (world != null && (diag_DrawWorldBounds || diag_DrawLoadRange))
             {
-                foreach (Chunk chunk in m_updateRequests)
+                foreach (Chunk chunk in updateRequests)
                 {
-                    if (Diag_DrawWorldBounds)
+                    if (diag_DrawWorldBounds)
                     {
                         // Make central chunks more apparent by using yellow color
-                        bool isCentral = chunk.Pos.x == m_viewerPos.x || chunk.Pos.y == m_viewerPos.y || chunk.Pos.z == m_viewerPos.z;
+                        bool isCentral = chunk.Pos.x == viewerPos.x || chunk.Pos.y == viewerPos.y || chunk.Pos.z == viewerPos.z;
                         Gizmos.color = isCentral ? Color.yellow : Color.blue;
                         Vector3 chunkCenter = new Vector3(
-                            chunk.Pos.x + (Env.ChunkSize >> 1),
-                            chunk.Pos.y + (Env.ChunkSize >> 1),
-                            chunk.Pos.z + (Env.ChunkSize >> 1)
+                            chunk.Pos.x + (Env.CHUNK_SIZE >> 1),
+                            chunk.Pos.y + (Env.CHUNK_SIZE >> 1),
+                            chunk.Pos.z + (Env.CHUNK_SIZE >> 1)
                             );
-                        Vector3 chunkSize = new Vector3(Env.ChunkSize, Env.ChunkSize, Env.ChunkSize);
+                        Vector3 chunkSize = new Vector3(Env.CHUNK_SIZE, Env.CHUNK_SIZE, Env.CHUNK_SIZE);
                         Gizmos.DrawWireCube(chunkCenter, chunkSize);
                     }
 
-                    if (Diag_DrawLoadRange)
+                    if (diag_DrawLoadRange)
                     {
                         Vector3Int pos = chunk.Pos;
 
                         if (chunk.Pos.y == 0)
                         {
-                            int tx = m_clipmap.TransformX(pos.x / Env.ChunkSize);
-                            int ty = m_clipmap.TransformY(pos.y / Env.ChunkSize);
-                            int tz = m_clipmap.TransformZ(pos.z / Env.ChunkSize);
+                            int tx = clipmap.TransformX(pos.x / Env.CHUNK_SIZE);
+                            int ty = clipmap.TransformY(pos.y / Env.CHUNK_SIZE);
+                            int tz = clipmap.TransformZ(pos.z / Env.CHUNK_SIZE);
 
-                            if (!m_clipmap.IsInsideBounds_Transformed(tx, ty, tz))
+                            if (!clipmap.IsInsideBounds_Transformed(tx, ty, tz))
                             {
                                 Gizmos.color = Color.red;
                                 Gizmos.DrawWireCube(
@@ -275,8 +269,8 @@ namespace Voxelmetric.Code.Utilities.ChunkLoaders
                             }
                             else
                             {
-                                ClipmapItem item = m_clipmap.Get_Transformed(tx, ty, tz);
-                                if (item.IsInVisibleRange)
+                                ClipmapItem item = clipmap.Get_Transformed(tx, ty, tz);
+                                if (item.isInVisibleRange)
                                 {
                                     Gizmos.color = Color.green;
                                     Gizmos.DrawWireCube(

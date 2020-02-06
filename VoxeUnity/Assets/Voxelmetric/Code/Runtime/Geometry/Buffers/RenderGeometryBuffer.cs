@@ -6,32 +6,32 @@ namespace Voxelmetric.Code.Geometry.Buffers
 {
     public class RenderGeometryBuffer
     {
-        public readonly List<int> Triangles = new List<int>();
-        public readonly List<Vector3> Vertices = new List<Vector3>();
-        public List<Vector2> UV1s;
-        public List<Color32> Colors;
-        public List<Vector4> Tangents;
+        public readonly List<int> triangles = new List<int>();
+        public readonly List<Vector3> vertices = new List<Vector3>();
+        public List<Vector4> uV1s;
+        public List<Color32> colors;
+        public List<Vector4> tangents;
 
         /// <summary>
         ///     Clear the buffers
         /// </summary>
         public void Clear()
         {
-            Vertices.Clear();
-            Triangles.Clear();
-            if (UV1s != null)
+            vertices.Clear();
+            triangles.Clear();
+            if (uV1s != null)
             {
-                UV1s.Clear();
+                uV1s.Clear();
             }
 
-            if (Colors != null)
+            if (colors != null)
             {
-                Colors.Clear();
+                colors.Clear();
             }
 
-            if (Tangents != null)
+            if (tangents != null)
             {
-                Tangents.Clear();
+                tangents.Clear();
             }
         }
 
@@ -43,7 +43,7 @@ namespace Voxelmetric.Code.Geometry.Buffers
             get
             {
                 // There will always be at least some triangles so it's safe to check just for them
-                return Triangles.Count <= 0;
+                return triangles.Count <= 0;
             }
         }
 
@@ -55,23 +55,23 @@ namespace Voxelmetric.Code.Geometry.Buffers
             get
             {
                 // There will always be at least some triangles so it's safe to check just for them
-                return Triangles.Capacity > 0;
+                return triangles.Capacity > 0;
             }
         }
 
         public bool HasUV1
         {
-            get { return UV1s != null; }
+            get { return uV1s != null; }
         }
 
         public bool HasColors
         {
-            get { return UV1s != null; }
+            get { return uV1s != null; }
         }
 
         public bool HasTangents
         {
-            get { return Tangents != null; }
+            get { return tangents != null; }
         }
 
         /// <summary>
@@ -85,52 +85,52 @@ namespace Voxelmetric.Code.Geometry.Buffers
             // 3--2
             if (backFace)
             {
-                Triangles.Add(offset - 4); // 0
-                Triangles.Add(offset - 1); // 3
-                Triangles.Add(offset - 2); // 2
+                triangles.Add(offset - 4); // 0
+                triangles.Add(offset - 1); // 3
+                triangles.Add(offset - 2); // 2
 
-                Triangles.Add(offset - 2); // 2
-                Triangles.Add(offset - 3); // 1
-                Triangles.Add(offset - 4); // 0
+                triangles.Add(offset - 2); // 2
+                triangles.Add(offset - 3); // 1
+                triangles.Add(offset - 4); // 0
             }
             else
             {
-                Triangles.Add(offset - 4); // 0
-                Triangles.Add(offset - 3); // 1
-                Triangles.Add(offset - 2); // 2
+                triangles.Add(offset - 4); // 0
+                triangles.Add(offset - 3); // 1
+                triangles.Add(offset - 2); // 2
 
-                Triangles.Add(offset - 2); // 2
-                Triangles.Add(offset - 1); // 3
-                Triangles.Add(offset - 4); // 0
+                triangles.Add(offset - 2); // 2
+                triangles.Add(offset - 1); // 3
+                triangles.Add(offset - 4); // 0
             }
         }
 
         public void SetupMesh(Mesh mesh, bool calculateBounds)
         {
             // Vertices & indices
-            mesh.SetVertices(Vertices);
-            mesh.SetTriangles(Triangles, 0, calculateBounds);
+            mesh.SetVertices(vertices);
+            mesh.SetTriangles(triangles, 0, calculateBounds);
 
             // UVs
             mesh.uv = null;
-            if (UV1s != null)
+            if (uV1s != null)
             {
-                Assert.IsTrue(UV1s.Count <= Vertices.Count);
-                if (UV1s.Count < Vertices.Count)
+                Assert.IsTrue(uV1s.Count <= vertices.Count);
+                if (uV1s.Count < vertices.Count)
                 {
                     // Fill in UVs if necessary
-                    if (UV1s.Capacity < Vertices.Count)
+                    if (uV1s.Capacity < vertices.Count)
                     {
-                        UV1s.Capacity = Vertices.Count;
+                        uV1s.Capacity = vertices.Count;
                     }
 
-                    int diff = Vertices.Count - UV1s.Count;
+                    int diff = vertices.Count - uV1s.Count;
                     for (int i = 0; i < diff; i++)
                     {
-                        UV1s.Add(Vector2.zero);
+                        uV1s.Add(Vector4.zero);
                     }
                 }
-                mesh.SetUVs(0, UV1s);
+                mesh.SetUVs(0, uV1s);
             }
             mesh.uv2 = null;
             mesh.uv3 = null;
@@ -138,24 +138,24 @@ namespace Voxelmetric.Code.Geometry.Buffers
 
             // Colors
             mesh.colors = null;
-            if (Colors != null)
+            if (colors != null)
             {
-                Assert.IsTrue(Colors.Count <= Vertices.Count);
-                if (Colors.Count < Vertices.Count)
+                Assert.IsTrue(colors.Count <= vertices.Count);
+                if (colors.Count < vertices.Count)
                 {
                     // Fill in colors if necessary
-                    if (Colors.Capacity < Vertices.Count)
+                    if (colors.Capacity < vertices.Count)
                     {
-                        Colors.Capacity = Vertices.Count;
+                        colors.Capacity = vertices.Count;
                     }
 
-                    int diff = Vertices.Count - Colors.Count;
+                    int diff = vertices.Count - colors.Count;
                     for (int i = 0; i < diff; i++)
                     {
-                        Colors.Add(new Color32(255, 255, 255, 255));
+                        colors.Add(new Color32(255, 255, 255, 255));
                     }
                 }
-                mesh.SetColors(Colors);
+                mesh.SetColors(colors);
             }
             else
             {
@@ -164,24 +164,24 @@ namespace Voxelmetric.Code.Geometry.Buffers
 
             // Tangents
             mesh.tangents = null;
-            if (Tangents != null)
+            if (tangents != null)
             {
-                Assert.IsTrue(Tangents.Count <= Vertices.Count);
-                if (Tangents.Count < Vertices.Count)
+                Assert.IsTrue(tangents.Count <= vertices.Count);
+                if (tangents.Count < vertices.Count)
                 {
                     // Fill in tangents if necessary
-                    if (Tangents.Capacity < Vertices.Count)
+                    if (tangents.Capacity < vertices.Count)
                     {
-                        Tangents.Capacity = Vertices.Count;
+                        tangents.Capacity = vertices.Count;
                     }
 
-                    int diff = Vertices.Count - Tangents.Count;
+                    int diff = vertices.Count - tangents.Count;
                     for (int i = 0; i < diff; i++)
                     {
-                        Tangents.Add(Vector4.zero);
+                        tangents.Add(Vector4.zero);
                     }
                 }
-                mesh.SetTangents(Tangents);
+                mesh.SetTangents(tangents);
             }
 
             // Normals

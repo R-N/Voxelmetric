@@ -2,6 +2,7 @@
 using System.Text;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 using Voxelmetric.Code.Common.Extensions;
 using Voxelmetric.Code.Common.Memory;
 
@@ -10,24 +11,25 @@ namespace Voxelmetric.Code.Common.MemoryPooling
     [AddComponentMenu("VoxelMetric/Singleton/GameObjectProvider")]
     public sealed class GameObjectProvider : MonoSingleton<GameObjectProvider>
     {
-        private GameObject m_go;
-        public ObjectPoolEntry[] ObjectPools = new ObjectPoolEntry[0];
+        private GameObject go;
+        [FormerlySerializedAs("ObjectPools")]
+        public ObjectPoolEntry[] objectPools = new ObjectPoolEntry[0];
 
-        private readonly StringBuilder m_stringBuilder = new StringBuilder();
+        private readonly StringBuilder stringBuilder = new StringBuilder();
 
         public GameObject ProviderGameObject
         {
-            get { return m_go; }
+            get { return go; }
         }
 
         // Called after the singleton instance is created
         private void Awake()
         {
-            m_go = new GameObject("GameObjects");
-            m_go.transform.parent = gameObject.transform;
+            go = new GameObject("GameObjects");
+            go.transform.parent = gameObject.transform;
 
             // Iterate pool entries and create a pool of prefabs for each of them
-            foreach (ObjectPoolEntry pool in Instance.ObjectPools)
+            foreach (ObjectPoolEntry pool in Instance.objectPools)
             {
                 if (pool.Prefab == null)
                 {
@@ -35,14 +37,14 @@ namespace Voxelmetric.Code.Common.MemoryPooling
                     continue;
                 }
 
-                pool.Init(m_go, pool.Prefab);
+                pool.Init(go, pool.Prefab);
             }
         }
 
         // Returns a pool of a given name if it exists
         public static ObjectPoolEntry GetPool(string poolName)
         {
-            foreach (ObjectPoolEntry pool in Instance.ObjectPools)
+            foreach (ObjectPoolEntry pool in Instance.objectPools)
             {
                 if (pool.Name == poolName)
                 {
@@ -81,15 +83,15 @@ namespace Voxelmetric.Code.Common.MemoryPooling
 
         public override string ToString()
         {
-            m_stringBuilder.Length = 0;
+            stringBuilder.Length = 0;
 
-            m_stringBuilder.Append("ObjectPools ");
-            foreach (ObjectPoolEntry entry in ObjectPools)
+            stringBuilder.Append("ObjectPools ");
+            foreach (ObjectPoolEntry entry in objectPools)
             {
-                m_stringBuilder.ConcatFormat("{0},", entry.ToString());
+                stringBuilder.ConcatFormat("{0},", entry.ToString());
             }
 
-            return m_stringBuilder.ToString();
+            return stringBuilder.ToString();
         }
 
         [Serializable]
@@ -101,20 +103,20 @@ namespace Voxelmetric.Code.Common.MemoryPooling
 
             [HideInInspector] public ObjectPool<GameObject> Cache;
 
-            private GameObject m_parentGo;
+            private GameObject parentGo;
 
             public ObjectPoolEntry()
             {
                 //Name = string.Empty;
                 //InitialSize = 0;
-                m_parentGo = null;
+                parentGo = null;
                 Prefab = null;
                 Cache = null;
             }
 
             public void Init(GameObject parentGo, GameObject prefab)
             {
-                m_parentGo = parentGo;
+                this.parentGo = parentGo;
                 Prefab = prefab;
 
                 Cache = new ObjectPool<GameObject>(
@@ -123,7 +125,7 @@ namespace Voxelmetric.Code.Common.MemoryPooling
                         GameObject newGO = Instantiate(Prefab);
                         newGO.name = Prefab.name;
                         newGO.SetActive(false);
-                        newGO.transform.parent = m_parentGo.transform; // Make this object a parent of the pooled object
+                        newGO.transform.parent = this.parentGo.transform; // Make this object a parent of the pooled object
                         return newGO;
                     },
                     InitialSize,

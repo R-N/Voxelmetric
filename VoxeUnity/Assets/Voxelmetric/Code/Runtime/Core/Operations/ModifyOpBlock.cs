@@ -38,9 +38,8 @@ namespace Voxelmetric.Code.Core.Operations
                 parentContext.ChildActionFinished();
             }
 
-            int x, y, z;
-            Helpers.GetChunkIndex3DFrom1D(index, out x, out y, out z);
-            blocks.chunk.HandleNeighbors(blockData, new Vector3Int(x, y, z));
+            Helpers.GetChunkIndex3DFrom1D(index, out int x, out int y, out int z);
+            blocks.Chunk.HandleNeighbors(blockData, new Vector3Int(x, y, z));
         }
 
         protected override bool IsRanged()

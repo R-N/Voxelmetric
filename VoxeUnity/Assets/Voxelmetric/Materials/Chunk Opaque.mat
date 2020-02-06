@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Chunk Opaque
-  m_Shader: {fileID: 4800000, guid: 9e186e72478191f49bb20a04056f9896, type: 3}
+  m_Shader: {fileID: 4800000, guid: f96b5ba30e432b643bb420e370afd570, type: 3}
   m_ShaderKeywords: _ALPHATEST_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -55,7 +55,12 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _tex4coord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AtlasY: 4
     - _BumpScale: 1
     - _Cutoff: 0
     - _DetailNormalMapScale: 1
@@ -72,6 +77,8 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
+    - __dirty: 1
     m_Colors:
+    - _AtlasRec: {r: 0.25, g: 0.25, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

@@ -11,7 +11,7 @@ using Voxelmetric.Code.Load_Resources.Textures;
 
 public class CubeBlock : Block
 {
-    public TextureCollection[] textures { get; private set; }
+    public TextureCollection[] Textures { get; private set; }
     public Color32[] Colors { get; private set; }
 
     [Preserve]
@@ -21,8 +21,8 @@ public class CubeBlock : Block
     {
         base.OnInit(blockProvider);
 
-        textures = ((CubeBlockConfig)Config).textures;
-        Colors = ((CubeBlockConfig)Config).colors;
+        Textures = ((CubeBlockConfig)config).textures;
+        Colors = ((CubeBlockConfig)config).colors;
     }
 
     public override void BuildFace(Chunk chunk, Vector3[] vertices, Color32[] palette, ref BlockFace face, bool rotated)
@@ -31,19 +31,19 @@ public class CubeBlock : Block
         int d = DirectionUtils.Get(face.side);
 
         Voxelmetric.Code.Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
-        Vector3[] verts = pools.Vector3ArrayPool.PopExact(4);
-        Vector2[] uvs = pools.Vector2ArrayPool.PopExact(4);
-        Color32[] cols = pools.Color32ArrayPool.PopExact(4);
+        Vector3[] verts = pools.vector3ArrayPool.PopExact(4);
+        Vector4[] uvs = pools.vector4ArrayPool.PopExact(4);
+        Color32[] cols = pools.color32ArrayPool.PopExact(4);
 
         {
             if (vertices == null)
             {
                 Vector3 pos = face.pos;
 
-                verts[0] = pos + BlockUtils.PaddingOffsets[d][0];
-                verts[1] = pos + BlockUtils.PaddingOffsets[d][1];
-                verts[2] = pos + BlockUtils.PaddingOffsets[d][2];
-                verts[3] = pos + BlockUtils.PaddingOffsets[d][3];
+                verts[0] = pos + BlockUtils.paddingOffsets[d][0];
+                verts[1] = pos + BlockUtils.paddingOffsets[d][1];
+                verts[2] = pos + BlockUtils.paddingOffsets[d][2];
+                verts[3] = pos + BlockUtils.paddingOffsets[d][3];
             }
             else
             {
@@ -58,15 +58,15 @@ public class CubeBlock : Block
             cols[2] = Colors[d];
             cols[3] = Colors[d];
 
-            BlockUtils.PrepareTexture(chunk, ref face.pos, uvs, face.side, textures, rotated);
+            BlockUtils.PrepareTexture(chunk, ref face.pos, uvs, face.side, Textures, rotated);
             BlockUtils.AdjustColors(chunk, cols, face.light);
 
             RenderGeometryBatcher batcher = chunk.RenderGeometryHandler.Batcher;
             batcher.AddFace(face.materialID, verts, cols, uvs, backface);
         }
 
-        pools.Color32ArrayPool.Push(cols);
-        pools.Vector2ArrayPool.Push(uvs);
-        pools.Vector3ArrayPool.Push(verts);
+        pools.color32ArrayPool.Push(cols);
+        pools.vector4ArrayPool.Push(uvs);
+        pools.vector3ArrayPool.Push(verts);
     }
 }

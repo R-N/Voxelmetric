@@ -9,38 +9,35 @@ namespace Voxelmetric.Code.Geometry.Batchers
 {
     public class RenderGeometryBatcher : IGeometryBatcher
     {
-        private readonly string m_prefabName;
+        private readonly string prefabName;
         //! Materials our meshes are to use
-        private readonly Material[] m_materials;
+        private readonly Material[] materials;
         //! A list of buffers for each material
         public List<RenderGeometryBuffer>[] Buffers { get; }
         //! GameObjects used to hold our geometry
-        private readonly List<GameObject> m_objects;
+        private readonly List<GameObject> objects;
 
-        private bool m_enabled = false;
+        private bool enabled = false;
         public bool Enabled
         {
             set
             {
-                if (value != m_enabled)
+                if (value != enabled)
                 {
-                    for (int i = 0; i < m_objects.Count; i++)
+                    for (int i = 0; i < objects.Count; i++)
                     {
-                        m_objects[i].SetActive(value);
+                        objects[i].SetActive(value);
                     }
                 }
-                m_enabled = value;
+                enabled = value;
             }
-            get
-            {
-                return m_enabled;
-            }
+            get { return enabled; }
         }
 
         public RenderGeometryBatcher(string prefabName, Material[] materials)
         {
-            m_prefabName = prefabName;
-            m_materials = materials;
+            this.prefabName = prefabName;
+            this.materials = materials;
 
             int buffersCount = materials == null || materials.Length < 1 ? 1 : materials.Length;
             Buffers = new List<RenderGeometryBuffer>[buffersCount];
@@ -60,7 +57,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                 };
             }
 
-            m_objects = new List<GameObject>(1);
+            objects = new List<GameObject>(1);
 
             Clear();
         }
@@ -84,7 +81,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
             }
 
             ReleaseOldData();
-            m_enabled = false;
+            enabled = false;
         }
 
         /// <summary>
@@ -102,7 +99,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
             }
 
             ReleaseOldData();
-            m_enabled = false;
+            enabled = false;
         }
 
         private static void PrepareColors(ref List<Color32> colors, List<Vector3> vertices, int initialVertexCount)
@@ -123,11 +120,11 @@ namespace Voxelmetric.Code.Geometry.Batchers
             }
         }
 
-        private static void PrepareUVs(ref List<Vector2> uvs, List<Vector3> vertices, int initialVertexCount)
+        private static void PrepareUVs(ref List<Vector4> uvs, List<Vector3> vertices, int initialVertexCount)
         {
             if (uvs == null)
             {
-                uvs = new List<Vector2>(vertices.Capacity);
+                uvs = new List<Vector4>(vertices.Capacity);
             }
             else if (uvs.Count < initialVertexCount)
             {
@@ -136,7 +133,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                 int diff = initialVertexCount - uvs.Count;
                 for (int i = 0; i < diff; i++)
                 {
-                    uvs.Add(Vector2.zero);
+                    uvs.Add(Vector4.zero);
                 }
             }
         }
@@ -164,17 +161,17 @@ namespace Voxelmetric.Code.Geometry.Batchers
             {
                 int left = Math.Min(leftToProcess, 65000);
 
-                int leftInBuffer = 65000 - buffer.Vertices.Count;
+                int leftInBuffer = 65000 - buffer.vertices.Count;
                 if (leftInBuffer <= 0)
                 {
                     buffer = new RenderGeometryBuffer
                     {
-                        Colors = new List<Color32>()
+                        colors = new List<Color32>()
                     };
 
-                    buffer.Triangles.Capacity = left;
-                    buffer.Vertices.Capacity = left;
-                    buffer.Colors.Capacity = left;
+                    buffer.triangles.Capacity = left;
+                    buffer.vertices.Capacity = left;
+                    buffer.colors.Capacity = left;
 
                     holder.Add(buffer);
                 }
@@ -188,23 +185,23 @@ namespace Voxelmetric.Code.Geometry.Batchers
                 int offsetTri = (startOffset * 3) >> 1;
 
                 // Add vertices
-                int initialVertexCount = buffer.Vertices.Count;
+                int initialVertexCount = buffer.vertices.Count;
                 for (int i = startOffset; i < max; i++)
                 {
-                    buffer.Vertices.Add(verts[i] + offset);
+                    buffer.vertices.Add(verts[i] + offset);
                 }
 
                 // Add colors
-                PrepareColors(ref buffer.Colors, buffer.Vertices, initialVertexCount);
+                PrepareColors(ref buffer.colors, buffer.vertices, initialVertexCount);
                 for (int i = startOffset; i < max; i++)
                 {
-                    buffer.Colors.Add(colors[i]);
+                    buffer.colors.Add(colors[i]);
                 }
 
                 // Add triangles
                 for (int i = offsetTri; i < maxTris; i++)
                 {
-                    buffer.Triangles.Add(tris[i] + initialVertexCount);
+                    buffer.triangles.Add(tris[i] + initialVertexCount);
                 }
 
                 leftToProcess -= left;
@@ -221,7 +218,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
         /// <param name="uvs">UVs to be processed</param>
         /// <param name="texture">Texture coordinates</param>
         /// <param name="offset">Offset to apply to vertices</param>
-        public void AddMeshData(int materialID, int[] tris, Vector3[] verts, Vector2[] uvs, ref Rect texture, Vector3 offset)
+        public void AddMeshData(int materialID, int[] tris, Vector3[] verts, Vector4[] uvs, ref Rect texture, Vector3 offset)
         {
             // Each face consists of 6 triangles and 4 faces
             Assert.IsTrue(((verts.Length * 3) >> 1) == tris.Length);
@@ -236,17 +233,17 @@ namespace Voxelmetric.Code.Geometry.Batchers
             {
                 int left = Math.Min(leftToProcess, 65000);
 
-                int leftInBuffer = 65000 - buffer.Vertices.Count;
+                int leftInBuffer = 65000 - buffer.vertices.Count;
                 if (leftInBuffer <= 0)
                 {
                     buffer = new RenderGeometryBuffer
                     {
-                        UV1s = new List<Vector2>()
+                        uV1s = new List<Vector4>()
                     };
 
-                    buffer.Triangles.Capacity = left;
-                    buffer.Vertices.Capacity = left;
-                    buffer.UV1s.Capacity = left;
+                    buffer.triangles.Capacity = left;
+                    buffer.vertices.Capacity = left;
+                    buffer.uV1s.Capacity = left;
 
                     holder.Add(buffer);
                 }
@@ -260,18 +257,19 @@ namespace Voxelmetric.Code.Geometry.Batchers
                 int offsetTri = (startOffset * 3) >> 1;
 
                 // Add vertices
-                int initialVertexCount = buffer.Vertices.Count;
+                int initialVertexCount = buffer.vertices.Count;
                 for (int i = startOffset; i < max; i++)
                 {
-                    buffer.Vertices.Add(verts[i] + offset);
+                    buffer.vertices.Add(verts[i] + offset);
                 }
 
                 // Add UVs
-                PrepareUVs(ref buffer.UV1s, buffer.Vertices, initialVertexCount);
+                PrepareUVs(ref buffer.uV1s, buffer.vertices, initialVertexCount);
                 for (int i = startOffset; i < max; i++)
                 {
                     // Adjust UV coordinates according to provided texture atlas
-                    buffer.UV1s.Add(new Vector2(
+                    //TODO: Check texture here
+                    buffer.uV1s.Add(new Vector4(
                                         (uvs[i].x * texture.width) + texture.x,
                                         (uvs[i].y * texture.height) + texture.y
                                     ));
@@ -280,7 +278,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                 // Add triangles
                 for (int i = offsetTri; i < maxTris; i++)
                 {
-                    buffer.Triangles.Add(tris[i] + initialVertexCount);
+                    buffer.triangles.Add(tris[i] + initialVertexCount);
                 }
 
                 leftToProcess -= left;
@@ -298,7 +296,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
         /// <param name="uvs">UVs to be processed</param>
         /// <param name="texture">Texture coordinates</param>
         /// <param name="offset">Offset to apply to vertices</param>
-        public void AddMeshData(int materialID, int[] tris, Vector3[] verts, Color32[] colors, Vector2[] uvs, ref Rect texture, Vector3 offset)
+        public void AddMeshData(int materialID, int[] tris, Vector3[] verts, Color32[] colors, Vector4[] uvs, ref Rect texture, Vector3 offset)
         {
             // Each face consists of 6 triangles and 4 faces
             Assert.IsTrue(((verts.Length * 3) >> 1) == tris.Length);
@@ -313,19 +311,19 @@ namespace Voxelmetric.Code.Geometry.Batchers
             {
                 int left = Math.Min(leftToProcess, 65000);
 
-                int leftInBuffer = 65000 - buffer.Vertices.Count;
+                int leftInBuffer = 65000 - buffer.vertices.Count;
                 if (leftInBuffer <= 0)
                 {
                     buffer = new RenderGeometryBuffer
                     {
-                        UV1s = new List<Vector2>(),
-                        Colors = new List<Color32>()
+                        uV1s = new List<Vector4>(),
+                        colors = new List<Color32>()
                     };
 
-                    buffer.Triangles.Capacity = left;
-                    buffer.Vertices.Capacity = left;
-                    buffer.UV1s.Capacity = left;
-                    buffer.Colors.Capacity = left;
+                    buffer.triangles.Capacity = left;
+                    buffer.vertices.Capacity = left;
+                    buffer.uV1s.Capacity = left;
+                    buffer.colors.Capacity = left;
 
                     holder.Add(buffer);
                 }
@@ -339,34 +337,35 @@ namespace Voxelmetric.Code.Geometry.Batchers
                 int offsetTri = (startOffset * 3) >> 1;
 
                 // Add vertices
-                int initialVertexCount = buffer.Vertices.Count;
+                int initialVertexCount = buffer.vertices.Count;
                 for (int i = startOffset; i < max; i++)
                 {
-                    buffer.Vertices.Add(verts[i] + offset);
+                    buffer.vertices.Add(verts[i] + offset);
                 }
 
                 // Add UVs
-                PrepareUVs(ref buffer.UV1s, buffer.Vertices, initialVertexCount);
+                PrepareUVs(ref buffer.uV1s, buffer.vertices, initialVertexCount);
                 for (int i = startOffset; i < max; i++)
                 {
+                    //TODO: Texture check here
                     // Adjust UV coordinates according to provided texture atlas
-                    buffer.UV1s.Add(new Vector2(
+                    buffer.uV1s.Add(new Vector4(
                                         (uvs[i].x * texture.width) + texture.x,
                                         (uvs[i].y * texture.height) + texture.y
                                     ));
                 }
 
                 // Add colors
-                PrepareColors(ref buffer.Colors, buffer.Vertices, initialVertexCount);
+                PrepareColors(ref buffer.colors, buffer.vertices, initialVertexCount);
                 for (int i = startOffset; i < max; i++)
                 {
-                    buffer.Colors.Add(colors[i]);
+                    buffer.colors.Add(colors[i]);
                 }
 
                 // Add triangles
                 for (int i = offsetTri; i < maxTris; i++)
                 {
-                    buffer.Triangles.Add(tris[i] + initialVertexCount);
+                    buffer.triangles.Add(tris[i] + initialVertexCount);
                 }
 
                 leftToProcess -= left;
@@ -381,7 +380,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
         /// <param name="verts"> An array of 4 vertices forming the face</param>
         /// <param name="uvs">An array of 4 UV coordinates</param>
         /// <param name="backFace">If false, vertices are added clock-wise</param>
-        public void AddFace(int materialID, Vector3[] verts, Vector2[] uvs, bool backFace)
+        public void AddFace(int materialID, Vector3[] verts, Vector4[] uvs, bool backFace)
         {
             Assert.IsTrue(verts.Length == 4);
 
@@ -389,25 +388,25 @@ namespace Voxelmetric.Code.Geometry.Batchers
             RenderGeometryBuffer buffer = holder[holder.Count - 1];
 
             // If there are too many vertices we need to create a new separate buffer for them
-            if (buffer.Vertices.Count + 4 > 65000)
+            if (buffer.vertices.Count + 4 > 65000)
             {
                 buffer = new RenderGeometryBuffer
                 {
-                    UV1s = new List<Vector2>()
+                    uV1s = new List<Vector4>()
                 };
                 holder.Add(buffer);
             }
 
             // Add vertices
-            int initialVertexCount = buffer.Vertices.Count;
-            buffer.Vertices.AddRange(verts);
+            int initialVertexCount = buffer.vertices.Count;
+            buffer.vertices.AddRange(verts);
 
             // Add indices
-            buffer.AddIndices(buffer.Vertices.Count, backFace);
+            buffer.AddIndices(buffer.vertices.Count, backFace);
 
             // Add UVs
-            PrepareUVs(ref buffer.UV1s, buffer.Vertices, initialVertexCount);
-            buffer.UV1s.AddRange(uvs);
+            PrepareUVs(ref buffer.uV1s, buffer.vertices, initialVertexCount);
+            buffer.uV1s.AddRange(uvs);
         }
 
         /// <summary>
@@ -425,25 +424,25 @@ namespace Voxelmetric.Code.Geometry.Batchers
             RenderGeometryBuffer buffer = holder[holder.Count - 1];
 
             // If there are too many vertices we need to create a new separate buffer for them
-            if (buffer.Vertices.Count + 4 > 65000)
+            if (buffer.vertices.Count + 4 > 65000)
             {
                 buffer = new RenderGeometryBuffer
                 {
-                    Colors = new List<Color32>()
+                    colors = new List<Color32>()
                 };
                 holder.Add(buffer);
             }
 
             // Add vertices
-            int initialVertexCount = buffer.Vertices.Count;
-            buffer.Vertices.AddRange(verts);
+            int initialVertexCount = buffer.vertices.Count;
+            buffer.vertices.AddRange(verts);
 
             // Add colors
-            PrepareColors(ref buffer.Colors, buffer.Vertices, initialVertexCount);
-            buffer.Colors.AddRange(colors);
+            PrepareColors(ref buffer.colors, buffer.vertices, initialVertexCount);
+            buffer.colors.AddRange(colors);
 
             // Add indices
-            buffer.AddIndices(buffer.Vertices.Count, backFace);
+            buffer.AddIndices(buffer.vertices.Count, backFace);
         }
 
         /// <summary>
@@ -454,7 +453,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
         /// <param name="colors">An array of 4 colors</param>
         /// <param name="uvs">An array of 4 UV coordinates</param>
         /// <param name="backFace">If false, vertices are added clock-wise</param>
-        public void AddFace(int materialID, Vector3[] verts, Color32[] colors, Vector2[] uvs, bool backFace)
+        public void AddFace(int materialID, Vector3[] verts, Color32[] colors, Vector4[] uvs, bool backFace)
         {
             Assert.IsTrue(verts.Length == 4);
 
@@ -462,30 +461,30 @@ namespace Voxelmetric.Code.Geometry.Batchers
             RenderGeometryBuffer buffer = holder[holder.Count - 1];
 
             // If there are too many vertices we need to create a new separate buffer for them
-            if (buffer.Vertices.Count + 4 > 65000)
+            if (buffer.vertices.Count + 4 > 65000)
             {
                 buffer = new RenderGeometryBuffer
                 {
-                    UV1s = new List<Vector2>(),
-                    Colors = new List<Color32>()
+                    uV1s = new List<Vector4>(),
+                    colors = new List<Color32>()
                 };
                 holder.Add(buffer);
             }
 
             // Add vertices
-            int initialVertexCount = buffer.Vertices.Count;
-            buffer.Vertices.AddRange(verts);
+            int initialVertexCount = buffer.vertices.Count;
+            buffer.vertices.AddRange(verts);
 
             // Add UVs
-            PrepareUVs(ref buffer.UV1s, buffer.Vertices, initialVertexCount);
-            buffer.UV1s.AddRange(uvs);
+            PrepareUVs(ref buffer.uV1s, buffer.vertices, initialVertexCount);
+            buffer.uV1s.AddRange(uvs);
 
             // Add colors
-            PrepareColors(ref buffer.Colors, buffer.Vertices, initialVertexCount);
-            buffer.Colors.AddRange(colors);
+            PrepareColors(ref buffer.colors, buffer.vertices, initialVertexCount);
+            buffer.colors.AddRange(colors);
 
             // Add indices
-            buffer.AddIndices(buffer.Vertices.Count, backFace);
+            buffer.AddIndices(buffer.vertices.Count, backFace);
         }
 
         public void Commit(Vector3 position, Quaternion rotation
@@ -499,7 +498,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
             for (int j = 0; j < Buffers.Length; j++)
             {
                 List<RenderGeometryBuffer> holder = Buffers[j];
-                Material material = (m_materials == null || m_materials.Length < 1) ? null : m_materials[j];
+                Material material = (materials == null || materials.Length < 1) ? null : materials[j];
 
                 for (int i = 0; i < holder.Count; i++)
                 {
@@ -511,7 +510,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                         continue;
                     }
 
-                    GameObject go = GameObjectProvider.PopObject(m_prefabName);
+                    GameObject go = GameObjectProvider.PopObject(prefabName);
                     Assert.IsTrue(go != null);
                     if (go != null)
                     {
@@ -519,7 +518,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                         go.name = string.Format(debugName, "_", i.ToString());
 #endif
 
-                        Mesh mesh = Globals.MemPools.MeshPool.Pop();
+                        Mesh mesh = Globals.MemPools.meshPool.Pop();
                         Assert.IsTrue(mesh.vertices.Length <= 0);
                         buffer.SetupMesh(mesh, true);
 
@@ -534,7 +533,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                         renderer.enabled = true;
                         renderer.sharedMaterial = material;
 
-                        m_objects.Add(go);
+                        objects.Add(go);
                     }
 
                     buffer.Clear();
@@ -556,7 +555,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
             for (int j = 0; j < Buffers.Length; j++)
             {
                 List<RenderGeometryBuffer> holder = Buffers[j];
-                Material material = (m_materials == null || m_materials.Length < 1) ? null : m_materials[j];
+                Material material = (materials == null || materials.Length < 1) ? null : materials[j];
 
                 for (int i = 0; i < holder.Count; i++)
                 {
@@ -568,7 +567,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                         continue;
                     }
 
-                    GameObject go = GameObjectProvider.PopObject(m_prefabName);
+                    GameObject go = GameObjectProvider.PopObject(prefabName);
                     Assert.IsTrue(go != null);
                     if (go != null)
                     {
@@ -576,7 +575,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                         go.name = string.Format(debugName, "_", i.ToString());
 #endif
 
-                        Mesh mesh = Globals.MemPools.MeshPool.Pop();
+                        Mesh mesh = Globals.MemPools.meshPool.Pop();
                         Assert.IsTrue(mesh.vertices.Length <= 0);
                         buffer.SetupMesh(mesh, false);
                         mesh.bounds = bounds;
@@ -592,7 +591,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                         renderer.enabled = true;
                         renderer.sharedMaterial = material;
 
-                        m_objects.Add(go);
+                        objects.Add(go);
                     }
 
                     buffer.Clear();
@@ -602,9 +601,9 @@ namespace Voxelmetric.Code.Geometry.Batchers
 
         private void ReleaseOldData()
         {
-            for (int i = 0; i < m_objects.Count; i++)
+            for (int i = 0; i < objects.Count; i++)
             {
-                GameObject go = m_objects[i];
+                GameObject go = objects[i];
                 // If the component does not exist it means nothing else has been added as well
                 if (go == null)
                 {
@@ -612,21 +611,21 @@ namespace Voxelmetric.Code.Geometry.Batchers
                 }
 
 #if DEBUG
-                go.name = m_prefabName;
+                go.name = prefabName;
 #endif
 
                 MeshFilter filter = go.GetComponent<MeshFilter>();
                 filter.sharedMesh.Clear(false);
-                Globals.MemPools.MeshPool.Push(filter.sharedMesh);
+                Globals.MemPools.meshPool.Push(filter.sharedMesh);
                 filter.sharedMesh = null;
 
                 Renderer renderer = go.GetComponent<Renderer>();
                 renderer.sharedMaterial = null;
 
-                GameObjectProvider.PushObject(m_prefabName, go);
+                GameObjectProvider.PushObject(prefabName, go);
             }
 
-            m_objects.Clear();
+            objects.Clear();
         }
     }
 }

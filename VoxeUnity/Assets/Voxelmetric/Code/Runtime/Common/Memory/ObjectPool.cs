@@ -8,80 +8,80 @@ namespace Voxelmetric.Code.Common.Memory
     public sealed class ObjectPool<T> where T : class
     {
         //! Delegate handling allocation of memory
-        private readonly ObjectPoolAllocator<T> m_objectAllocator;
+        private readonly ObjectPoolAllocator<T> objectAllocator;
         //! Delegate handling releasing of memory
-        private readonly Action<T> m_objectDeallocator;
+        private readonly Action<T> objectDeallocator;
         //! Object storage
-        private readonly List<T> m_objects;
+        private readonly List<T> objects;
         //! Index to the first available object in object pool
-        private int m_objectIndex;
+        private int objectIndex;
         //! Initial size of object pool. We never deallocate memory under this threshold
-        private readonly int m_initialSize;
+        private readonly int initialSize;
         //! If true object pool will try to release some of the unused memory if the difference in currently used size and capacity of pool is too big
-        private readonly bool m_autoReleaseMemory;
+        private readonly bool autoReleaseMemory;
 
         public int Capacity
         {
-            get { return m_objects.Count; }
+            get { return objects.Count; }
         }
 
-        public ObjectPool(Func<T, T> objectAllocator, int initialSize, bool autoReleaseMememory)
+        public ObjectPool(Func<T, T> allocator, int initialSize, bool autoReleaseMememory)
         {
-            m_objectAllocator = new ObjectPoolAllocator<T>(objectAllocator);
-            m_objectDeallocator = null;
-            m_initialSize = initialSize;
-            m_autoReleaseMemory = autoReleaseMememory;
-            m_objectIndex = 0;
+            objectAllocator = new ObjectPoolAllocator<T>(allocator);
+            objectDeallocator = null;
+            this.initialSize = initialSize;
+            autoReleaseMemory = autoReleaseMememory;
+            objectIndex = 0;
 
-            m_objects = new List<T>(initialSize);
+            objects = new List<T>(initialSize);
             for (int i = 0; i < initialSize; i++)
             {
-                m_objects.Add(m_objectAllocator.Action(m_objectAllocator.Arg));
+                objects.Add(objectAllocator.action(objectAllocator.arg));
             }
         }
 
         public ObjectPool(ObjectPoolAllocator<T> objectAllocator, int initialSize, bool autoReleaseMememory)
         {
-            m_objectAllocator = objectAllocator;
-            m_objectDeallocator = null;
-            m_initialSize = initialSize;
-            m_autoReleaseMemory = autoReleaseMememory;
-            m_objectIndex = 0;
+            this.objectAllocator = objectAllocator;
+            objectDeallocator = null;
+            this.initialSize = initialSize;
+            autoReleaseMemory = autoReleaseMememory;
+            objectIndex = 0;
 
-            m_objects = new List<T>(initialSize);
+            objects = new List<T>(initialSize);
             for (int i = 0; i < initialSize; i++)
             {
-                m_objects.Add(m_objectAllocator.Action(m_objectAllocator.Arg));
+                objects.Add(this.objectAllocator.action(this.objectAllocator.arg));
             }
         }
 
         public ObjectPool(Func<T, T> objectAllocator, Action<T> objectDeallocator, int initialSize)
         {
-            m_objectAllocator = new ObjectPoolAllocator<T>(objectAllocator);
-            m_objectDeallocator = objectDeallocator;
-            m_initialSize = initialSize;
-            m_autoReleaseMemory = true;
-            m_objectIndex = 0;
+            this.objectAllocator = new ObjectPoolAllocator<T>(objectAllocator);
+            this.objectDeallocator = objectDeallocator;
+            this.initialSize = initialSize;
+            autoReleaseMemory = true;
+            objectIndex = 0;
 
-            m_objects = new List<T>(initialSize);
+            objects = new List<T>(initialSize);
             for (int i = 0; i < initialSize; i++)
             {
-                m_objects.Add(m_objectAllocator.Action(m_objectAllocator.Arg));
+                objects.Add(this.objectAllocator.action(this.objectAllocator.arg));
             }
         }
 
         public ObjectPool(ObjectPoolAllocator<T> objectAllocator, Action<T> objectDeallocator, int initialSize)
         {
-            m_objectAllocator = objectAllocator;
-            m_objectDeallocator = objectDeallocator;
-            m_initialSize = initialSize;
-            m_autoReleaseMemory = true;
-            m_objectIndex = 0;
+            this.objectAllocator = objectAllocator;
+            this.objectDeallocator = objectDeallocator;
+            this.initialSize = initialSize;
+            autoReleaseMemory = true;
+            objectIndex = 0;
 
-            m_objects = new List<T>(initialSize);
+            objects = new List<T>(initialSize);
             for (int i = 0; i < initialSize; i++)
             {
-                m_objects.Add(m_objectAllocator.Action(m_objectAllocator.Arg));
+                objects.Add(this.objectAllocator.action(this.objectAllocator.arg));
             }
         }
 
@@ -90,18 +90,18 @@ namespace Voxelmetric.Code.Common.Memory
         /// </summary>
         public T Pop()
         {
-            if (m_objectIndex >= m_objects.Count)
+            if (objectIndex >= objects.Count)
             {
                 // Capacity limit has been reached, allocate new elemets
-                m_objects.Add(m_objectAllocator.Action(m_objectAllocator.Arg));
+                objects.Add(objectAllocator.action(objectAllocator.arg));
                 // Let Unity handle how much memory is going to be preallocated
-                for (int i = m_objects.Count; i < m_objects.Capacity; i++)
+                for (int i = objects.Count; i < objects.Capacity; i++)
                 {
-                    m_objects.Add(m_objectAllocator.Action(m_objectAllocator.Arg));
+                    objects.Add(objectAllocator.action(objectAllocator.arg));
                 }
             }
 
-            return m_objects[m_objectIndex++];
+            return objects[objectIndex++];
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Voxelmetric.Code.Common.Memory
         /// </summary>
         public void Push(T item)
         {
-            if (m_objectIndex <= 0)
+            if (objectIndex <= 0)
             {
                 throw new InvalidOperationException("Object pool is full");
             }
@@ -117,28 +117,28 @@ namespace Voxelmetric.Code.Common.Memory
             // If we're using less then 1/4th of memory capacity, let's free half of the allocated memory.
             // We're doing it this way so that there's a certain threshold before allocating new memory.
             // We only deallocate if there's at least m_initialSize items allocated.
-            if (m_autoReleaseMemory)
+            if (autoReleaseMemory)
             {
-                int thresholdCount = m_objects.Count >> 2;
-                if (thresholdCount > m_initialSize && m_objectIndex <= thresholdCount)
+                int thresholdCount = objects.Count >> 2;
+                if (thresholdCount > initialSize && objectIndex <= thresholdCount)
                 {
-                    int halfCount = m_objects.Count >> 1;
+                    int halfCount = objects.Count >> 1;
 
                     // Use custom deallocation if deallocator is set
-                    if (m_objectDeallocator != null)
+                    if (objectDeallocator != null)
                     {
-                        for (int i = halfCount; i < m_objects.Count; i++)
+                        for (int i = halfCount; i < objects.Count; i++)
                         {
-                            m_objectDeallocator(m_objects[i]);
+                            objectDeallocator(objects[i]);
                         }
                     }
 
                     // Remove one half of unused items
-                    m_objects.RemoveRange(halfCount, halfCount);
+                    objects.RemoveRange(halfCount, halfCount);
                 }
             }
 
-            m_objects[--m_objectIndex] = item;
+            objects[--objectIndex] = item;
         }
 
         /// <summary>
@@ -147,22 +147,22 @@ namespace Voxelmetric.Code.Common.Memory
         public void Compact()
         {
             // Use custom deallocation if deallocator is set
-            if (m_objectDeallocator != null)
+            if (objectDeallocator != null)
             {
-                for (int i = m_objectIndex; i < m_objects.Count; i++)
+                for (int i = objectIndex; i < objects.Count; i++)
                 {
-                    m_objectDeallocator(m_objects[i]);
+                    objectDeallocator(objects[i]);
                 }
             }
 
             // Remove all unused items
-            m_objects.RemoveRange(m_objectIndex, m_objects.Count - m_objectIndex);
+            objects.RemoveRange(objectIndex, objects.Count - objectIndex);
         }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder(32);
-            sb.ConcatFormat("{0}/{1}", m_objectIndex, Capacity);
+            sb.ConcatFormat("{0}/{1}", objectIndex, Capacity);
             return sb.ToString();
         }
     }

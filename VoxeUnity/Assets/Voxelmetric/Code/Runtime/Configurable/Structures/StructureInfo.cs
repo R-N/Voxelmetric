@@ -40,8 +40,7 @@ namespace Voxelmetric.Code.Configurable.Structures
                 return false;
             }
 
-            StructureInfo a = obj as StructureInfo;
-            return a != null && Equals(a);
+            return obj is StructureInfo a && Equals(a);
         }
 
         public bool Equals(StructureInfo other)

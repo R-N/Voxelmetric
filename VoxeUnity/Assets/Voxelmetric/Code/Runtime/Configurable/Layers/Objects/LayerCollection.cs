@@ -4,7 +4,7 @@
 public class LayerCollection : ScriptableObject
 {
     [SerializeField]
-    private LayerConfigObject[] layers = new LayerConfigObject[0];
+    private LayerConfigObject[] layers = null;
 
     public LayerConfigObject[] Layers { get { return layers; } }
 }

@@ -89,10 +89,10 @@ namespace Voxelmetric.Examples
                     Vector3Int from = cam.transform.position - new Vector3(-2, -2, -2);
                     Vector3Int to = cam.transform.position - new Vector3(2, 2, 2);
 
-                    Code.Voxelmetric.SetBlockData(world, ref from, ref to, new BlockData(block.Type, block.Solid));
+                    Code.Voxelmetric.SetBlockData(world, ref from, ref to, new BlockData(block.type, block.solid));
                 }
 
-                VmRaycastHit hit = VmRaycast.Raycast(new Ray(cam.transform.position, mousePos - cam.transform.position), world, 100, block.Type == BlockProvider.AirType);
+                VmRaycastHit hit = VmRaycast.Raycast(new Ray(cam.transform.position, mousePos - cam.transform.position), world, 100, block.type == BlockProvider.AIR_TYPE);
 
                 // Display the type of the selected block
                 if (selectedBlockText != null)
@@ -108,9 +108,9 @@ namespace Voxelmetric.Examples
 
                 if (eventSystem != null && !eventSystem.IsPointerOverGameObject())
                 {
-                    if (hit.block.Type != BlockProvider.AirType)
+                    if (hit.block.type != BlockProvider.AIR_TYPE)
                     {
-                        bool adjacent = block.Type != BlockProvider.AirType;
+                        bool adjacent = block.type != BlockProvider.AIR_TYPE;
                         Vector3Int blockPos = adjacent ? hit.adjacentPos : hit.vector3Int;
                         Debug.DrawLine(cam.transform.position, blockPos, Color.red);
                     }
@@ -118,29 +118,29 @@ namespace Voxelmetric.Examples
                     // Clicking voxel blocks
                     if (Input.GetMouseButtonDown(0))
                     {
-                        if (hit.block.Type != BlockProvider.AirType)
+                        if (hit.block.type != BlockProvider.AIR_TYPE)
                         {
-                            bool adjacent = block.Type != BlockProvider.AirType;
+                            bool adjacent = block.type != BlockProvider.AIR_TYPE;
                             Vector3Int blockPos = adjacent ? hit.adjacentPos : hit.vector3Int;
-                            Code.Voxelmetric.SetBlockData(world, ref blockPos, new BlockData(block.Type, block.Solid));
+                            Code.Voxelmetric.SetBlockData(world, ref blockPos, new BlockData(block.type, block.solid));
                         }
                     }
 
                     // Pathfinding
                     if (Input.GetKeyDown(KeyCode.I))
                     {
-                        if (hit.block.Type != BlockProvider.AirType)
+                        if (hit.block.type != BlockProvider.AIR_TYPE)
                         {
-                            bool adjacent = block.Type != BlockProvider.AirType;
+                            bool adjacent = block.type != BlockProvider.AIR_TYPE;
                             pfStart = adjacent ? hit.adjacentPos : hit.vector3Int;
                         }
                     }
 
                     if (Input.GetKeyDown(KeyCode.O))
                     {
-                        if (hit.block.Type != BlockProvider.AirType)
+                        if (hit.block.type != BlockProvider.AIR_TYPE)
                         {
-                            bool adjacent = block.Type != BlockProvider.AirType;
+                            bool adjacent = block.type != BlockProvider.AIR_TYPE;
                             pfStop = adjacent ? hit.adjacentPos : hit.vector3Int;
                         }
                     }
@@ -154,8 +154,8 @@ namespace Voxelmetric.Examples
                     {
                         for (int i = 0; i < pf.path.Count - 1; i++)
                         {
-                            Vector3 p0 = (Vector3)pf.path[i] + Env.HalfBlockOffset;
-                            Vector3 p1 = (Vector3)pf.path[i + 1] + Env.HalfBlockOffset;
+                            Vector3 p0 = (Vector3)pf.path[i] + Env.halfBlockOffset;
+                            Vector3 p1 = (Vector3)pf.path[i + 1] + Env.halfBlockOffset;
                             Debug.DrawLine(p0, p1, Color.red);
                         }
                     }
@@ -168,7 +168,7 @@ namespace Voxelmetric.Examples
 
                     Vector3Int fromPos = new Vector3Int(-44, -44, -44);
                     Vector3Int toPos = new Vector3Int(44, 44, 44);
-                    Code.Voxelmetric.SetBlockData(world, ref fromPos, ref toPos, BlockProvider.AirBlock, action);
+                    Code.Voxelmetric.SetBlockData(world, ref fromPos, ref toPos, BlockProvider.airBlock, action);
                 }
             }
         }

@@ -56,40 +56,40 @@ public class FastNoise
     public enum CellularDistanceFunction { Euclidean, Manhattan, Natural };
     public enum CellularReturnType { CellValue, NoiseLookup, Distance, Distance2, Distance2Add, Distance2Sub, Distance2Mul, Distance2Div };
 
-    private int m_seed = 1337;
-    private FN_DECIMAL m_frequency = 0.01f;
-    private Interp m_interp = Interp.Quintic;
-    private NoiseType m_noiseType = NoiseType.Simplex;
+    private int seed = 1337;
+    private FN_DECIMAL frequency = 0.01f;
+    private Interp interp = Interp.Quintic;
+    private NoiseType noiseType = NoiseType.Simplex;
 
-    private int m_octaves = 3;
-    private FN_DECIMAL m_lacunarity = 2.0f;
-    private FN_DECIMAL m_gain = 0.5f;
-    private FractalType m_fractalType = FractalType.FBM;
+    private int octaves = 3;
+    private FN_DECIMAL lacunarity = 2.0f;
+    private FN_DECIMAL gain = 0.5f;
+    private FractalType fractalType = FractalType.FBM;
 
-    private FN_DECIMAL m_fractalBounding;
+    private FN_DECIMAL fractalBounding;
 
-    private CellularDistanceFunction m_cellularDistanceFunction = CellularDistanceFunction.Euclidean;
-    private CellularReturnType m_cellularReturnType = CellularReturnType.CellValue;
-    private FastNoise m_cellularNoiseLookup = null;
+    private CellularDistanceFunction cellularDistanceFunction = CellularDistanceFunction.Euclidean;
+    private CellularReturnType cellularReturnType = CellularReturnType.CellValue;
+    private FastNoise cellularNoiseLookup = null;
 
-    private FN_DECIMAL m_gradientPerturbAmp = (FN_DECIMAL)(1.0 / 0.45);
+    private FN_DECIMAL gradientPerturbAmp = (FN_DECIMAL)(1.0 / 0.45);
 
     public FastNoise(int seed = 1337)
     {
-        m_seed = seed;
+        this.seed = seed;
         CalculateFractalBounding();
     }
 
     // Returns the seed used by this object
-    public int GetSeed() { return m_seed; }
+    public int GetSeed() { return seed; }
 
     // Sets seed used for all noise types
     // Default: 1337
-    public void SetSeed(int seed) { m_seed = seed; }
+    public void SetSeed(int seed) { this.seed = seed; }
 
     // Sets frequency for all noise types
     // Default: 0.01
-    public void SetFrequency(FN_DECIMAL frequency) { m_frequency = frequency; }
+    public void SetFrequency(FN_DECIMAL frequency) { this.frequency = frequency; }
 
     // Changes the interpolation method used to smooth between noise values
     // Possible interpolation methods (lowest to highest quality) :
@@ -98,44 +98,44 @@ public class FastNoise
     // - Quintic
     // Used in Value, Gradient Noise and Position Perturbing
     // Default: Quintic
-    public void SetInterp(Interp interp) { m_interp = interp; }
+    public void SetInterp(Interp interp) { this.interp = interp; }
 
     // Sets noise return type of GetNoise(...)
     // Default: Simplex
-    public void SetNoiseType(NoiseType noiseType) { m_noiseType = noiseType; }
+    public void SetNoiseType(NoiseType noiseType) { this.noiseType = noiseType; }
 
     // Sets octave count for all fractal noise types
     // Default: 3
-    public void SetFractalOctaves(int octaves) { m_octaves = octaves; CalculateFractalBounding(); }
+    public void SetFractalOctaves(int octaves) { this.octaves = octaves; CalculateFractalBounding(); }
 
     // Sets octave lacunarity for all fractal noise types
     // Default: 2.0
-    public void SetFractalLacunarity(FN_DECIMAL lacunarity) { m_lacunarity = lacunarity; }
+    public void SetFractalLacunarity(FN_DECIMAL lacunarity) { this.lacunarity = lacunarity; }
 
     // Sets octave gain for all fractal noise types
     // Default: 0.5
-    public void SetFractalGain(FN_DECIMAL gain) { m_gain = gain; CalculateFractalBounding(); }
+    public void SetFractalGain(FN_DECIMAL gain) { this.gain = gain; CalculateFractalBounding(); }
 
     // Sets method for combining octaves in all fractal noise types
     // Default: FBM
-    public void SetFractalType(FractalType fractalType) { m_fractalType = fractalType; }
+    public void SetFractalType(FractalType fractalType) { this.fractalType = fractalType; }
 
     // Sets return type from cellular noise calculations
     // Note: NoiseLookup requires another FastNoise object be set with SetCellularNoiseLookup() to function
     // Default: CellValue
-    public void SetCellularDistanceFunction(CellularDistanceFunction cellularDistanceFunction) { m_cellularDistanceFunction = cellularDistanceFunction; }
+    public void SetCellularDistanceFunction(CellularDistanceFunction cellularDistanceFunction) { this.cellularDistanceFunction = cellularDistanceFunction; }
 
     // Sets distance function used in cellular noise calculations
     // Default: Euclidean
-    public void SetCellularReturnType(CellularReturnType cellularReturnType) { m_cellularReturnType = cellularReturnType; }
+    public void SetCellularReturnType(CellularReturnType cellularReturnType) { this.cellularReturnType = cellularReturnType; }
 
     // Noise used to calculate a cell value if cellular return type is NoiseLookup
     // The lookup value is acquired through GetNoise() so ensure you SetNoiseType() on the noise lookup, value, gradient or simplex is recommended
-    public void SetCellularNoiseLookup(FastNoise noise) { m_cellularNoiseLookup = noise; }
+    public void SetCellularNoiseLookup(FastNoise noise) { cellularNoiseLookup = noise; }
 
     // Sets the maximum perturb distance from original location when using GradientPerturb{Fractal}(...)
     // Default: 1.0
-    public void SetGradientPerturbAmp(FN_DECIMAL gradientPerturbAmp) { m_gradientPerturbAmp = gradientPerturbAmp / (FN_DECIMAL)0.45; }
+    public void SetGradientPerturbAmp(FN_DECIMAL gradientPerturbAmp) { this.gradientPerturbAmp = gradientPerturbAmp / (FN_DECIMAL)0.45; }
 
     private static readonly FN_DECIMAL[] CELL_2D_X =
     {
@@ -260,14 +260,14 @@ public class FastNoise
 
     private void CalculateFractalBounding()
     {
-        FN_DECIMAL amp = m_gain;
+        FN_DECIMAL amp = gain;
         FN_DECIMAL ampFractal = (FN_DECIMAL)1.0;
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
             ampFractal += amp;
-            amp *= m_gain;
+            amp *= gain;
         }
-        m_fractalBounding = (FN_DECIMAL)1.0 / ampFractal;
+        fractalBounding = (FN_DECIMAL)1.0 / ampFractal;
     }
 
     // Hashing
@@ -441,16 +441,16 @@ public class FastNoise
 
     public FN_DECIMAL GetNoise(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        x *= m_frequency;
-        y *= m_frequency;
-        z *= m_frequency;
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
 
-        switch (m_noiseType)
+        switch (noiseType)
         {
             case NoiseType.Value:
-                return SingleValue(m_seed, x, y, z);
+                return SingleValue(seed, x, y, z);
             case NoiseType.ValueFractal:
-                switch (m_fractalType)
+                switch (fractalType)
                 {
                     case FractalType.FBM:
                         return SingleValueFractalFBM(x, y, z);
@@ -462,9 +462,9 @@ public class FastNoise
                         return 0.0f;
                 }
             case NoiseType.Perlin:
-                return SinglePerlin(m_seed, x, y, z);
+                return SinglePerlin(seed, x, y, z);
             case NoiseType.PerlinFractal:
-                switch (m_fractalType)
+                switch (fractalType)
                 {
                     case FractalType.FBM:
                         return SinglePerlinFractalFBM(x, y, z);
@@ -476,9 +476,9 @@ public class FastNoise
                         return 0.0f;
                 }
             case NoiseType.Simplex:
-                return SingleSimplex(m_seed, x, y, z);
+                return SingleSimplex(seed, x, y, z);
             case NoiseType.SimplexFractal:
-                switch (m_fractalType)
+                switch (fractalType)
                 {
                     case FractalType.FBM:
                         return SingleSimplexFractalFBM(x, y, z);
@@ -490,7 +490,7 @@ public class FastNoise
                         return 0.0f;
                 }
             case NoiseType.Cellular:
-                switch (m_cellularReturnType)
+                switch (cellularReturnType)
                 {
                     case CellularReturnType.CellValue:
                     case CellularReturnType.NoiseLookup:
@@ -508,15 +508,15 @@ public class FastNoise
 
     public FN_DECIMAL GetNoise(FN_DECIMAL x, FN_DECIMAL y)
     {
-        x *= m_frequency;
-        y *= m_frequency;
+        x *= frequency;
+        y *= frequency;
 
-        switch (m_noiseType)
+        switch (noiseType)
         {
             case NoiseType.Value:
-                return SingleValue(m_seed, x, y);
+                return SingleValue(seed, x, y);
             case NoiseType.ValueFractal:
-                switch (m_fractalType)
+                switch (fractalType)
                 {
                     case FractalType.FBM:
                         return SingleValueFractalFBM(x, y);
@@ -528,9 +528,9 @@ public class FastNoise
                         return 0.0f;
                 }
             case NoiseType.Perlin:
-                return SinglePerlin(m_seed, x, y);
+                return SinglePerlin(seed, x, y);
             case NoiseType.PerlinFractal:
-                switch (m_fractalType)
+                switch (fractalType)
                 {
                     case FractalType.FBM:
                         return SinglePerlinFractalFBM(x, y);
@@ -542,9 +542,9 @@ public class FastNoise
                         return 0.0f;
                 }
             case NoiseType.Simplex:
-                return SingleSimplex(m_seed, x, y);
+                return SingleSimplex(seed, x, y);
             case NoiseType.SimplexFractal:
-                switch (m_fractalType)
+                switch (fractalType)
                 {
                     case FractalType.FBM:
                         return SingleSimplexFractalFBM(x, y);
@@ -556,7 +556,7 @@ public class FastNoise
                         return 0.0f;
                 }
             case NoiseType.Cellular:
-                switch (m_cellularReturnType)
+                switch (cellularReturnType)
                 {
                     case CellularReturnType.CellValue:
                     case CellularReturnType.NoiseLookup:
@@ -585,7 +585,7 @@ public class FastNoise
         int zi = FloatCast2Int(z);
         int wi = FloatCast2Int(w);
 
-        return ValCoord4D(m_seed,
+        return ValCoord4D(seed,
             xi ^ (xi >> 16),
             yi ^ (yi >> 16),
             zi ^ (zi >> 16),
@@ -598,7 +598,7 @@ public class FastNoise
         int yi = FloatCast2Int(y);
         int zi = FloatCast2Int(z);
 
-        return ValCoord3D(m_seed,
+        return ValCoord3D(seed,
             xi ^ (xi >> 16),
             yi ^ (yi >> 16),
             zi ^ (zi >> 16));
@@ -609,34 +609,34 @@ public class FastNoise
         int xi = FloatCast2Int(x);
         int yi = FloatCast2Int(y);
 
-        return ValCoord2D(m_seed,
+        return ValCoord2D(seed,
             xi ^ (xi >> 16),
             yi ^ (yi >> 16));
     }
 
     public FN_DECIMAL GetWhiteNoiseInt(int x, int y, int z, int w)
     {
-        return ValCoord4D(m_seed, x, y, z, w);
+        return ValCoord4D(seed, x, y, z, w);
     }
 
     public FN_DECIMAL GetWhiteNoiseInt(int x, int y, int z)
     {
-        return ValCoord3D(m_seed, x, y, z);
+        return ValCoord3D(seed, x, y, z);
     }
 
     public FN_DECIMAL GetWhiteNoiseInt(int x, int y)
     {
-        return ValCoord2D(m_seed, x, y);
+        return ValCoord2D(seed, x, y);
     }
 
     // Value Noise
     public FN_DECIMAL GetValueFractal(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        x *= m_frequency;
-        y *= m_frequency;
-        z *= m_frequency;
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
 
-        switch (m_fractalType)
+        switch (fractalType)
         {
             case FractalType.FBM:
                 return SingleValueFractalFBM(x, y, z);
@@ -651,55 +651,55 @@ public class FastNoise
 
     private FN_DECIMAL SingleValueFractalFBM(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = SingleValue(seed, x, y, z);
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
-            z *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum += SingleValue(++seed, x, y, z) * amp;
         }
 
-        return sum * m_fractalBounding;
+        return sum * fractalBounding;
     }
 
     private FN_DECIMAL SingleValueFractalBillow(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = Math.Abs(SingleValue(seed, x, y, z)) * 2.0f - 1.0f;
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
-            z *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum += (Math.Abs(SingleValue(++seed, x, y, z)) * 2.0f - 1.0f) * amp;
         }
 
-        return sum * m_fractalBounding;
+        return sum * fractalBounding;
     }
 
     private FN_DECIMAL SingleValueFractalRigidMulti(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = 1.0f - Math.Abs(SingleValue(seed, x, y, z));
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
-            z *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum -= (1.0f - Math.Abs(SingleValue(++seed, x, y, z))) * amp;
         }
 
@@ -708,7 +708,7 @@ public class FastNoise
 
     public FN_DECIMAL GetValue(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        return SingleValue(m_seed, x * m_frequency, y * m_frequency, z * m_frequency);
+        return SingleValue(seed, x * frequency, y * frequency, z * frequency);
     }
 
     private FN_DECIMAL SingleValue(int seed, FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
@@ -721,7 +721,7 @@ public class FastNoise
         int z1 = z0 + 1;
 
         FN_DECIMAL xs, ys, zs;
-        switch (m_interp)
+        switch (interp)
         {
             default:
             case Interp.Linear:
@@ -754,10 +754,10 @@ public class FastNoise
 
     public FN_DECIMAL GetValueFractal(FN_DECIMAL x, FN_DECIMAL y)
     {
-        x *= m_frequency;
-        y *= m_frequency;
+        x *= frequency;
+        y *= frequency;
 
-        switch (m_fractalType)
+        switch (fractalType)
         {
             case FractalType.FBM:
                 return SingleValueFractalFBM(x, y);
@@ -772,51 +772,51 @@ public class FastNoise
 
     private FN_DECIMAL SingleValueFractalFBM(FN_DECIMAL x, FN_DECIMAL y)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = SingleValue(seed, x, y);
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum += SingleValue(++seed, x, y) * amp;
         }
 
-        return sum * m_fractalBounding;
+        return sum * fractalBounding;
     }
 
     private FN_DECIMAL SingleValueFractalBillow(FN_DECIMAL x, FN_DECIMAL y)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = Math.Abs(SingleValue(seed, x, y)) * 2.0f - 1.0f;
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
-            amp *= m_gain;
+            x *= lacunarity;
+            y *= lacunarity;
+            amp *= gain;
             sum += (Math.Abs(SingleValue(++seed, x, y)) * 2.0f - 1.0f) * amp;
         }
 
-        return sum * m_fractalBounding;
+        return sum * fractalBounding;
     }
 
     private FN_DECIMAL SingleValueFractalRigidMulti(FN_DECIMAL x, FN_DECIMAL y)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = 1.0f - Math.Abs(SingleValue(seed, x, y));
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum -= (1.0f - Math.Abs(SingleValue(++seed, x, y))) * amp;
         }
 
@@ -825,7 +825,7 @@ public class FastNoise
 
     public FN_DECIMAL GetValue(FN_DECIMAL x, FN_DECIMAL y)
     {
-        return SingleValue(m_seed, x * m_frequency, y * m_frequency);
+        return SingleValue(seed, x * frequency, y * frequency);
     }
 
     private FN_DECIMAL SingleValue(int seed, FN_DECIMAL x, FN_DECIMAL y)
@@ -836,7 +836,7 @@ public class FastNoise
         int y1 = y0 + 1;
 
         FN_DECIMAL xs, ys;
-        switch (m_interp)
+        switch (interp)
         {
             default:
             case Interp.Linear:
@@ -862,11 +862,11 @@ public class FastNoise
     // Gradient Noise
     public FN_DECIMAL GetPerlinFractal(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        x *= m_frequency;
-        y *= m_frequency;
-        z *= m_frequency;
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
 
-        switch (m_fractalType)
+        switch (fractalType)
         {
             case FractalType.FBM:
                 return SinglePerlinFractalFBM(x, y, z);
@@ -881,55 +881,55 @@ public class FastNoise
 
     private FN_DECIMAL SinglePerlinFractalFBM(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = SinglePerlin(seed, x, y, z);
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
-            z *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum += SinglePerlin(++seed, x, y, z) * amp;
         }
 
-        return sum * m_fractalBounding;
+        return sum * fractalBounding;
     }
 
     private FN_DECIMAL SinglePerlinFractalBillow(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = Math.Abs(SinglePerlin(seed, x, y, z)) * 2.0f - 1.0f;
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
-            z *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum += (Math.Abs(SinglePerlin(++seed, x, y, z)) * 2.0f - 1.0f) * amp;
         }
 
-        return sum * m_fractalBounding;
+        return sum * fractalBounding;
     }
 
     private FN_DECIMAL SinglePerlinFractalRigidMulti(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = 1.0f - Math.Abs(SinglePerlin(seed, x, y, z));
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
-            z *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum -= (1.0f - Math.Abs(SinglePerlin(++seed, x, y, z))) * amp;
         }
 
@@ -938,7 +938,7 @@ public class FastNoise
 
     public FN_DECIMAL GetPerlin(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        return SinglePerlin(m_seed, x * m_frequency, y * m_frequency, z * m_frequency);
+        return SinglePerlin(seed, x * frequency, y * frequency, z * frequency);
     }
 
     private FN_DECIMAL SinglePerlin(int seed, FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
@@ -951,7 +951,7 @@ public class FastNoise
         int z1 = z0 + 1;
 
         FN_DECIMAL xs, ys, zs;
-        switch (m_interp)
+        switch (interp)
         {
             default:
             case Interp.Linear:
@@ -991,10 +991,10 @@ public class FastNoise
 
     public FN_DECIMAL GetPerlinFractal(FN_DECIMAL x, FN_DECIMAL y)
     {
-        x *= m_frequency;
-        y *= m_frequency;
+        x *= frequency;
+        y *= frequency;
 
-        switch (m_fractalType)
+        switch (fractalType)
         {
             case FractalType.FBM:
                 return SinglePerlinFractalFBM(x, y);
@@ -1009,52 +1009,52 @@ public class FastNoise
 
     private FN_DECIMAL SinglePerlinFractalFBM(FN_DECIMAL x, FN_DECIMAL y)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = SinglePerlin(seed, x, y);
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum += SinglePerlin(++seed, x, y) * amp;
         }
 
-        return sum * m_fractalBounding;
+        return sum * fractalBounding;
     }
 
     private FN_DECIMAL SinglePerlinFractalBillow(FN_DECIMAL x, FN_DECIMAL y)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = Math.Abs(SinglePerlin(seed, x, y)) * 2.0f - 1.0f;
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum += (Math.Abs(SinglePerlin(++seed, x, y)) * 2.0f - 1.0f) * amp;
         }
 
-        return sum * m_fractalBounding;
+        return sum * fractalBounding;
     }
 
     private FN_DECIMAL SinglePerlinFractalRigidMulti(FN_DECIMAL x, FN_DECIMAL y)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = 1.0f - Math.Abs(SinglePerlin(seed, x, y));
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum -= (1.0f - Math.Abs(SinglePerlin(++seed, x, y))) * amp;
         }
 
@@ -1063,7 +1063,7 @@ public class FastNoise
 
     public FN_DECIMAL GetPerlin(FN_DECIMAL x, FN_DECIMAL y)
     {
-        return SinglePerlin(m_seed, x * m_frequency, y * m_frequency);
+        return SinglePerlin(seed, x * frequency, y * frequency);
     }
 
     private FN_DECIMAL SinglePerlin(int seed, FN_DECIMAL x, FN_DECIMAL y)
@@ -1074,7 +1074,7 @@ public class FastNoise
         int y1 = y0 + 1;
 
         FN_DECIMAL xs, ys;
-        switch (m_interp)
+        switch (interp)
         {
             default:
             case Interp.Linear:
@@ -1105,11 +1105,11 @@ public class FastNoise
     // Simplex Noise
     public FN_DECIMAL GetSimplexFractal(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        x *= m_frequency;
-        y *= m_frequency;
-        z *= m_frequency;
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
 
-        switch (m_fractalType)
+        switch (fractalType)
         {
             case FractalType.FBM:
                 return SingleSimplexFractalFBM(x, y, z);
@@ -1124,55 +1124,55 @@ public class FastNoise
 
     private FN_DECIMAL SingleSimplexFractalFBM(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = SingleSimplex(seed, x, y, z);
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
-            z *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum += SingleSimplex(++seed, x, y, z) * amp;
         }
 
-        return sum * m_fractalBounding;
+        return sum * fractalBounding;
     }
 
     private FN_DECIMAL SingleSimplexFractalBillow(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = Math.Abs(SingleSimplex(seed, x, y, z)) * 2.0f - 1.0f;
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
-            z *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum += (Math.Abs(SingleSimplex(++seed, x, y, z)) * 2.0f - 1.0f) * amp;
         }
 
-        return sum * m_fractalBounding;
+        return sum * fractalBounding;
     }
 
     private FN_DECIMAL SingleSimplexFractalRigidMulti(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = 1.0f - Math.Abs(SingleSimplex(seed, x, y, z));
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
-            z *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
+            z *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum -= (1.0f - Math.Abs(SingleSimplex(++seed, x, y, z))) * amp;
         }
 
@@ -1181,7 +1181,7 @@ public class FastNoise
 
     public FN_DECIMAL GetSimplex(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        return SingleSimplex(m_seed, x * m_frequency, y * m_frequency, z * m_frequency);
+        return SingleSimplex(seed, x * frequency, y * frequency, z * frequency);
     }
 
     private const FN_DECIMAL F3 = (FN_DECIMAL)(1.0 / 3.0);
@@ -1328,10 +1328,10 @@ public class FastNoise
 
     public FN_DECIMAL GetSimplexFractal(FN_DECIMAL x, FN_DECIMAL y)
     {
-        x *= m_frequency;
-        y *= m_frequency;
+        x *= frequency;
+        y *= frequency;
 
-        switch (m_fractalType)
+        switch (fractalType)
         {
             case FractalType.FBM:
                 return SingleSimplexFractalFBM(x, y);
@@ -1346,52 +1346,52 @@ public class FastNoise
 
     private FN_DECIMAL SingleSimplexFractalFBM(FN_DECIMAL x, FN_DECIMAL y)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = SingleSimplex(seed, x, y);
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum += SingleSimplex(++seed, x, y) * amp;
         }
 
-        return sum * m_fractalBounding;
+        return sum * fractalBounding;
     }
 
     private FN_DECIMAL SingleSimplexFractalBillow(FN_DECIMAL x, FN_DECIMAL y)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = Math.Abs(SingleSimplex(seed, x, y)) * 2.0f - 1.0f;
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum += (Math.Abs(SingleSimplex(++seed, x, y)) * 2.0f - 1.0f) * amp;
         }
 
-        return sum * m_fractalBounding;
+        return sum * fractalBounding;
     }
 
     private FN_DECIMAL SingleSimplexFractalRigidMulti(FN_DECIMAL x, FN_DECIMAL y)
     {
-        int seed = m_seed;
+        int seed = this.seed;
         FN_DECIMAL sum = 1.0f - Math.Abs(SingleSimplex(seed, x, y));
         FN_DECIMAL amp = 1.0f;
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            x *= m_lacunarity;
-            y *= m_lacunarity;
+            x *= lacunarity;
+            y *= lacunarity;
 
-            amp *= m_gain;
+            amp *= gain;
             sum -= (1.0f - Math.Abs(SingleSimplex(++seed, x, y))) * amp;
         }
 
@@ -1400,7 +1400,7 @@ public class FastNoise
 
     public FN_DECIMAL GetSimplex(FN_DECIMAL x, FN_DECIMAL y)
     {
-        return SingleSimplex(m_seed, x * m_frequency, y * m_frequency);
+        return SingleSimplex(seed, x * frequency, y * frequency);
     }
 
     private const FN_DECIMAL F2 = (FN_DECIMAL)(1.0 / 2.0);
@@ -1476,7 +1476,7 @@ public class FastNoise
 
     public FN_DECIMAL GetSimplex(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z, FN_DECIMAL w)
     {
-        return SingleSimplex(m_seed, x * m_frequency, y * m_frequency, z * m_frequency, w * m_frequency);
+        return SingleSimplex(seed, x * frequency, y * frequency, z * frequency, w * frequency);
     }
 
     private static readonly byte[] SIMPLEX_4D =
@@ -1607,11 +1607,11 @@ public class FastNoise
     // Cellular Noise
     public FN_DECIMAL GetCellular(FN_DECIMAL x, FN_DECIMAL y, FN_DECIMAL z)
     {
-        x *= m_frequency;
-        y *= m_frequency;
-        z *= m_frequency;
+        x *= frequency;
+        y *= frequency;
+        z *= frequency;
 
-        switch (m_cellularReturnType)
+        switch (cellularReturnType)
         {
             case CellularReturnType.CellValue:
             case CellularReturnType.NoiseLookup:
@@ -1631,7 +1631,7 @@ public class FastNoise
         FN_DECIMAL distance = 999999.0f;
         int xc = 0, yc = 0, zc = 0;
 
-        switch (m_cellularDistanceFunction)
+        switch (cellularDistanceFunction)
         {
             case CellularDistanceFunction.Euclidean:
                 for (int xi = xr - 1; xi <= xr + 1; xi++)
@@ -1640,7 +1640,7 @@ public class FastNoise
                     {
                         for (int zi = zr - 1; zi <= zr + 1; zi++)
                         {
-                            int lutPos = Hash3D(m_seed, xi, yi, zi) & 255;
+                            int lutPos = Hash3D(seed, xi, yi, zi) & 255;
 
                             FN_DECIMAL vecX = xi - x + CELL_3D_X[lutPos];
                             FN_DECIMAL vecY = yi - y + CELL_3D_Y[lutPos];
@@ -1666,7 +1666,7 @@ public class FastNoise
                     {
                         for (int zi = zr - 1; zi <= zr + 1; zi++)
                         {
-                            int lutPos = Hash3D(m_seed, xi, yi, zi) & 255;
+                            int lutPos = Hash3D(seed, xi, yi, zi) & 255;
 
                             FN_DECIMAL vecX = xi - x + CELL_3D_X[lutPos];
                             FN_DECIMAL vecY = yi - y + CELL_3D_Y[lutPos];
@@ -1692,7 +1692,7 @@ public class FastNoise
                     {
                         for (int zi = zr - 1; zi <= zr + 1; zi++)
                         {
-                            int lutPos = Hash3D(m_seed, xi, yi, zi) & 255;
+                            int lutPos = Hash3D(seed, xi, yi, zi) & 255;
 
                             FN_DECIMAL vecX = xi - x + CELL_3D_X[lutPos];
                             FN_DECIMAL vecY = yi - y + CELL_3D_Y[lutPos];
@@ -1713,14 +1713,14 @@ public class FastNoise
                 break;
         }
 
-        switch (m_cellularReturnType)
+        switch (cellularReturnType)
         {
             case CellularReturnType.CellValue:
                 return ValCoord3D(0, xc, yc, zc);
 
             case CellularReturnType.NoiseLookup:
-                int lutPos = Hash3D(m_seed, xc, yc, zc) & 255;
-                return m_cellularNoiseLookup.GetNoise(xc + CELL_3D_X[lutPos], yc + CELL_3D_Y[lutPos], zc + CELL_3D_Z[lutPos]);
+                int lutPos = Hash3D(seed, xc, yc, zc) & 255;
+                return cellularNoiseLookup.GetNoise(xc + CELL_3D_X[lutPos], yc + CELL_3D_Y[lutPos], zc + CELL_3D_Z[lutPos]);
 
             case CellularReturnType.Distance:
                 return distance - 1.0f;
@@ -1738,7 +1738,7 @@ public class FastNoise
         FN_DECIMAL distance = 999999.0f;
         FN_DECIMAL distance2 = 999999.0f;
 
-        switch (m_cellularDistanceFunction)
+        switch (cellularDistanceFunction)
         {
             case CellularDistanceFunction.Euclidean:
                 for (int xi = xr - 1; xi <= xr + 1; xi++)
@@ -1747,7 +1747,7 @@ public class FastNoise
                     {
                         for (int zi = zr - 1; zi <= zr + 1; zi++)
                         {
-                            int lutPos = Hash3D(m_seed, xi, yi, zi) & 255;
+                            int lutPos = Hash3D(seed, xi, yi, zi) & 255;
 
                             FN_DECIMAL vecX = xi - x + CELL_3D_X[lutPos];
                             FN_DECIMAL vecY = yi - y + CELL_3D_Y[lutPos];
@@ -1768,7 +1768,7 @@ public class FastNoise
                     {
                         for (int zi = zr - 1; zi <= zr + 1; zi++)
                         {
-                            int lutPos = Hash3D(m_seed, xi, yi, zi) & 255;
+                            int lutPos = Hash3D(seed, xi, yi, zi) & 255;
 
                             FN_DECIMAL vecX = xi - x + CELL_3D_X[lutPos];
                             FN_DECIMAL vecY = yi - y + CELL_3D_Y[lutPos];
@@ -1789,7 +1789,7 @@ public class FastNoise
                     {
                         for (int zi = zr - 1; zi <= zr + 1; zi++)
                         {
-                            int lutPos = Hash3D(m_seed, xi, yi, zi) & 255;
+                            int lutPos = Hash3D(seed, xi, yi, zi) & 255;
 
                             FN_DECIMAL vecX = xi - x + CELL_3D_X[lutPos];
                             FN_DECIMAL vecY = yi - y + CELL_3D_Y[lutPos];
@@ -1807,7 +1807,7 @@ public class FastNoise
                 break;
         }
 
-        switch (m_cellularReturnType)
+        switch (cellularReturnType)
         {
             case CellularReturnType.Distance2:
                 return distance2 - 1.0f;
@@ -1826,10 +1826,10 @@ public class FastNoise
 
     public FN_DECIMAL GetCellular(FN_DECIMAL x, FN_DECIMAL y)
     {
-        x *= m_frequency;
-        y *= m_frequency;
+        x *= frequency;
+        y *= frequency;
 
-        switch (m_cellularReturnType)
+        switch (cellularReturnType)
         {
             case CellularReturnType.CellValue:
             case CellularReturnType.NoiseLookup:
@@ -1848,7 +1848,7 @@ public class FastNoise
         FN_DECIMAL distance = 999999.0f;
         int xc = 0, yc = 0;
 
-        switch (m_cellularDistanceFunction)
+        switch (cellularDistanceFunction)
         {
             default:
             case CellularDistanceFunction.Euclidean:
@@ -1856,7 +1856,7 @@ public class FastNoise
                 {
                     for (int yi = yr - 1; yi <= yr + 1; yi++)
                     {
-                        int lutPos = Hash2D(m_seed, xi, yi) & 255;
+                        int lutPos = Hash2D(seed, xi, yi) & 255;
 
                         FN_DECIMAL vecX = xi - x + CELL_2D_X[lutPos];
                         FN_DECIMAL vecY = yi - y + CELL_2D_Y[lutPos];
@@ -1877,7 +1877,7 @@ public class FastNoise
                 {
                     for (int yi = yr - 1; yi <= yr + 1; yi++)
                     {
-                        int lutPos = Hash2D(m_seed, xi, yi) & 255;
+                        int lutPos = Hash2D(seed, xi, yi) & 255;
 
                         FN_DECIMAL vecX = xi - x + CELL_2D_X[lutPos];
                         FN_DECIMAL vecY = yi - y + CELL_2D_Y[lutPos];
@@ -1898,7 +1898,7 @@ public class FastNoise
                 {
                     for (int yi = yr - 1; yi <= yr + 1; yi++)
                     {
-                        int lutPos = Hash2D(m_seed, xi, yi) & 255;
+                        int lutPos = Hash2D(seed, xi, yi) & 255;
 
                         FN_DECIMAL vecX = xi - x + CELL_2D_X[lutPos];
                         FN_DECIMAL vecY = yi - y + CELL_2D_Y[lutPos];
@@ -1916,14 +1916,14 @@ public class FastNoise
                 break;
         }
 
-        switch (m_cellularReturnType)
+        switch (cellularReturnType)
         {
             case CellularReturnType.CellValue:
                 return ValCoord2D(0, xc, yc);
 
             case CellularReturnType.NoiseLookup:
-                int lutPos = Hash2D(m_seed, xc, yc) & 255;
-                return m_cellularNoiseLookup.GetNoise(xc + CELL_2D_X[lutPos], yc + CELL_2D_Y[lutPos]);
+                int lutPos = Hash2D(seed, xc, yc) & 255;
+                return cellularNoiseLookup.GetNoise(xc + CELL_2D_X[lutPos], yc + CELL_2D_Y[lutPos]);
 
             case CellularReturnType.Distance:
                 return distance - 1.0f;
@@ -1940,7 +1940,7 @@ public class FastNoise
         FN_DECIMAL distance = 999999.0f;
         FN_DECIMAL distance2 = 999999.0f;
 
-        switch (m_cellularDistanceFunction)
+        switch (cellularDistanceFunction)
         {
             default:
             case CellularDistanceFunction.Euclidean:
@@ -1948,7 +1948,7 @@ public class FastNoise
                 {
                     for (int yi = yr - 1; yi <= yr + 1; yi++)
                     {
-                        int lutPos = Hash2D(m_seed, xi, yi) & 255;
+                        int lutPos = Hash2D(seed, xi, yi) & 255;
 
                         FN_DECIMAL vecX = xi - x + CELL_2D_X[lutPos];
                         FN_DECIMAL vecY = yi - y + CELL_2D_Y[lutPos];
@@ -1965,7 +1965,7 @@ public class FastNoise
                 {
                     for (int yi = yr - 1; yi <= yr + 1; yi++)
                     {
-                        int lutPos = Hash2D(m_seed, xi, yi) & 255;
+                        int lutPos = Hash2D(seed, xi, yi) & 255;
 
                         FN_DECIMAL vecX = xi - x + CELL_2D_X[lutPos];
                         FN_DECIMAL vecY = yi - y + CELL_2D_Y[lutPos];
@@ -1982,7 +1982,7 @@ public class FastNoise
                 {
                     for (int yi = yr - 1; yi <= yr + 1; yi++)
                     {
-                        int lutPos = Hash2D(m_seed, xi, yi) & 255;
+                        int lutPos = Hash2D(seed, xi, yi) & 255;
 
                         FN_DECIMAL vecX = xi - x + CELL_2D_X[lutPos];
                         FN_DECIMAL vecY = yi - y + CELL_2D_Y[lutPos];
@@ -1996,7 +1996,7 @@ public class FastNoise
                 break;
         }
 
-        switch (m_cellularReturnType)
+        switch (cellularReturnType)
         {
             case CellularReturnType.Distance2:
                 return distance2 - 1.0f;
@@ -2015,21 +2015,21 @@ public class FastNoise
 
     public void GradientPerturb(ref FN_DECIMAL x, ref FN_DECIMAL y, ref FN_DECIMAL z)
     {
-        SingleGradientPerturb(m_seed, m_gradientPerturbAmp, m_frequency, ref x, ref y, ref z);
+        SingleGradientPerturb(seed, gradientPerturbAmp, frequency, ref x, ref y, ref z);
     }
 
     public void GradientPerturbFractal(ref FN_DECIMAL x, ref FN_DECIMAL y, ref FN_DECIMAL z)
     {
-        int seed = m_seed;
-        FN_DECIMAL amp = m_gradientPerturbAmp * m_fractalBounding;
-        FN_DECIMAL freq = m_frequency;
+        int seed = this.seed;
+        FN_DECIMAL amp = gradientPerturbAmp * fractalBounding;
+        FN_DECIMAL freq = frequency;
 
-        SingleGradientPerturb(seed, amp, m_frequency, ref x, ref y, ref z);
+        SingleGradientPerturb(seed, amp, frequency, ref x, ref y, ref z);
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            freq *= m_lacunarity;
-            amp *= m_gain;
+            freq *= lacunarity;
+            amp *= gain;
             SingleGradientPerturb(++seed, amp, freq, ref x, ref y, ref z);
         }
     }
@@ -2048,7 +2048,7 @@ public class FastNoise
         int z1 = z0 + 1;
 
         FN_DECIMAL xs, ys, zs;
-        switch (m_interp)
+        switch (interp)
         {
             default:
             case Interp.Linear:
@@ -2107,21 +2107,21 @@ public class FastNoise
 
     public void GradientPerturb(ref FN_DECIMAL x, ref FN_DECIMAL y)
     {
-        SingleGradientPerturb(m_seed, m_gradientPerturbAmp, m_frequency, ref x, ref y);
+        SingleGradientPerturb(seed, gradientPerturbAmp, frequency, ref x, ref y);
     }
 
     public void GradientPerturbFractal(ref FN_DECIMAL x, ref FN_DECIMAL y)
     {
-        int seed = m_seed;
-        FN_DECIMAL amp = m_gradientPerturbAmp * m_fractalBounding;
-        FN_DECIMAL freq = m_frequency;
+        int seed = this.seed;
+        FN_DECIMAL amp = gradientPerturbAmp * fractalBounding;
+        FN_DECIMAL freq = frequency;
 
-        SingleGradientPerturb(seed, amp, m_frequency, ref x, ref y);
+        SingleGradientPerturb(seed, amp, frequency, ref x, ref y);
 
-        for (int i = 1; i < m_octaves; i++)
+        for (int i = 1; i < octaves; i++)
         {
-            freq *= m_lacunarity;
-            amp *= m_gain;
+            freq *= lacunarity;
+            amp *= gain;
             SingleGradientPerturb(++seed, amp, freq, ref x, ref y);
         }
     }
@@ -2137,7 +2137,7 @@ public class FastNoise
         int y1 = y0 + 1;
 
         FN_DECIMAL xs, ys;
-        switch (m_interp)
+        switch (interp)
         {
             default:
             case Interp.Linear:

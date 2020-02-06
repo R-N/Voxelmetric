@@ -22,7 +22,7 @@ namespace Voxelmetric.Code.Core
 
     public static class ChunkStates
     {
-        public const ChunkState CurrStateBuildCollider = ChunkState.BuildCollider | ChunkState.BuildColliderNow;
-        public const ChunkState CurrStateBuildVertices = ChunkState.BuildVertices | ChunkState.BuildVerticesNow;
+        public const ChunkState CURR_STATE_BUILD_COLLIDER = ChunkState.BuildCollider | ChunkState.BuildColliderNow;
+        public const ChunkState CURR_STATE_BUILD_VERTICES = ChunkState.BuildVertices | ChunkState.BuildVerticesNow;
     }
 }

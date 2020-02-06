@@ -31,51 +31,50 @@ namespace Voxelmetric.Code.Core.Operations
 
             if (IsRanged())
             {
-                ChunkBlocks neighborBlocks = null;
-
-                if (blocks.chunk.NeedToHandleNeighbors(ref min))
+                ChunkBlocks neighborBlocks;
+                if (blocks.Chunk.NeedToHandleNeighbors(ref min))
                 {
                     // Left side
-                    if (blocks.chunk.NeedToHandleNeighbors(ref min))
+                    if (blocks.Chunk.NeedToHandleNeighbors(ref min))
                     {
-                        neighborBlocks = blocks.chunk.HandleNeighbor(ref min, Direction.west);
+                        neighborBlocks = blocks.Chunk.HandleNeighbor(ref min, Direction.west);
                         if (neighborBlocks != null)
                         {
-                            Vector3Int from = new Vector3Int(Env.ChunkSize, min.y, min.z);
-                            Vector3Int to = new Vector3Int(Env.ChunkSize, max.y, max.z);
+                            Vector3Int from = new Vector3Int(Env.CHUNK_SIZE, min.y, min.z);
+                            Vector3Int to = new Vector3Int(Env.CHUNK_SIZE, max.y, max.z);
                             OnSetBlocksRaw(neighborBlocks, ref from, ref to);
                         }
                     }
                     // Bottom side
-                    if (blocks.chunk.NeedToHandleNeighbors(ref min))
+                    if (blocks.Chunk.NeedToHandleNeighbors(ref min))
                     {
-                        neighborBlocks = blocks.chunk.HandleNeighbor(ref min, Direction.down);
+                        neighborBlocks = blocks.Chunk.HandleNeighbor(ref min, Direction.down);
                         if (neighborBlocks != null)
                         {
-                            Vector3Int from = new Vector3Int(min.x, Env.ChunkSize, min.z);
-                            Vector3Int to = new Vector3Int(max.x, Env.ChunkSize, max.z);
+                            Vector3Int from = new Vector3Int(min.x, Env.CHUNK_SIZE, min.z);
+                            Vector3Int to = new Vector3Int(max.x, Env.CHUNK_SIZE, max.z);
                             OnSetBlocksRaw(neighborBlocks, ref from, ref to);
                         }
                     }
                     // Back side
-                    if (blocks.chunk.NeedToHandleNeighbors(ref min))
+                    if (blocks.Chunk.NeedToHandleNeighbors(ref min))
                     {
-                        neighborBlocks = blocks.chunk.HandleNeighbor(ref min, Direction.south);
+                        neighborBlocks = blocks.Chunk.HandleNeighbor(ref min, Direction.south);
                         if (neighborBlocks != null)
                         {
-                            Vector3Int from = new Vector3Int(min.x, min.y, Env.ChunkSize);
-                            Vector3Int to = new Vector3Int(max.x, max.y, Env.ChunkSize);
+                            Vector3Int from = new Vector3Int(min.x, min.y, Env.CHUNK_SIZE);
+                            Vector3Int to = new Vector3Int(max.x, max.y, Env.CHUNK_SIZE);
                             OnSetBlocksRaw(neighborBlocks, ref from, ref to);
                         }
                     }
                 }
 
-                if (blocks.chunk.NeedToHandleNeighbors(ref max))
+                if (blocks.Chunk.NeedToHandleNeighbors(ref max))
                 {
                     // Right side
-                    if (blocks.chunk.NeedToHandleNeighbors(ref max))
+                    if (blocks.Chunk.NeedToHandleNeighbors(ref max))
                     {
-                        neighborBlocks = blocks.chunk.HandleNeighbor(ref max, Direction.east);
+                        neighborBlocks = blocks.Chunk.HandleNeighbor(ref max, Direction.east);
                         if (neighborBlocks != null)
                         {
                             Vector3Int from = new Vector3Int(-1, min.y, min.z);
@@ -84,9 +83,9 @@ namespace Voxelmetric.Code.Core.Operations
                         }
                     }
                     // Upper side
-                    if (blocks.chunk.NeedToHandleNeighbors(ref max))
+                    if (blocks.Chunk.NeedToHandleNeighbors(ref max))
                     {
-                        neighborBlocks = blocks.chunk.HandleNeighbor(ref max, Direction.up);
+                        neighborBlocks = blocks.Chunk.HandleNeighbor(ref max, Direction.up);
                         if (neighborBlocks != null)
                         {
                             Vector3Int from = new Vector3Int(min.x, -1, min.z);
@@ -95,9 +94,9 @@ namespace Voxelmetric.Code.Core.Operations
                         }
                     }
                     // Front side
-                    if (blocks.chunk.NeedToHandleNeighbors(ref max))
+                    if (blocks.Chunk.NeedToHandleNeighbors(ref max))
                     {
-                        neighborBlocks = blocks.chunk.HandleNeighbor(ref max, Direction.north);
+                        neighborBlocks = blocks.Chunk.HandleNeighbor(ref max, Direction.north);
                         if (neighborBlocks != null)
                         {
                             Vector3Int from = new Vector3Int(min.x, min.y, -1);
@@ -109,7 +108,7 @@ namespace Voxelmetric.Code.Core.Operations
             }
             else
             {
-                blocks.chunk.HandleNeighbors(blockData, min);
+                blocks.Chunk.HandleNeighbors(blockData, min);
             }
         }
     }

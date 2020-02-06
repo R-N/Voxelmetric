@@ -15,8 +15,8 @@ public abstract class TerrainLayer : IComparable, IEquatable<TerrainLayer>
 #endif
 
     public string layerName = string.Empty;
-    public int index { get; private set; }
-    public bool isStructure { get; private set; }
+    public int Index { get; private set; }
+    public bool IsStructure { get; private set; }
 
     public NoiseWrapper Noise { get { return noise; } }
 #if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN) && ENABLE_FASTSIMD
@@ -27,9 +27,9 @@ public abstract class TerrainLayer : IComparable, IEquatable<TerrainLayer>
     {
         this.terrainGen = terrainGen;
         layerName = config.LayerName;
-        isStructure = config.IsStructure();
+        IsStructure = config.IsStructure();
         this.world = world;
-        index = config.Index;
+        Index = config.Index;
 
         noise = new NoiseWrapper(world.worldName);
 #if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN) && ENABLE_FASTSIMD
@@ -92,7 +92,7 @@ public abstract class TerrainLayer : IComparable, IEquatable<TerrainLayer>
     protected static void SetBlocks(Chunk chunk, int x, int z, int startPlaceHeight, int endPlaceHeight, BlockData blockData)
     {
         int chunkY = chunk.Pos.y;
-        int chunkYMax = chunkY + Env.ChunkSize;
+        int chunkYMax = chunkY + Env.CHUNK_SIZE;
 
         int y = startPlaceHeight > chunkY ? startPlaceHeight : chunkY;
         int yMax = endPlaceHeight < chunkYMax ? endPlaceHeight : chunkYMax;
@@ -102,7 +102,7 @@ public abstract class TerrainLayer : IComparable, IEquatable<TerrainLayer>
         while (y++ < yMax)
         {
             blocks.SetRaw(index, blockData);
-            index += Env.ChunkSizeWithPaddingPow2;
+            index += Env.CHUNK_SIZE_WITH_PADDING_POW_2;
         }
     }
 
@@ -110,7 +110,7 @@ public abstract class TerrainLayer : IComparable, IEquatable<TerrainLayer>
 
     public int CompareTo(object obj)
     {
-        return index.CompareTo(((TerrainLayer)obj).index);
+        return Index.CompareTo(((TerrainLayer)obj).Index);
     }
     public override bool Equals(object obj)
     {
@@ -125,12 +125,12 @@ public abstract class TerrainLayer : IComparable, IEquatable<TerrainLayer>
 
     public override int GetHashCode()
     {
-        return index.GetHashCode();
+        return Index.GetHashCode();
     }
 
     public bool Equals(TerrainLayer other)
     {
-        return other.index == index;
+        return other.Index == Index;
     }
 
     #endregion

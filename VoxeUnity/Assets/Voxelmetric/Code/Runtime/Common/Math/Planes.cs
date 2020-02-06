@@ -22,8 +22,8 @@ namespace Voxelmetric.Code.Common.Math
             Inside
         }
 
-        private static readonly float[] RootVector = new float[4];
-        private static readonly float[] ComVector = new float[4];
+        private static readonly float[] rootVector = new float[4];
+        private static readonly float[] comVector = new float[4];
 
         /// <summary>
         ///     Calculates frustrum planes for camera.
@@ -35,72 +35,72 @@ namespace Voxelmetric.Code.Common.Math
             Matrix4x4 worldToCameraMatrix = camera.worldToCameraMatrix;
             Matrix4x4 worldToProjectionMatrix = projectionMatrix * worldToCameraMatrix;
 
-            RootVector[0] = worldToProjectionMatrix[3, 0];
-            RootVector[1] = worldToProjectionMatrix[3, 1];
-            RootVector[2] = worldToProjectionMatrix[3, 2];
-            RootVector[3] = worldToProjectionMatrix[3, 3];
+            rootVector[0] = worldToProjectionMatrix[3, 0];
+            rootVector[1] = worldToProjectionMatrix[3, 1];
+            rootVector[2] = worldToProjectionMatrix[3, 2];
+            rootVector[3] = worldToProjectionMatrix[3, 3];
 
             // Left & right plane
-            ComVector[0] = worldToProjectionMatrix[0, 0];
-            ComVector[1] = worldToProjectionMatrix[0, 1];
-            ComVector[2] = worldToProjectionMatrix[0, 2];
-            ComVector[3] = worldToProjectionMatrix[0, 3];
+            comVector[0] = worldToProjectionMatrix[0, 0];
+            comVector[1] = worldToProjectionMatrix[0, 1];
+            comVector[2] = worldToProjectionMatrix[0, 2];
+            comVector[3] = worldToProjectionMatrix[0, 3];
 
             CalcPlane(
                 ref outPlanes[(int)EPlaneSide.Left],
-                ComVector[0] + RootVector[0],
-                ComVector[1] + RootVector[1],
-                ComVector[2] + RootVector[2],
-                ComVector[3] + RootVector[3]
+                comVector[0] + rootVector[0],
+                comVector[1] + rootVector[1],
+                comVector[2] + rootVector[2],
+                comVector[3] + rootVector[3]
                 );
             CalcPlane(
                 ref outPlanes[(int)EPlaneSide.Right],
-                -ComVector[0] + RootVector[0],
-                -ComVector[1] + RootVector[1],
-                -ComVector[2] + RootVector[2],
-                -ComVector[3] + RootVector[3]
+                -comVector[0] + rootVector[0],
+                -comVector[1] + rootVector[1],
+                -comVector[2] + rootVector[2],
+                -comVector[3] + rootVector[3]
                 );
 
             // Bottom & top plane
-            ComVector[0] = worldToProjectionMatrix[1, 0];
-            ComVector[1] = worldToProjectionMatrix[1, 1];
-            ComVector[2] = worldToProjectionMatrix[1, 2];
-            ComVector[3] = worldToProjectionMatrix[1, 3];
+            comVector[0] = worldToProjectionMatrix[1, 0];
+            comVector[1] = worldToProjectionMatrix[1, 1];
+            comVector[2] = worldToProjectionMatrix[1, 2];
+            comVector[3] = worldToProjectionMatrix[1, 3];
 
             CalcPlane(
                 ref outPlanes[(int)EPlaneSide.Bottom],
-                ComVector[0] + RootVector[0],
-                ComVector[1] + RootVector[1],
-                ComVector[2] + RootVector[2],
-                ComVector[3] + RootVector[3]
+                comVector[0] + rootVector[0],
+                comVector[1] + rootVector[1],
+                comVector[2] + rootVector[2],
+                comVector[3] + rootVector[3]
                 );
             CalcPlane(
                 ref outPlanes[(int)EPlaneSide.Top],
-                -ComVector[0] + RootVector[0],
-                -ComVector[1] + RootVector[1],
-                -ComVector[2] + RootVector[2],
-                -ComVector[3] + RootVector[3]
+                -comVector[0] + rootVector[0],
+                -comVector[1] + rootVector[1],
+                -comVector[2] + rootVector[2],
+                -comVector[3] + rootVector[3]
                 );
 
             // Near & far plane
-            ComVector[0] = worldToProjectionMatrix[2, 0];
-            ComVector[1] = worldToProjectionMatrix[2, 1];
-            ComVector[2] = worldToProjectionMatrix[2, 2];
-            ComVector[3] = worldToProjectionMatrix[2, 3];
+            comVector[0] = worldToProjectionMatrix[2, 0];
+            comVector[1] = worldToProjectionMatrix[2, 1];
+            comVector[2] = worldToProjectionMatrix[2, 2];
+            comVector[3] = worldToProjectionMatrix[2, 3];
 
             CalcPlane(
                 ref outPlanes[(int)EPlaneSide.Near],
-                ComVector[0] + RootVector[0],
-                ComVector[1] + RootVector[1],
-                ComVector[2] + RootVector[2],
-                ComVector[3] + RootVector[3]
+                comVector[0] + rootVector[0],
+                comVector[1] + rootVector[1],
+                comVector[2] + rootVector[2],
+                comVector[3] + rootVector[3]
                 );
             CalcPlane(
                 ref outPlanes[(int)EPlaneSide.Far],
-                -ComVector[0] + RootVector[0],
-                -ComVector[1] + RootVector[1],
-                -ComVector[2] + RootVector[2],
-                -ComVector[3] + RootVector[3]
+                -comVector[0] + rootVector[0],
+                -comVector[1] + rootVector[1],
+                -comVector[2] + rootVector[2],
+                -comVector[3] + rootVector[3]
                 );
 
         }

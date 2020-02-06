@@ -49,16 +49,16 @@ using System;
 /// </summary>
 public static class CLZF2
 {
-    private static readonly uint HLOG = 14;
-    private static readonly uint HSIZE = (1 << 14);
-    private static readonly uint MAX_LIT = (1 << 5);
-    private static readonly uint MAX_OFF = (1 << 13);
-    private static readonly uint MAX_REF = ((1 << 8) + (1 << 3));
+    private const uint HLOG = 14;
+    private const uint HSIZE = (1 << 14);
+    private const uint MAX_LIT = (1 << 5);
+    private const uint MAX_OFF = (1 << 13);
+    private const uint MAX_REF = ((1 << 8) + (1 << 3));
 
     /// <summary>
     /// Hashtable, that can be allocated only once
     /// </summary>
-    private static readonly long[] HashTable = new long[HSIZE];
+    private static readonly long[] hashTable = new long[HSIZE];
 
     /// <summary>
     /// Compresses the data using LibLZF algorithm
@@ -72,7 +72,7 @@ public static class CLZF2
         int inputLength = inLength < 0 ? input.Length : inLength;
         int outputLength = output.Length;
 
-        Array.Clear(HashTable, 0, (int)HSIZE);
+        Array.Clear(hashTable, 0, (int)HSIZE);
 
         long hslot;
         uint iidx = 0;
@@ -89,8 +89,8 @@ public static class CLZF2
             {
                 hval = (hval << 8) | input[iidx + 2];
                 hslot = ((hval ^ (hval << 5)) >> (int)(((3 * 8 - HLOG)) - hval * 5) & (HSIZE - 1));
-                reference = HashTable[hslot];
-                HashTable[hslot] = iidx;
+                reference = hashTable[hslot];
+                hashTable[hslot] = iidx;
 
 
                 if ((off = iidx - reference - 1) < MAX_OFF
@@ -147,11 +147,11 @@ public static class CLZF2
                     hval = (uint)(((input[iidx]) << 8) | input[iidx + 1]);
 
                     hval = (hval << 8) | input[iidx + 2];
-                    HashTable[((hval ^ (hval << 5)) >> (int)(((3 * 8 - HLOG)) - hval * 5) & (HSIZE - 1))] = iidx;
+                    hashTable[((hval ^ (hval << 5)) >> (int)(((3 * 8 - HLOG)) - hval * 5) & (HSIZE - 1))] = iidx;
                     iidx++;
 
                     hval = (hval << 8) | input[iidx + 2];
-                    HashTable[((hval ^ (hval << 5)) >> (int)(((3 * 8 - HLOG)) - hval * 5) & (HSIZE - 1))] = iidx;
+                    hashTable[((hval ^ (hval << 5)) >> (int)(((3 * 8 - HLOG)) - hval * 5) & (HSIZE - 1))] = iidx;
                     iidx++;
                     continue;
                 }

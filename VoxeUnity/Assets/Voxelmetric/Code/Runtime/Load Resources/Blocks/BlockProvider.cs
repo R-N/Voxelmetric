@@ -9,22 +9,22 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
     public class BlockProvider
     {
         //! Air type block will always be present
-        public static readonly ushort AirType = 0;
-        public static readonly BlockData AirBlock = new BlockData(AirType, false);
+        public const ushort AIR_TYPE = 0;
+        public static readonly BlockData airBlock = new BlockData(AIR_TYPE, false);
 
         //! Special reserved block types
-        public static readonly ushort FirstReservedSimpleType = 1;
-        public static readonly ushort LastReservedSimpleType = (ushort)(FirstReservedSimpleType + 254);
-        public static readonly ushort LastReservedType = LastReservedSimpleType;
-        public static readonly ushort FirstCustomType = (ushort)(LastReservedType + 1);
+        public static readonly ushort firstReservedSimpleType = 1;
+        public static readonly ushort lastReservedSimpleType = (ushort)(firstReservedSimpleType + 254);
+        public static readonly ushort lastReservedType = lastReservedSimpleType;
+        public static readonly ushort firstCustomType = (ushort)(lastReservedType + 1);
 
         //! An array of loaded block configs
-        private BlockConfig[] m_configs;
+        private BlockConfig[] configs;
 
         //! Mapping from config's name to type
-        private readonly Dictionary<string, ushort> m_names;
+        private readonly Dictionary<string, ushort> names;
         //! Mapping from typeInConfig to type
-        private ushort[] m_types;
+        private ushort[] types;
 
         public Block[] BlockTypes { get; private set; }
 
@@ -35,7 +35,7 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
 
         private BlockProvider()
         {
-            m_names = new Dictionary<string, ushort>();
+            names = new Dictionary<string, ushort>();
         }
 
         public void Init(BlockCollection blocks, World world)
@@ -44,12 +44,12 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
             ProcessConfigs(world, blocks.Blocks);
 
             // Build block type lookup table
-            BlockTypes = new Block[m_configs.Length];
-            for (int i = 0; i < m_configs.Length; i++)
+            BlockTypes = new Block[configs.Length];
+            for (int i = 0; i < configs.Length; i++)
             {
-                BlockConfig config = m_configs[i];
+                BlockConfig config = configs[i];
 
-                Block block = (Block)Activator.CreateInstance(config.blockClass);
+                Block block = (Block)Activator.CreateInstance(config.BlockClass);
                 block.Init((ushort)i, config);
                 BlockTypes[i] = block;
             }
@@ -63,7 +63,7 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
             }
 
             // Add block types from config
-            foreach (BlockConfig configFile in m_configs)
+            foreach (BlockConfig configFile in configs)
             {
                 configFile.OnPostSetUp(world);
             }
@@ -76,7 +76,7 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
             Dictionary<ushort, ushort> types = new Dictionary<ushort, ushort>();
 
             // Add reserved block types
-            AddBlockType(configs, types, BlockConfig.CreateAirBlockConfig(world));
+            AddBlockType(configs, types, BlockConfig.CreateAirBlockConfig());
             //for (ushort i = 1; i <= LastReservedSimpleType; i++)
             //{
             //    AddBlockType(configs, types, BlockConfig.CreateColorBlockConfig(world, i));
@@ -86,7 +86,7 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
             for (int i = 0; i < blocks.Length; i++)
             {
                 BlockConfig config = blocks[i].GetConfig();
-                config.blockClass = (Type)blocks[i].GetBlockClass();
+                config.BlockClass = (Type)blocks[i].GetBlockClass();
 
                 if (!config.OnSetUp(blocks[i], world))
                 {
@@ -101,53 +101,53 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
                 AddBlockType(configs, types, config);
             }
 
-            m_configs = configs.ToArray();
+            this.configs = configs.ToArray();
 
             // Now iterate over configs and find the one with the highest TypeInConfig
-            ushort maxTypeInConfig = LastReservedType;
-            for (int i = 0; i < m_configs.Length; i++)
+            ushort maxTypeInConfig = lastReservedType;
+            for (int i = 0; i < this.configs.Length; i++)
             {
-                if (m_configs[i].typeInConfig > maxTypeInConfig)
+                if (this.configs[i].TypeInConfig > maxTypeInConfig)
                 {
-                    maxTypeInConfig = m_configs[i].typeInConfig;
+                    maxTypeInConfig = this.configs[i].TypeInConfig;
                 }
             }
 
             // Allocate maxTypeInConfigs big array now and map config types to runtime types
-            m_types = new ushort[maxTypeInConfig + FirstCustomType];
-            for (ushort i = 0; i < m_configs.Length; i++)
+            this.types = new ushort[maxTypeInConfig + firstCustomType];
+            for (ushort i = 0; i < this.configs.Length; i++)
             {
-                m_types[m_configs[i].typeInConfig] = i;
+                this.types[this.configs[i].TypeInConfig] = i;
             }
         }
 
         private bool VerifyBlockConfig(Dictionary<ushort, ushort> types, BlockConfig config)
         {
             // Unique identifier of block type
-            if (m_names.ContainsKey(config.name))
+            if (names.ContainsKey(config.Name))
             {
-                Debug.LogErrorFormat("Two blocks with the name {0} are defined", config.name);
+                Debug.LogErrorFormat("Two blocks with the name {0} are defined", config.Name);
                 return false;
             }
 
             // Unique identifier of block type
-            if (types.ContainsKey(config.typeInConfig))
+            if (types.ContainsKey(config.TypeInConfig))
             {
-                Debug.LogErrorFormat("Two blocks with type {0} are defined", config.typeInConfig);
+                Debug.LogErrorFormat("Two blocks with type {0} are defined", config.TypeInConfig);
                 return false;
             }
 
             // Class name must be valid
-            if (config.blockClass == null)
+            if (config.BlockClass == null)
             {
-                Debug.LogErrorFormat("Invalid class name {0} for block {1}", config.className, config.name);
+                Debug.LogErrorFormat("Invalid class name {0} for block {1}", config.ClassName, config.Name);
                 return false;
             }
 
             // Use the type defined in the config if there is one, otherwise add one to the largest index so far
             if (config.type == ushort.MaxValue)
             {
-                Debug.LogError("Maximum number of block types reached for " + config.name);
+                Debug.LogError("Maximum number of block types reached for " + config.Name);
                 return false;
             }
 
@@ -165,54 +165,52 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
         {
             config.type = (ushort)configs.Count;
             configs.Add(config);
-            m_names.Add(config.name, config.type);
-            types.Add(config.typeInConfig, config.type);
+            names.Add(config.Name, config.type);
+            types.Add(config.TypeInConfig, config.type);
         }
 
         public ushort GetType(string name)
         {
-            ushort type;
-            if (m_names.TryGetValue(name, out type))
+            if (names.TryGetValue(name, out ushort type))
             {
                 return type;
             }
 
             Debug.LogError("Block not found: " + name);
-            return AirType;
+            return AIR_TYPE;
         }
 
         public ushort GetTypeFromTypeInConfig(ushort typeInConfig)
         {
-            if (typeInConfig < m_types.Length)
+            if (typeInConfig < types.Length)
             {
-                return m_types[typeInConfig];
+                return types[typeInConfig];
             }
 
             Debug.LogError("TypeInConfig not found: " + typeInConfig);
-            return AirType;
+            return AIR_TYPE;
         }
 
         public Block GetBlock(string name)
         {
-            ushort type;
-            if (m_names.TryGetValue(name, out type))
+            if (names.TryGetValue(name, out ushort type))
             {
                 return BlockTypes[type];
             }
 
             Debug.LogError("Block not found: " + name);
-            return BlockTypes[AirType];
+            return BlockTypes[AIR_TYPE];
         }
 
         public BlockConfig GetConfig(ushort type)
         {
-            if (type < m_configs.Length)
+            if (type < configs.Length)
             {
-                return m_configs[type];
+                return configs[type];
             }
 
             Debug.LogError("Config not found: " + type);
-            return m_configs[AirType];
+            return configs[AIR_TYPE];
         }
     }
 }

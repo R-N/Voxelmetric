@@ -9,8 +9,8 @@ namespace Voxelmetric.Code.Utilities
 {
     public class PathFinder
     {
-        private const float maxDistToTravelAfterDirect = 800;
-        private const float maxDistToTravelMultiplier = 10;
+        private const float MAX_DIST_TO_TRAVEL_AFTER_DIRECT = 800;
+        private const float MAX_DIST_TO_TRAVEL_MULTIPLIER = 10;
 
         public readonly List<Vector3Int> path;
 
@@ -88,12 +88,11 @@ namespace Voxelmetric.Code.Utilities
 
         private void PathComplete(Vector3Int lastTile)
         {
-            Heuristics pos;
-            closed.TryGetValue(lastTile, out pos);
+            closed.TryGetValue(lastTile, out _);
             path.Clear();
             path.Add(lastTile + Direction.up);
 
-            open.TryGetValue(lastTile, out pos);
+            open.TryGetValue(lastTile, out Heuristics pos);
 
             while (pos.parent != start)
             {
@@ -110,7 +109,7 @@ namespace Voxelmetric.Code.Utilities
 
         private void ProcessBest()
         {
-            float shortestDist = distanceFromStartToTarget * maxDistToTravelMultiplier + maxDistToTravelAfterDirect;
+            float shortestDist = distanceFromStartToTarget * MAX_DIST_TO_TRAVEL_MULTIPLIER + MAX_DIST_TO_TRAVEL_AFTER_DIRECT;
             Vector3Int bestPos = FailedPos;
 
             foreach (KeyValuePair<Vector3Int, Heuristics> tile in open)
@@ -122,8 +121,7 @@ namespace Voxelmetric.Code.Utilities
                 }
             }
 
-            Heuristics parent;
-            open.TryGetValue(bestPos, out parent);
+            open.TryGetValue(bestPos, out _);
 
             if (target.Distance2(ref bestPos) <= range * range)
             {
@@ -142,8 +140,7 @@ namespace Voxelmetric.Code.Utilities
 
         private void ProcessTile(Vector3Int pos)
         {
-            Heuristics h;
-            bool exists = open.TryGetValue(pos, out h);
+            bool exists = open.TryGetValue(pos, out Heuristics h);
 
             if (!exists)
             {
@@ -223,15 +220,11 @@ namespace Voxelmetric.Code.Utilities
                 {
                     Vector3Int adjPos = adjacentPositions[i];
 
-                    Heuristics h = new Heuristics(
-                        distanceFromStart[i],
-                        target.Distance2(ref adjPos),
-                        pos);
+                    Heuristics h = new Heuristics(distanceFromStart[i], target.Distance2(ref adjPos), pos);
 
                     if (IsWalkable(world, ref adjPos))
                     {
-                        Heuristics existingTile;
-                        if (open.TryGetValue(adjacentPositions[i], out existingTile))
+                        if (open.TryGetValue(adjacentPositions[i], out Heuristics existingTile))
                         {
                             if (existingTile.g > distanceFromStart[i])
                             {

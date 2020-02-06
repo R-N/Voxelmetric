@@ -5,29 +5,29 @@ namespace Voxelmetric.Code.Common.Memory
     public sealed class ArrayPool<T> : IArrayPool<T>
     {
         //! Stack of arrays
-        private readonly Stack<T[]> m_arrays;
+        private readonly Stack<T[]> arrays;
         //! Length of array to allocate
-        private readonly int m_arrLength;
+        private readonly int arrLength;
 
         public ArrayPool(int length, int initialCapacity, int initialSize)
         {
-            m_arrLength = length;
+            arrLength = length;
 
             if (initialSize > 0)
             {
                 // Init
-                m_arrays = new Stack<T[]>(initialSize < initialCapacity ? initialCapacity : initialSize);
+                arrays = new Stack<T[]>(initialSize < initialCapacity ? initialCapacity : initialSize);
 
                 for (int i = 0; i < initialSize; ++i)
                 {
                     T[] item = Helpers.CreateArray1D<T>(length);
-                    m_arrays.Push(item);
+                    arrays.Push(item);
                 }
             }
             else
             {
                 // Init
-                m_arrays = new Stack<T[]>(initialCapacity);
+                arrays = new Stack<T[]>(initialCapacity);
             }
         }
 
@@ -36,7 +36,7 @@ namespace Voxelmetric.Code.Common.Memory
         /// </summary>
         public T[] Pop()
         {
-            return m_arrays.Count == 0 ? new T[m_arrLength] : m_arrays.Pop();
+            return arrays.Count == 0 ? new T[arrLength] : arrays.Pop();
         }
 
         /// <summary>
@@ -49,12 +49,12 @@ namespace Voxelmetric.Code.Common.Memory
                 return;
             }
 
-            m_arrays.Push(item);
+            arrays.Push(item);
         }
 
         public override string ToString()
         {
-            return m_arrays.Count.ToString();
+            return arrays.Count.ToString();
         }
     }
 }
