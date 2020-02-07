@@ -56,7 +56,6 @@ public class CrossMeshBlock : Block
         Vector4[] uvs = pools.vector4ArrayPool.PopExact(4);
         Color32[] colors = pools.color32ArrayPool.PopExact(4);
 
-        BlockUtils.PrepareTexture(chunk, ref localPos, uvs, Direction.north, Texture, false);
 
         // TODO: How do I make sure that if I supply no color value, white is used?
         // TODO: These colors could be removed and memory would be saved
@@ -72,6 +71,8 @@ public class CrossMeshBlock : Block
             verts[1] = new Vector3(x1, y2, z2);
             verts[2] = new Vector3(x2, y2, z1);
             verts[3] = new Vector3(x2, y1, z1);
+            // Needs to have some vertices before being able to get a texture.
+            BlockUtils.PrepareTexture(chunk, ref localPos, verts, uvs, Direction.north, Texture, false);
             batcher.AddFace(materialID, verts, colors, uvs, false);
         }
         {
@@ -95,6 +96,8 @@ public class CrossMeshBlock : Block
             verts[3] = new Vector3(x2, y1, z2);
             batcher.AddFace(materialID, verts, colors, uvs, false);
         }
+
+
 
         pools.color32ArrayPool.Push(colors);
         pools.vector4ArrayPool.Push(uvs);

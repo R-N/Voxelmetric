@@ -19,7 +19,7 @@ MonoBehaviour:
   minZ: 0
   maxZ: 0
   randomUpdateFrequency: 1
-  addAOToMesh: 0
+  addAOToMesh: 1
   aOStrength: 0.5
   atlasPadding: 32
   atlasFiltering: 0

@@ -268,11 +268,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                 for (int i = startOffset; i < max; i++)
                 {
                     // Adjust UV coordinates according to provided texture atlas
-                    //TODO: Check texture here
-                    buffer.uV1s.Add(new Vector4(
-                                        (uvs[i].x * texture.width) + texture.x,
-                                        (uvs[i].y * texture.height) + texture.y
-                                    ));
+                    buffer.uV1s.Add(new Vector4((uvs[i].x * texture.width) + texture.x, (uvs[i].y * texture.height) + texture.y));
                 }
 
                 // Add triangles
@@ -347,12 +343,8 @@ namespace Voxelmetric.Code.Geometry.Batchers
                 PrepareUVs(ref buffer.uV1s, buffer.vertices, initialVertexCount);
                 for (int i = startOffset; i < max; i++)
                 {
-                    //TODO: Texture check here
                     // Adjust UV coordinates according to provided texture atlas
-                    buffer.uV1s.Add(new Vector4(
-                                        (uvs[i].x * texture.width) + texture.x,
-                                        (uvs[i].y * texture.height) + texture.y
-                                    ));
+                    buffer.uV1s.Add(new Vector4((uvs[i].x * texture.width) + texture.x, (uvs[i].y * texture.height) + texture.y));
                 }
 
                 // Add colors

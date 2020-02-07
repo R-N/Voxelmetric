@@ -205,58 +205,128 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
             AdjustColorsAO(data, light, chunk.World.config.AOStrength);
         }
 
-        private static void PrepareTexture(Vector4[] data, Vector2Int texture, bool rotated, bool backface)
+        private static void PrepareTexture(Vector4[] data, Vector3[] verts, Direction direction, Vector2Int texture, bool rotated, bool backface)
         {
+            float width;
+            float height;
+            switch (direction)
+            {
+                case Direction.up:
+                    width = verts[0].x - verts[2].x;
+                    height = verts[0].z - verts[2].z;
+                    break;
+                case Direction.down:
+                    width = verts[0].x - verts[2].x;
+                    height = verts[0].z - verts[2].z;
+                    break;
+                case Direction.south:
+                    width = verts[0].x - verts[2].x;
+                    height = verts[0].y - verts[2].y;
+                    break;
+                case Direction.north:
+                    width = verts[0].x - verts[2].x;
+                    height = verts[0].y - verts[2].y;
+                    break;
+                case Direction.east:
+                    width = verts[0].z - verts[2].z;
+                    height = verts[0].y - verts[2].y;
+                    break;
+                default: // West
+                    width = verts[0].z - verts[2].z;
+                    height = verts[0].y - verts[2].y;
+                    break;
+            }
+
+            width = Mathf.Abs(Mathf.RoundToInt(width));
+            height = Mathf.Abs(Mathf.RoundToInt(height));
+
             if (!rotated)
             {
                 if (backface)
                 {
-                    data[0] = new Vector4(1, 0, texture.x, texture.y);
-                    data[1] = new Vector4(1, 1, texture.x, texture.y);
-                    data[2] = new Vector4(0, 1, texture.x, texture.y);
+                    data[0] = new Vector4(width, 0, texture.x, texture.y);
+                    data[1] = new Vector4(width, height, texture.x, texture.y);
+                    data[2] = new Vector4(0, height, texture.x, texture.y);
                     data[3] = new Vector4(0, 0, texture.x, texture.y);
                 }
                 else
                 {
                     data[0] = new Vector4(0, 0, texture.x, texture.y);
-                    data[1] = new Vector4(0, 1, texture.x, texture.y);
-                    data[2] = new Vector4(1, 1, texture.x, texture.y);
-                    data[3] = new Vector4(1, 0, texture.x, texture.y);
+                    data[1] = new Vector4(0, height, texture.x, texture.y);
+                    data[2] = new Vector4(width, height, texture.x, texture.y);
+                    data[3] = new Vector4(width, 0, texture.x, texture.y);
                 }
             }
             else
             {
                 if (backface)
                 {
-                    data[0] = new Vector4(1, 1, texture.x, texture.y);
-                    data[1] = new Vector4(0, 1, texture.x, texture.y);
+                    data[0] = new Vector4(width, height, texture.x, texture.y);
+                    data[1] = new Vector4(0, height, texture.x, texture.y);
                     data[2] = new Vector4(0, 0, texture.x, texture.y);
-                    data[3] = new Vector4(1, 0, texture.x, texture.y);
+                    data[3] = new Vector4(width, 0, texture.x, texture.y);
                 }
                 else
                 {
-                    data[0] = new Vector4(0, 1, texture.x, texture.y);
-                    data[1] = new Vector4(1, 1, texture.x, texture.y);
-                    data[2] = new Vector4(1, 0, texture.x, texture.y);
+                    data[0] = new Vector4(0, height, texture.x, texture.y);
+                    data[1] = new Vector4(width, height, texture.x, texture.y);
+                    data[2] = new Vector4(width, 0, texture.x, texture.y);
                     data[3] = new Vector4(0, 0, texture.x, texture.y);
                 }
             }
         }
 
-        public static void PrepareTexture(Chunk chunk, ref Vector3Int localPos, Vector4[] data, Direction direction, TextureCollection textureCollection, bool rotated)
+        public static void PrepareTexture(Chunk chunk, ref Vector3Int localPos, Vector3[] verts, Vector4[] data, Direction direction, TextureCollection textureCollection, bool rotated)
         {
             //Rect texture = textureCollection.GetTexture(chunk, ref localPos, direction);
             Vector2Int texture = textureCollection.GetTexture();
             bool backface = DirectionUtils.IsBackface(direction);
-            PrepareTexture(data, texture, rotated, backface);
+            PrepareTexture(data, verts, direction, texture, rotated, backface);
         }
 
-        public static void PrepareTexture(Chunk chunk, ref Vector3Int localPos, Vector4[] data, Direction direction, TextureCollection[] textureCollections, bool rotated)
+        public static void PrepareTexture(Chunk chunk, ref Vector3Int localPos, Vector3[] verts, Vector4[] data, Direction direction, TextureCollection[] textureCollections, bool rotated)
         {
             //Rect texture = textureCollections[(int)direction].GetTexture(chunk, ref localPos, direction);
             Vector2Int texture = textureCollections[(int)direction].GetTexture();
             bool backface = DirectionUtils.IsBackface(direction);
-            PrepareTexture(data, texture, rotated, backface);
+            //if (direction == Direction.up)
+            //{
+            //    if (backface)
+            //    {
+            //        float x1 = localPos.x - verts[0].x;
+            //        float x2 = localPos.x - verts[1].x;
+            //        float z2 = localPos.z - verts[1].z;
+            //        float z3 = localPos.z - verts[2].z;
+
+            //        data[0] = new Vector4(x1, 0, texture.x, texture.y);
+            //        data[1] = new Vector4(x2, z2, texture.x, texture.y);
+            //        data[2] = new Vector4(0, z3, texture.x, texture.y);
+            //        data[3] = new Vector4(0, 0, texture.x, texture.y);
+            //    }
+            //    else
+            //    {
+            //        float z1 = localPos.z - verts[1].z;
+            //        float z2 = localPos.z - verts[2].z;
+            //        float x2 = localPos.x - verts[2].x;
+            //        float x3 = localPos.x - verts[3].x;
+
+            //        //Debug.Log(localPos + " | " + z1 + ", " + z2 + ", " + x2 + ", " + x3);
+            //        //Debug.Log($"{localPos} | Z1: {z1} ({verts[1].z}), Z2: {z2} ({verts[2].z}), X2: {x2} ({verts[2].x}), X3: {x3} ({verts[3].x})");
+            //        Debug.Log(verts[0].x - verts[2].x);
+
+            //        float width = verts[0].x - verts[2].x;
+            //        float height = verts[0].z - verts[2].z;
+
+            //        data[0] = new Vector4(0, 0, texture.x, texture.y);
+            //        data[1] = new Vector4(0, height, texture.x, texture.y);
+            //        data[2] = new Vector4(width, height, texture.x, texture.y);
+            //        data[3] = new Vector4(width, 0, texture.x, texture.y);
+            //    }
+            //}
+            //else
+            //{
+            //}
+            PrepareTexture(data, verts, direction, texture, rotated, backface);
         }
 
         private static void SetColorsAO(Color32[] data, BlockLightData light, float strength)
