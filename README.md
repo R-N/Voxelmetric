@@ -15,7 +15,7 @@ Progress:
 - [x] Fixed saving
 - [x] Fixed colliders not working properly
 - [ ] Reimplement some block types, like connected textures block
-- [ ] Fix greedy meshing texture problem
+- [x] Fix greedy meshing texture problem
 
 ## Features
 
