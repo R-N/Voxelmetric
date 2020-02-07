@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Voxelmetric.Code.Load_Resources.Textures
 {
@@ -37,7 +38,7 @@ namespace Voxelmetric.Code.Load_Resources.Textures
         private void LoadTextureIndex()
         {
             List<Texture2D> individualTextures = blocks.GetAllUniqueTextures();
-            Texture2D neutralTexture = new Texture2D(32, 32)
+            Texture2D neutralTexture = new Texture2D(blocks.TextureSize, blocks.TextureSize)
             {
                 name = NO_TEXTURE_NAME
             };
@@ -57,23 +58,20 @@ namespace Voxelmetric.Code.Load_Resources.Textures
                     individualTextures[i] = neutralTexture;
                 }
 
-                if (!individualTextures[i].isReadable)
-                {
-                    Debug.LogError(individualTextures[i].name + " needs to be marked as readable!");
-                    return;
-                }
+                Assert.IsTrue(individualTextures[i].width == blocks.TextureSize, individualTextures[i].name + " width must be the same as texture size!");
+                Assert.IsTrue(individualTextures[i].height == blocks.TextureSize, individualTextures[i].name + " height must be the same as texture size!");
+                Assert.IsTrue(individualTextures[i].isReadable == true, individualTextures[i].name + " must be marked as readbale!");
             }
 
             // Generate atlas
-            atlas = new Texture2D(0, 0, TextureFormat.ARGB32, 0, false);
-            Rect[] rects = atlas.PackTextures(individualTextures.ToArray(), 0, 8192, false);
+            Texture2D packedTextures = new Texture2D(0, 0, TextureFormat.ARGB32, 0, false);
+            Rect[] rects = packedTextures.PackTextures(individualTextures.ToArray(), 0, 8192, false);
 
             // Transfer over the pixels to another texture2d because PackTextures resets the texture format and useMipMaps settings
-            //atlas = new Texture2D(packedTextures.width, packedTextures.height, config.AtlasFormat, config.UseMipMaps);
-            //atlas.SetPixels(packedTextures.GetPixels(0, 0, packedTextures.width, packedTextures.height));
+            atlas = new Texture2D(packedTextures.width, packedTextures.height, config.AtlasFormat, config.UseMipMaps);
+            atlas.SetPixels(packedTextures.GetPixels(0, 0, packedTextures.width, packedTextures.height));
             atlas.filterMode = config.AtlasFiltering;
-
-            List<Rect> nonrepeatingTextures = new List<Rect>();
+            atlas.Apply();
 
             int index = 0;
             textures.Clear();
@@ -91,13 +89,8 @@ namespace Voxelmetric.Code.Load_Resources.Textures
                 //collection.AddTexture(uvs, new TextureConfig.Texture() { weight = 1, index = 0 });
                 collection.AddTexture(new Vector2Int((int)(atlas.width * uvs.x / 128), (int)(atlas.height * uvs.y / 128)));
 
-                nonrepeatingTextures.Add(rects[index]);
-
                 index++;
             }
-
-            //uPaddingBleed.BleedEdges(atlas, config.textureAtlasPadding, repeatingTextures.ToArray(), true);
-            //uPaddingBleed.BleedEdges(atlas, config.AtlasPadding, nonrepeatingTextures.ToArray(), false);
         }
 
         public TextureCollection GetTextureCollection(Texture2D texture)

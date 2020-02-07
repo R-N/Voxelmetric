@@ -5,9 +5,18 @@ using UnityEngine;
 public class BlockCollection : ScriptableObject
 {
     [SerializeField]
+    private int textureSize = 16;
+
+#if UNITY_EDITOR
+    [Space]
+#endif
+
+    [SerializeField]
     private BlockConfigObject[] blocks = null;
 
-    public BlockConfigObject[] Blocks { get { return blocks; } }
+    public int TextureSize { get { return textureSize; } set { textureSize = value; } }
+
+    public BlockConfigObject[] Blocks { get { return blocks; } set { blocks = value; } }
 
     public List<Texture2D> GetAllUniqueTextures()
     {

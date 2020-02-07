@@ -5,6 +5,7 @@ using Voxelmetric.Code.Load_Resources.Textures;
 public class CrossMeshBlockConfig : BlockConfig
 {
     public TextureCollection texture;
+    public Color32 color;
 
     public override bool OnSetUp(BlockConfigObject config, World world)
     {
@@ -16,6 +17,7 @@ public class CrossMeshBlockConfig : BlockConfig
         if (config is CrossMeshConfigObject crossMeshConfig)
         {
             texture = world.textureProvider.GetTextureCollection(crossMeshConfig.Texture);
+            color = crossMeshConfig.Color;
         }
         else
         {

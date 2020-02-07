@@ -3,7 +3,6 @@ using Voxelmetric.Code.Common;
 using Voxelmetric.Code.Core;
 using Voxelmetric.Code.Data_types;
 using Voxelmetric.Code.Load_Resources.Textures;
-using Vector3Int = Voxelmetric.Code.Data_types.Vector3Int;
 
 namespace Voxelmetric.Code.Configurable.Blocks.Utilities
 {
@@ -276,56 +275,17 @@ namespace Voxelmetric.Code.Configurable.Blocks.Utilities
             }
         }
 
-        public static void PrepareTexture(Chunk chunk, ref Vector3Int localPos, Vector3[] verts, Vector4[] data, Direction direction, TextureCollection textureCollection, bool rotated)
+        public static void PrepareTexture(Vector3[] verts, Vector4[] data, Direction direction, TextureCollection textureCollection, bool rotated)
         {
-            //Rect texture = textureCollection.GetTexture(chunk, ref localPos, direction);
             Vector2Int texture = textureCollection.GetTexture();
             bool backface = DirectionUtils.IsBackface(direction);
             PrepareTexture(data, verts, direction, texture, rotated, backface);
         }
 
-        public static void PrepareTexture(Chunk chunk, ref Vector3Int localPos, Vector3[] verts, Vector4[] data, Direction direction, TextureCollection[] textureCollections, bool rotated)
+        public static void PrepareTexture(Vector3[] verts, Vector4[] data, Direction direction, TextureCollection[] textureCollections, bool rotated)
         {
-            //Rect texture = textureCollections[(int)direction].GetTexture(chunk, ref localPos, direction);
             Vector2Int texture = textureCollections[(int)direction].GetTexture();
             bool backface = DirectionUtils.IsBackface(direction);
-            //if (direction == Direction.up)
-            //{
-            //    if (backface)
-            //    {
-            //        float x1 = localPos.x - verts[0].x;
-            //        float x2 = localPos.x - verts[1].x;
-            //        float z2 = localPos.z - verts[1].z;
-            //        float z3 = localPos.z - verts[2].z;
-
-            //        data[0] = new Vector4(x1, 0, texture.x, texture.y);
-            //        data[1] = new Vector4(x2, z2, texture.x, texture.y);
-            //        data[2] = new Vector4(0, z3, texture.x, texture.y);
-            //        data[3] = new Vector4(0, 0, texture.x, texture.y);
-            //    }
-            //    else
-            //    {
-            //        float z1 = localPos.z - verts[1].z;
-            //        float z2 = localPos.z - verts[2].z;
-            //        float x2 = localPos.x - verts[2].x;
-            //        float x3 = localPos.x - verts[3].x;
-
-            //        //Debug.Log(localPos + " | " + z1 + ", " + z2 + ", " + x2 + ", " + x3);
-            //        //Debug.Log($"{localPos} | Z1: {z1} ({verts[1].z}), Z2: {z2} ({verts[2].z}), X2: {x2} ({verts[2].x}), X3: {x3} ({verts[3].x})");
-            //        Debug.Log(verts[0].x - verts[2].x);
-
-            //        float width = verts[0].x - verts[2].x;
-            //        float height = verts[0].z - verts[2].z;
-
-            //        data[0] = new Vector4(0, 0, texture.x, texture.y);
-            //        data[1] = new Vector4(0, height, texture.x, texture.y);
-            //        data[2] = new Vector4(width, height, texture.x, texture.y);
-            //        data[3] = new Vector4(width, 0, texture.x, texture.y);
-            //    }
-            //}
-            //else
-            //{
-            //}
             PrepareTexture(data, verts, direction, texture, rotated, backface);
         }
 

@@ -10,23 +10,23 @@ public class CubeConfigObject : BlockConfigObject
     [SerializeField]
     private Texture2D bottomTexture = null;
     [SerializeField]
-    private Color32 bottomColor = Color.red;
+    private Color32 bottomColor = Color.white;
     [SerializeField]
     private Texture2D frontTexture = null;
     [SerializeField]
-    private Color32 frontColor = Color.blue;
+    private Color32 frontColor = Color.white;
     [SerializeField]
     private Texture2D backTexture = null;
     [SerializeField]
-    private Color32 backColor = Color.yellow;
+    private Color32 backColor = Color.white;
     [SerializeField]
     private Texture2D leftTexture = null;
     [SerializeField]
-    private Color32 leftColor = Color.red;
+    private Color32 leftColor = Color.white;
     [SerializeField]
     private Texture2D rightTexture = null;
     [SerializeField]
-    private Color32 rightColor = Color.green;
+    private Color32 rightColor = Color.white;
 
     public Texture2D TopTexture { get { return topTexture; } set { topTexture = value; } }
     public Texture2D BottomTexture { get { return bottomTexture; } set { bottomTexture = value; } }

@@ -5,8 +5,11 @@ public class CrossMeshConfigObject : BlockConfigObject
 {
     [SerializeField]
     private Texture2D texture = null;
+    [SerializeField]
+    private Color32 color = new Color32(255, 255, 255, 255);
 
     public Texture2D Texture { get { return texture; } }
+    public Color32 Color { get { return color; } }
 
     public override object GetBlockClass()
     {

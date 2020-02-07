@@ -58,7 +58,7 @@ public class CubeBlock : Block
             cols[2] = Colors[d];
             cols[3] = Colors[d];
 
-            BlockUtils.PrepareTexture(chunk, ref face.pos, verts, uvs, face.side, Textures, rotated);
+            BlockUtils.PrepareTexture(verts, uvs, face.side, Textures, rotated);
             BlockUtils.AdjustColors(chunk, cols, face.light);
 
             RenderGeometryBatcher batcher = chunk.RenderGeometryHandler.Batcher;

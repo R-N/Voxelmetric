@@ -14,6 +14,7 @@ public class CrossMeshBlock : Block
     private const float COEF = 1.0f / 64.0f;
 
     public TextureCollection Texture { get { return ((CrossMeshBlockConfig)config).texture; } }
+    public Color32 Color { get { return ((CrossMeshBlockConfig)config).color; } }
 
     [Preserve]
     public CrossMeshBlock() : base() { }
@@ -32,8 +33,6 @@ public class CrossMeshBlock : Block
 
         // Using the block positions hash is much better for random numbers than saving the offset and height in the block data
         int hash = localPos.GetHashCode();
-
-        float blockHeight = (hash & 63) * COEF * Env.BLOCK_SIZE;
 
         hash *= 39;
         float offsetX = (hash & 63) * COEF * Env.BLOCK_SIZE_HALF - Env.BLOCK_SIZE_HALF * 0.5f;
@@ -56,14 +55,11 @@ public class CrossMeshBlock : Block
         Vector4[] uvs = pools.vector4ArrayPool.PopExact(4);
         Color32[] colors = pools.color32ArrayPool.PopExact(4);
 
-
-        // TODO: How do I make sure that if I supply no color value, white is used?
-        // TODO: These colors could be removed and memory would be saved
         {
-            colors[0] = new Color32(255, 255, 255, 255);
-            colors[1] = new Color32(255, 255, 255, 255);
-            colors[2] = new Color32(255, 255, 255, 255);
-            colors[3] = new Color32(255, 255, 255, 255);
+            colors[0] = Color;
+            colors[1] = Color;
+            colors[2] = Color;
+            colors[3] = Color;
         }
 
         {
@@ -72,7 +68,7 @@ public class CrossMeshBlock : Block
             verts[2] = new Vector3(x2, y2, z1);
             verts[3] = new Vector3(x2, y1, z1);
             // Needs to have some vertices before being able to get a texture.
-            BlockUtils.PrepareTexture(chunk, ref localPos, verts, uvs, Direction.north, Texture, false);
+            BlockUtils.PrepareTexture(verts, uvs, Direction.north, Texture, false);
             batcher.AddFace(materialID, verts, colors, uvs, false);
         }
         {
@@ -96,8 +92,6 @@ public class CrossMeshBlock : Block
             verts[3] = new Vector3(x2, y1, z2);
             batcher.AddFace(materialID, verts, colors, uvs, false);
         }
-
-
 
         pools.color32ArrayPool.Push(colors);
         pools.vector4ArrayPool.Push(uvs);
