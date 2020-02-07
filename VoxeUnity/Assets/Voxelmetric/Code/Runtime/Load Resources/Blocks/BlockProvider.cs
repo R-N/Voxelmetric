@@ -70,20 +70,16 @@ namespace Voxelmetric.Code.Load_Resources.Blocks
         }
 
         // World is only needed for setting up the textures
-        private void ProcessConfigs(World world, BlockConfigObject[] blocks)
+        private void ProcessConfigs(World world, List<BlockConfigObject> blocks)
         {
-            List<BlockConfig> configs = new List<BlockConfig>(blocks.Length);
+            List<BlockConfig> configs = new List<BlockConfig>(blocks.Count);
             Dictionary<ushort, ushort> types = new Dictionary<ushort, ushort>();
 
             // Add reserved block types
             AddBlockType(configs, types, BlockConfig.CreateAirBlockConfig());
-            //for (ushort i = 1; i <= LastReservedSimpleType; i++)
-            //{
-            //    AddBlockType(configs, types, BlockConfig.CreateColorBlockConfig(world, i));
-            //}
 
             // Add block types from config
-            for (int i = 0; i < blocks.Length; i++)
+            for (int i = 0; i < blocks.Count; i++)
             {
                 BlockConfig config = blocks[i].GetConfig();
                 config.BlockClass = (Type)blocks[i].GetBlockClass();

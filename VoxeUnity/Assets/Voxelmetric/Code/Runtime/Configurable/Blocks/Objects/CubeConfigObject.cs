@@ -1,46 +1,35 @@
 ﻿using UnityEngine;
+using Voxelmetric.Code.Data_types;
 
 [CreateAssetMenu(fileName = "New Cube Config", menuName = "Voxelmetric/Blocks/Cube")]
 public class CubeConfigObject : BlockConfigObject
 {
     [SerializeField]
-    private Texture2D topTexture = null;
+    private ColoredTexture topTexture = new ColoredTexture(new Color32(255, 255, 255, 255));
     [SerializeField]
-    private Color32 topColor = Color.white;
+    private ColoredTexture bottomTexture = new ColoredTexture(new Color32(255, 255, 255, 255));
     [SerializeField]
-    private Texture2D bottomTexture = null;
+    private ColoredTexture frontTexture = new ColoredTexture(new Color32(255, 255, 255, 255));
     [SerializeField]
-    private Color32 bottomColor = Color.white;
+    private ColoredTexture backTexture = new ColoredTexture(new Color32(255, 255, 255, 255));
     [SerializeField]
-    private Texture2D frontTexture = null;
+    private ColoredTexture leftTexture = new ColoredTexture(new Color32(255, 255, 255, 255));
     [SerializeField]
-    private Color32 frontColor = Color.white;
-    [SerializeField]
-    private Texture2D backTexture = null;
-    [SerializeField]
-    private Color32 backColor = Color.white;
-    [SerializeField]
-    private Texture2D leftTexture = null;
-    [SerializeField]
-    private Color32 leftColor = Color.white;
-    [SerializeField]
-    private Texture2D rightTexture = null;
-    [SerializeField]
-    private Color32 rightColor = Color.white;
+    private ColoredTexture rightTexture = new ColoredTexture(new Color32(255, 255, 255, 255));
 
-    public Texture2D TopTexture { get { return topTexture; } set { topTexture = value; } }
-    public Texture2D BottomTexture { get { return bottomTexture; } set { bottomTexture = value; } }
-    public Texture2D FrontTexture { get { return frontTexture; } set { frontTexture = value; } }
-    public Texture2D BackTexture { get { return backTexture; } set { backTexture = value; } }
-    public Texture2D LeftTexture { get { return leftTexture; } set { leftTexture = value; } }
-    public Texture2D RightTexture { get { return rightTexture; } set { rightTexture = value; } }
+    public Texture2D TopTexture { get { return topTexture.texture; } set { topTexture.texture = value; } }
+    public Texture2D BottomTexture { get { return bottomTexture.texture; } set { bottomTexture.texture = value; } }
+    public Texture2D FrontTexture { get { return frontTexture.texture; } set { frontTexture.texture = value; } }
+    public Texture2D BackTexture { get { return backTexture.texture; } set { backTexture.texture = value; } }
+    public Texture2D LeftTexture { get { return leftTexture.texture; } set { leftTexture.texture = value; } }
+    public Texture2D RightTexture { get { return rightTexture.texture; } set { rightTexture.texture = value; } }
 
-    public Color32 TopColor { get { return topColor; } set { topColor = value; } }
-    public Color32 BottomColor { get { return bottomColor; } set { bottomColor = value; } }
-    public Color32 FrontColor { get { return frontColor; } set { frontColor = value; } }
-    public Color32 BackColor { get { return backColor; } set { backColor = value; } }
-    public Color32 LeftColor { get { return leftColor; } set { leftColor = value; } }
-    public Color32 RightColor { get { return rightColor; } set { rightColor = value; } }
+    public Color32 TopColor { get { return topTexture.color; } set { topTexture.color = value; } }
+    public Color32 BottomColor { get { return bottomTexture.color; } set { bottomTexture.color = value; } }
+    public Color32 FrontColor { get { return frontTexture.color; } set { frontTexture.color = value; } }
+    public Color32 BackColor { get { return backTexture.color; } set { backTexture.color = value; } }
+    public Color32 LeftColor { get { return leftTexture.color; } set { leftTexture.color = value; } }
+    public Color32 RightColor { get { return rightTexture.color; } set { rightTexture.color = value; } }
 
     public override object GetBlockClass()
     {
@@ -60,6 +49,6 @@ public class CubeConfigObject : BlockConfigObject
 
     public override Texture2D[] GetTextures()
     {
-        return new Texture2D[6] { topTexture, bottomTexture, frontTexture, backTexture, rightTexture, leftTexture };
+        return new Texture2D[6] { topTexture.texture, bottomTexture.texture, frontTexture.texture, backTexture.texture, rightTexture.texture, leftTexture.texture };
     }
 }

@@ -16,8 +16,8 @@ public class CrossMeshBlockConfig : BlockConfig
 
         if (config is CrossMeshConfigObject crossMeshConfig)
         {
-            texture = world.textureProvider.GetTextureCollection(crossMeshConfig.Texture);
-            color = crossMeshConfig.Color;
+            texture = world.textureProvider.GetTextureCollection(crossMeshConfig.Texture.texture);
+            color = crossMeshConfig.Texture.color;
         }
         else
         {

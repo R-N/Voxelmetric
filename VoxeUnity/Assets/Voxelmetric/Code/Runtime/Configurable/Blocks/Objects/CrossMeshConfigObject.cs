@@ -1,15 +1,13 @@
 ﻿using UnityEngine;
+using Voxelmetric.Code.Data_types;
 
 [CreateAssetMenu(fileName = "New Cross Mesh", menuName = "Voxelmetric/Blocks/Cross Mesh")]
 public class CrossMeshConfigObject : BlockConfigObject
 {
     [SerializeField]
-    private Texture2D texture = null;
-    [SerializeField]
-    private Color32 color = new Color32(255, 255, 255, 255);
+    private ColoredTexture texture = new ColoredTexture(new Color32(255, 255, 255, 255));
 
-    public Texture2D Texture { get { return texture; } }
-    public Color32 Color { get { return color; } }
+    public ColoredTexture Texture { get { return texture; } set { texture = value; } }
 
     public override object GetBlockClass()
     {
@@ -27,6 +25,6 @@ public class CrossMeshConfigObject : BlockConfigObject
 
     public override Texture2D[] GetTextures()
     {
-        return new Texture2D[1] { texture };
+        return new Texture2D[1] { texture.texture };
     }
 }

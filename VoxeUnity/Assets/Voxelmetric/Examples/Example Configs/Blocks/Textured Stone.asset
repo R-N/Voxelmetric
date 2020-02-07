@@ -17,27 +17,33 @@ MonoBehaviour:
   solid: 1
   transparent: 0
   textureType: 0
-  topTexture: {fileID: 2800000, guid: 1910b8cdc4542374091171194b1a584b, type: 3}
-  topColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  bottomTexture: {fileID: 2800000, guid: 1910b8cdc4542374091171194b1a584b, type: 3}
-  bottomColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  frontTexture: {fileID: 2800000, guid: 1910b8cdc4542374091171194b1a584b, type: 3}
-  frontColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  backTexture: {fileID: 2800000, guid: 1910b8cdc4542374091171194b1a584b, type: 3}
-  backColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  leftTexture: {fileID: 2800000, guid: 1910b8cdc4542374091171194b1a584b, type: 3}
-  leftColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  rightTexture: {fileID: 2800000, guid: 1910b8cdc4542374091171194b1a584b, type: 3}
-  rightColor:
-    serializedVersion: 2
-    rgba: 4294967295
+  topTexture:
+    texture: {fileID: 2800000, guid: 1910b8cdc4542374091171194b1a584b, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 4294967295
+  bottomTexture:
+    texture: {fileID: 2800000, guid: 1910b8cdc4542374091171194b1a584b, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 4294967295
+  frontTexture:
+    texture: {fileID: 2800000, guid: 1910b8cdc4542374091171194b1a584b, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 4294967295
+  backTexture:
+    texture: {fileID: 2800000, guid: 1910b8cdc4542374091171194b1a584b, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 4294967295
+  leftTexture:
+    texture: {fileID: 2800000, guid: 1910b8cdc4542374091171194b1a584b, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 4294967295
+  rightTexture:
+    texture: {fileID: 2800000, guid: 1910b8cdc4542374091171194b1a584b, type: 3}
+    color:
+      serializedVersion: 2
+      rgba: 4294967295
