@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Voxelmetric.Code.Common.Extensions
+namespace Voxelmetric
 {
     public static class NumberExtensions
     {

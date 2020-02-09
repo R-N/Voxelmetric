@@ -1,8 +1,6 @@
 ﻿using System;
-using Voxelmetric.Code.Common;
-using Voxelmetric.Code.Core;
 
-namespace Voxelmetric.Code.Builders
+namespace Voxelmetric
 {
     public abstract class MergedFacesMeshBuilder : AMeshBuilder
     {
@@ -124,7 +122,7 @@ namespace Voxelmetric.Code.Builders
         public override void Build(Chunk chunk, out int minBounds, out int maxBounds)
         {
             ChunkBlocks blocks = chunk.Blocks;
-            Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
+            LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
 
             int sizeWithPadding = sideSize + Env.CHUNK_PADDING_2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;

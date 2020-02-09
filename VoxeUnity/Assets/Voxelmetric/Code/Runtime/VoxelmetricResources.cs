@@ -1,4 +1,4 @@
-﻿namespace Voxelmetric.Code
+﻿namespace Voxelmetric
 {
     public class VoxelmetricResources
     {

@@ -6,7 +6,7 @@ using POINTER = System.UInt64;
 using POINTER = System.UInt32;
 #endif
 
-namespace Voxelmetric.Code.Utilities.Noise
+namespace Voxelmetric
 {
     public class FastNoiseSIMD
     {

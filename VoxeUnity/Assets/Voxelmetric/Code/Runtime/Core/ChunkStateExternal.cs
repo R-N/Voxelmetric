@@ -1,4 +1,4 @@
-﻿namespace Voxelmetric.Code.Core
+﻿namespace Voxelmetric
 {
     public enum ChunkStateExternal : byte
     {

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using Voxelmetric.Code.Common.Math;
 
 namespace Voxelmetric.Examples
 {

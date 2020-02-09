@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Voxelmetric.Code.Data_types
+namespace Voxelmetric
 {
     public struct AABB
     {

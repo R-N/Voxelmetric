@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Random Layer", menuName = "Voxelmetric/Layers/Random Layer")]
-public class RandomLayerConfigObject : LayerConfigObject
+namespace Voxelmetric
 {
-    [SerializeField]
-    private float chance = 0;
-
-    public override TerrainLayer GetLayer()
+    [CreateAssetMenu(fileName = "New Random Layer", menuName = "Voxelmetric/Layers/Random Layer")]
+    public class RandomLayerConfigObject : LayerConfigObject
     {
-        return new RandomLayer()
+        [SerializeField]
+        private float chance = 0;
+
+        public override TerrainLayer GetLayer()
         {
-            Chance = chance
-        };
+            return new RandomLayer()
+            {
+                Chance = chance
+            };
+        }
     }
 }

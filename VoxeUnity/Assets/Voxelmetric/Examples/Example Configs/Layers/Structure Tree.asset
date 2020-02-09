@@ -16,4 +16,4 @@ MonoBehaviour:
   index: 1500
   blockName: 
   chance: 0.01
-  structure: StructureTree
+  structure: Voxelmetric.StructureTree

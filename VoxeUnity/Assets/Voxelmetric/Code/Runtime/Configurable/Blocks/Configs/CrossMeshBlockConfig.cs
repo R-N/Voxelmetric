@@ -1,30 +1,31 @@
 ﻿using UnityEngine;
-using Voxelmetric.Code.Core;
-using Voxelmetric.Code.Load_Resources.Textures;
 
-public class CrossMeshBlockConfig : BlockConfig
+namespace Voxelmetric
 {
-    public TextureCollection texture;
-    public Color32 color;
-
-    public override bool OnSetUp(BlockConfigObject config, World world)
+    public class CrossMeshBlockConfig : BlockConfig
     {
-        if (!base.OnSetUp(config, world))
-        {
-            return false;
-        }
+        public TextureCollection texture;
+        public Color32 color;
 
-        if (config is CrossMeshConfigObject crossMeshConfig)
+        public override bool OnSetUp(BlockConfigObject config, World world)
         {
-            texture = world.textureProvider.GetTextureCollection(crossMeshConfig.Texture.texture);
-            color = crossMeshConfig.Texture.color;
-        }
-        else
-        {
-            Debug.LogError(config.GetType().Name + " config passed to cross mesh block.");
-            return false;
-        }
+            if (!base.OnSetUp(config, world))
+            {
+                return false;
+            }
 
-        return true;
+            if (config is CrossMeshConfigObject crossMeshConfig)
+            {
+                texture = world.textureProvider.GetTextureCollection(crossMeshConfig.Texture.texture);
+                color = crossMeshConfig.Texture.color;
+            }
+            else
+            {
+                Debug.LogError(config.GetType().Name + " config passed to cross mesh block.");
+                return false;
+            }
+
+            return true;
+        }
     }
 }

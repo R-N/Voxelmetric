@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Voxelmetric.Code.Core;
-using Voxelmetric.Code.Core.Operations;
-using Voxelmetric.Code.Data_types;
-using Chunk = Voxelmetric.Code.Core.Chunk;
 
-namespace Voxelmetric.Code
+namespace Voxelmetric
 {
     public static class Voxelmetric
     {
@@ -17,7 +13,7 @@ namespace Voxelmetric.Code
             world.ModifyBlockData(ref pos, blockData, true, onAction);
         }
 
-        public static void SetBlockData(World world, ref Vector3Int posFrom, ref Vector3Int posTo, BlockData blockData, Action<ModifyBlockContext> onAction = null)
+        public static void SetBlockData(World world, Vector3Int posFrom, Vector3Int posTo, BlockData blockData, Action<ModifyBlockContext> onAction = null)
         {
             world.ModifyBlockDataRanged(ref posFrom, ref posTo, blockData, true, onAction);
         }

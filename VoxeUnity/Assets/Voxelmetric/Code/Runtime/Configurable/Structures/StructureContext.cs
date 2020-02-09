@@ -1,7 +1,4 @@
-﻿using Voxelmetric.Code.Core;
-using Voxelmetric.Code.Data_types;
-
-namespace Voxelmetric.Code.Configurable.Structures
+﻿namespace Voxelmetric
 {
     public abstract class StructureContext
     {

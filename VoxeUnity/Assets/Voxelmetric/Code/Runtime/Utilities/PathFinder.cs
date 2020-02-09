@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Voxelmetric.Code.Common.Threading;
-using Voxelmetric.Code.Common.Threading.Managers;
-using Voxelmetric.Code.Core;
-using Voxelmetric.Code.Data_types;
 
-namespace Voxelmetric.Code.Utilities
+namespace Voxelmetric
 {
     public class PathFinder
     {

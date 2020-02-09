@@ -1,6 +1,4 @@
-﻿using Voxelmetric.Code.Common;
-
-namespace Voxelmetric.Code.Core.Clipmap
+﻿namespace Voxelmetric
 {
     public class Clipmap
     {
@@ -202,8 +200,7 @@ namespace Voxelmetric.Code.Core.Clipmap
             return distance >= axis.rangeMin && distance <= axis.rangeMax;
         }
 
-        //OPTIMIZE: Turn into struct?
-        private class AxisInfo
+        private struct AxisInfo
         {
             public ClipmapItem[] map; // -N ... 0 ... N
             public int offset;

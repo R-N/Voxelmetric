@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine.Assertions;
-using Voxelmetric.Code.Common.Events;
 
-namespace Voxelmetric.Code.Core
+namespace Voxelmetric
 {
     public class ChunkEventSource : IEventSource<ChunkStateExternal>
     {

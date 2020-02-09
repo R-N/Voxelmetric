@@ -1,14 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Profiling;
-using Voxelmetric.Code.Common;
-using Voxelmetric.Code.Common.Math;
-using Voxelmetric.Code.Core;
-using Voxelmetric.Code.Data_types;
-using Chunk = Voxelmetric.Code.Core.Chunk;
-using Vector3Int = Voxelmetric.Code.Data_types.Vector3Int;
 
-namespace Voxelmetric.Code.Utilities.ChunkLoaders
+namespace Voxelmetric
 {
     /// <summary>
     /// Running constantly, LoadChunks generates the world as we move.

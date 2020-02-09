@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Voxelmetric.Code.Common;
-using Voxelmetric.Code.Data_types;
 
-namespace Voxelmetric.Code.Utilities
+namespace Voxelmetric
 {
     public static class ChunkLoadOrder
     {

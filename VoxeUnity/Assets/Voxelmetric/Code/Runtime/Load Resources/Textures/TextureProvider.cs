@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Voxelmetric.Code.Load_Resources.Textures
+namespace Voxelmetric
 {
     public class TextureProvider
     {

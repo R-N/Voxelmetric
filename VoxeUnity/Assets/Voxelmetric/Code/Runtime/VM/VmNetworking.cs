@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Net;
-using Voxelmetric.Code.Core;
 
-namespace Voxelmetric.Code.VM
+namespace Voxelmetric
 {
     [Serializable]
     public class VmNetworking

@@ -1,45 +1,45 @@
 ﻿using UnityEngine.Scripting;
-using Voxelmetric.Code.Core;
-using Voxelmetric.Code.Load_Resources.Blocks;
-using Vector3Int = Voxelmetric.Code.Data_types.Vector3Int;
 
-public class CustomMeshBlock : Block
+namespace Voxelmetric
 {
-    [Preserve]
-    public CustomMeshBlock() : base() { }
-
-    public CustomMeshBlockConfig MeshConfig
+    public class CustomMeshBlock : Block
     {
-        get { return (CustomMeshBlockConfig)config; }
-    }
+        [Preserve]
+        public CustomMeshBlock() : base() { }
 
-    public override void OnInit(BlockProvider blockProvider)
-    {
-        base.OnInit(blockProvider);
+        public CustomMeshBlockConfig MeshConfig
+        {
+            get { return (CustomMeshBlockConfig)config; }
+        }
 
-        custom = true;
-    }
+        public override void OnInit(BlockProvider blockProvider)
+        {
+            base.OnInit(blockProvider);
 
-    //TODO: Build CustomMeshBlock
-    public override void BuildBlock(Chunk chunk, ref Vector3Int localPos, int materialID)
-    {
-        //CustomMeshBlockConfig.CustomMeshBlockData data = MeshConfig.Data;
-        ////Rect texture = data.textures != null ? data.textures.GetTexture(chunk, ref localPos, Direction.down) : new Rect();
-        //Vector2 texture = data.textures != null ? data.textures.GetTexture() : Vector2.zero;
+            custom = true;
+        }
 
-        //RenderGeometryBatcher batcher = chunk.RenderGeometryHandler.Batcher;
+        //TODO: Build CustomMeshBlock
+        public override void BuildBlock(Chunk chunk, ref Vector3Int localPos, int materialID)
+        {
+            //CustomMeshBlockConfig.CustomMeshBlockData data = MeshConfig.Data;
+            ////Rect texture = data.textures != null ? data.textures.GetTexture(chunk, ref localPos, Direction.down) : new Rect();
+            //Vector2 texture = data.textures != null ? data.textures.GetTexture() : Vector2.zero;
 
-        //if (data.uvs == null)
-        //{
-        //    batcher.AddMeshData(materialID, data.tris, data.verts, data.colors, localPos);
-        //}
-        //else if (data.colors == null)
-        //{
-        //    batcher.AddMeshData(materialID, data.tris, data.verts, data.uvs, localPos);
-        //}
-        //else
-        //{
-        //    batcher.AddMeshData(materialID, data.tris, data.verts, data.colors, data.uvs, ref texture, localPos);
-        //}
+            //RenderGeometryBatcher batcher = chunk.RenderGeometryHandler.Batcher;
+
+            //if (data.uvs == null)
+            //{
+            //    batcher.AddMeshData(materialID, data.tris, data.verts, data.colors, localPos);
+            //}
+            //else if (data.colors == null)
+            //{
+            //    batcher.AddMeshData(materialID, data.tris, data.verts, data.uvs, localPos);
+            //}
+            //else
+            //{
+            //    batcher.AddMeshData(materialID, data.tris, data.verts, data.colors, data.uvs, ref texture, localPos);
+            //}
+        }
     }
 }

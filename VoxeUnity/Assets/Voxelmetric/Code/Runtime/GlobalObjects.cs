@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using Voxelmetric.Code.Common.Threading.Managers;
 
-namespace Voxelmetric.Code
+namespace Voxelmetric
 {
     public class GlobalObjects : MonoBehaviour
     {

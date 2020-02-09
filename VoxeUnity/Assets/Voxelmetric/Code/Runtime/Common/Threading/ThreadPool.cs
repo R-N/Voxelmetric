@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Text;
 using UnityEngine;
-using Voxelmetric.Code.Common.Extensions;
-using Voxelmetric.Code.Common.MemoryPooling;
 
-namespace Voxelmetric.Code.Common.Threading
+namespace Voxelmetric
 {
     public class ThreadPool
     {

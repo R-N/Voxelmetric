@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Voxelmetric.Code.Load_Resources
+namespace Voxelmetric
 {
     [CreateAssetMenu(fileName = "New World Config", menuName = "Voxelmetric/World Config")]
     public class WorldConfig : ScriptableObject

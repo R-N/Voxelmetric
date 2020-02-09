@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using Voxelmetric.Code.Core;
 
-namespace Voxelmetric.Code.Geometry.GeometryHandler
+namespace Voxelmetric
 {
     public class ChunkColliderGeometryHandler : AColliderGeometryHandler
     {

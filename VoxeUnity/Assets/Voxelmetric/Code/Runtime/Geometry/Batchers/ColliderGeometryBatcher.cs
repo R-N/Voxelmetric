@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Voxelmetric.Code.Common.MemoryPooling;
-using Voxelmetric.Code.Geometry.Buffers;
 
-namespace Voxelmetric.Code.Geometry.Batchers
+namespace Voxelmetric
 {
     public class ColliderGeometryBatcher : IGeometryBatcher
     {

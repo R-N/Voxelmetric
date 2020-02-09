@@ -1,8 +1,6 @@
 ﻿using System;
-using Voxelmetric.Code.Common;
-using Voxelmetric.Code.Data_types;
 
-namespace Voxelmetric.Code.Core.Operations
+namespace Voxelmetric
 {
     public sealed class ModifyOpBlock : ModifyOp
     {

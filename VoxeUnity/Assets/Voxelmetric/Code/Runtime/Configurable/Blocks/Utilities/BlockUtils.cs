@@ -1,10 +1,6 @@
 using UnityEngine;
-using Voxelmetric.Code.Common;
-using Voxelmetric.Code.Core;
-using Voxelmetric.Code.Data_types;
-using Voxelmetric.Code.Load_Resources.Textures;
 
-namespace Voxelmetric.Code.Configurable.Blocks.Utilities
+namespace Voxelmetric
 {
     public static class BlockUtils
     {

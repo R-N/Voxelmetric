@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Voxelmetric.Code.Load_Resources.Textures
+namespace Voxelmetric
 {
     public static class ConnectedTextures
     {

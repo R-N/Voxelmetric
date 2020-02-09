@@ -1,11 +1,7 @@
 ﻿using System.Text;
 using UnityEngine;
-using Voxelmetric.Code.Common.Extensions;
-using Voxelmetric.Code.Common.Memory;
-using Voxelmetric.Code.Configurable.Blocks;
-using Voxelmetric.Code.Utilities.Noise;
 
-namespace Voxelmetric.Code.Common.MemoryPooling
+namespace Voxelmetric
 {
     /// <summary>
     ///     Local object pools for often used heap objects.

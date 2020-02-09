@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Voxelmetric.Code.Common.Collections
+namespace Voxelmetric
 {
     /// <summary>
     ///     Represents a circular 1D array

@@ -2,7 +2,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace Voxelmetric.Code.Common.IO
+namespace Voxelmetric
 {
     public static class FileHelpers
     {

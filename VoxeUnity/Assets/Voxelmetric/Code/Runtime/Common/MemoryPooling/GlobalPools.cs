@@ -1,11 +1,7 @@
 ﻿using System.Text;
 using UnityEngine;
-using Voxelmetric.Code.Common.Extensions;
-using Voxelmetric.Code.Common.Memory;
-using Voxelmetric.Code.Common.Threading;
-using Chunk = Voxelmetric.Code.Core.Chunk;
 
-namespace Voxelmetric.Code.Common.MemoryPooling
+namespace Voxelmetric
 {
     /// <summary>
     ///     Global object pools for often used heap objects.

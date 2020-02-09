@@ -1,10 +1,6 @@
 ﻿using System.Diagnostics;
-using Voxelmetric.Code.Builders;
-using Voxelmetric.Code.Common.MemoryPooling;
-using Voxelmetric.Code.Common.Threading;
-using Voxelmetric.Code.Utilities;
 
-namespace Voxelmetric.Code
+namespace Voxelmetric
 {
     public static class Globals
     {

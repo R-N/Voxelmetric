@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Voxelmetric.Code.Common.Memory
+namespace Voxelmetric
 {
     public class ArrayPoolCollection<T>
     {

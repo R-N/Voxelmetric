@@ -1,8 +1,7 @@
 ﻿using System;
 using UnityEngine.Assertions;
-using Voxelmetric.Code.Data_types;
 
-namespace Voxelmetric.Code.Core.Operations
+namespace Voxelmetric
 {
     public class ModifyBlockContext
     {

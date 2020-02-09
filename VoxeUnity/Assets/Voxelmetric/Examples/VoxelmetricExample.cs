@@ -2,14 +2,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Voxelmetric.Code;
-using Voxelmetric.Code.Core;
-using Voxelmetric.Code.Core.Operations;
-using Voxelmetric.Code.Core.Serialization;
-using Voxelmetric.Code.Data_types;
-using Voxelmetric.Code.Load_Resources.Blocks;
-using Voxelmetric.Code.Utilities;
-using Vector3Int = Voxelmetric.Code.Data_types.Vector3Int;
 
 namespace Voxelmetric.Examples
 {
@@ -63,6 +55,7 @@ namespace Voxelmetric.Examples
 
 
 
+
             // Movement
             float speedModificator = 1f;
             if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
@@ -84,20 +77,12 @@ namespace Voxelmetric.Examples
             {
                 Block block = world.blockProvider.GetBlock(blockToPlace);
 
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    Vector3Int from = cam.transform.position - new Vector3(-2, -2, -2);
-                    Vector3Int to = cam.transform.position - new Vector3(2, 2, 2);
-
-                    Code.Voxelmetric.SetBlockData(world, ref from, ref to, new BlockData(block.type, block.solid));
-                }
-
                 VmRaycastHit hit = VmRaycast.Raycast(new Ray(cam.transform.position, mousePos - cam.transform.position), world, 100, block.type == BlockProvider.AIR_TYPE);
 
                 // Display the type of the selected block
                 if (selectedBlockText != null)
                 {
-                    selectedBlockText.text = Code.Voxelmetric.GetBlock(world, ref hit.vector3Int).DisplayName;
+                    selectedBlockText.text = Voxelmetric.GetBlock(world, ref hit.vector3Int).DisplayName;
                 }
 
                 // Save current world status
@@ -122,7 +107,7 @@ namespace Voxelmetric.Examples
                         {
                             bool adjacent = block.type != BlockProvider.AIR_TYPE;
                             Vector3Int blockPos = adjacent ? hit.adjacentPos : hit.vector3Int;
-                            Code.Voxelmetric.SetBlockData(world, ref blockPos, new BlockData(block.type, block.solid));
+                            Voxelmetric.SetBlockData(world, ref blockPos, new BlockData(block.type, block.solid));
                         }
                     }
 
@@ -168,7 +153,7 @@ namespace Voxelmetric.Examples
 
                     Vector3Int fromPos = new Vector3Int(-44, -44, -44);
                     Vector3Int toPos = new Vector3Int(44, 44, 44);
-                    Code.Voxelmetric.SetBlockData(world, ref fromPos, ref toPos, BlockProvider.airBlock, action);
+                    Voxelmetric.SetBlockData(world, fromPos, toPos, BlockProvider.airBlock, action);
                 }
             }
         }
@@ -180,9 +165,7 @@ namespace Voxelmetric.Examples
                 return;
             }
 
-            saveProgress = new SaveProgress(
-                Code.Voxelmetric.SaveAll(world)
-                );
+            saveProgress = new SaveProgress(Voxelmetric.SaveAll(world));
         }
 
         public string SaveStatus()

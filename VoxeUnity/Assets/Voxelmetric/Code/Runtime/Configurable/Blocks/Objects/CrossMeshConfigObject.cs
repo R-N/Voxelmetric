@@ -1,30 +1,32 @@
 ﻿using UnityEngine;
-using Voxelmetric.Code.Data_types;
 
-[CreateAssetMenu(fileName = "New Cross Mesh", menuName = "Voxelmetric/Blocks/Cross Mesh")]
-public class CrossMeshConfigObject : BlockConfigObject
+namespace Voxelmetric
 {
-    [SerializeField]
-    private ColoredTexture texture = new ColoredTexture(new Color32(255, 255, 255, 255));
-
-    public ColoredTexture Texture { get { return texture; } set { texture = value; } }
-
-    public override object GetBlockClass()
+    [CreateAssetMenu(fileName = "New Cross Mesh", menuName = "Voxelmetric/Blocks/Cross Mesh")]
+    public class CrossMeshConfigObject : BlockConfigObject
     {
-        return typeof(CrossMeshBlock);
-    }
+        [SerializeField]
+        private ColoredTexture texture = new ColoredTexture(new Color32(255, 255, 255, 255));
 
-    public override BlockConfig GetConfig()
-    {
-        return new CrossMeshBlockConfig()
+        public ColoredTexture Texture { get { return texture; } set { texture = value; } }
+
+        public override object GetBlockClass()
         {
-            RaycastHit = true,
-            RaycastHitOnRemoval = true
-        };
-    }
+            return typeof(CrossMeshBlock);
+        }
 
-    public override Texture2D[] GetTextures()
-    {
-        return new Texture2D[1] { texture.texture };
+        public override BlockConfig GetConfig()
+        {
+            return new CrossMeshBlockConfig()
+            {
+                RaycastHit = true,
+                RaycastHitOnRemoval = true
+            };
+        }
+
+        public override Texture2D[] GetTextures()
+        {
+            return new Texture2D[1] { texture.texture };
+        }
     }
 }

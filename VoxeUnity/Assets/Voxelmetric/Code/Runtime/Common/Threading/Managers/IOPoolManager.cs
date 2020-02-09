@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Voxelmetric.Code.Utilities;
 
-namespace Voxelmetric.Code.Common.Threading.Managers
+namespace Voxelmetric
 {
     public static class IOPoolManager
     {

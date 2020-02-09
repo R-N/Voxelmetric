@@ -1,4 +1,4 @@
-﻿namespace Voxelmetric.Code.Utilities.Noise
+﻿namespace Voxelmetric
 {
     public class NoiseItem
     {

@@ -1,6 +1,4 @@
-﻿using Voxelmetric.Code.Core;
-
-namespace Voxelmetric.Code.Common.Extensions
+﻿namespace Voxelmetric
 {
     public static class ChunkPoolItemStateExtension
     {

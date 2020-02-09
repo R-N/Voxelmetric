@@ -1,10 +1,6 @@
 ﻿using System;
-using Voxelmetric.Code.Common;
-using Voxelmetric.Code.Core.Operations;
-using Voxelmetric.Code.Data_types;
-using Voxelmetric.Code.Load_Resources.Blocks;
 
-namespace Voxelmetric.Code.Core
+namespace Voxelmetric
 {
     public partial class World
     {

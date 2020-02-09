@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Voxelmetric.Code.Data_types
+namespace Voxelmetric
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct BlockData : IEquatable<BlockData>

@@ -1,4 +1,4 @@
-﻿namespace Voxelmetric.Code.Geometry.GeometryHandler
+﻿namespace Voxelmetric
 {
     public interface IGeometryHandler
     {

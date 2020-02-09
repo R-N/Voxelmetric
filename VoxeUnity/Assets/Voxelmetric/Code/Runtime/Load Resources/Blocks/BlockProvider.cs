@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Voxelmetric.Code.Core;
-using Voxelmetric.Code.Data_types;
 
-namespace Voxelmetric.Code.Load_Resources.Blocks
+namespace Voxelmetric
 {
     public class BlockProvider
     {

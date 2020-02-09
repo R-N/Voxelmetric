@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Voxelmetric.Code.Data_types
+namespace Voxelmetric
 {
     public struct AABBInt : IEquatable<AABBInt>
     {

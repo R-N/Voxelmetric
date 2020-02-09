@@ -1,8 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading;
-using Voxelmetric.Code.Data_types;
 
-namespace Voxelmetric.Code.Common
+namespace Voxelmetric
 {
     public static class Helpers
     {

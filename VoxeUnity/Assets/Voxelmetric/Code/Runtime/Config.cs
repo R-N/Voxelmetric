@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using Voxelmetric.Code.Data_types;
 
-namespace Voxelmetric.Code
+namespace Voxelmetric
 {
     public static class Env
     {

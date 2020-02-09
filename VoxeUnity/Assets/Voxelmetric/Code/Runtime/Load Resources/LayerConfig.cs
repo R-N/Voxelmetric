@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Voxelmetric.Code.Load_Resources
+namespace Voxelmetric
 {
     public struct LayerConfig
     {

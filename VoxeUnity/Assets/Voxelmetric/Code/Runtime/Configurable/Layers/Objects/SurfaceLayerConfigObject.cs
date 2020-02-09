@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Surface Layer", menuName = "Voxelmetric/Layers/Surface Layer")]
-public class SurfaceLayerConfigObject : LayerConfigObject
+namespace Voxelmetric
 {
-    public override TerrainLayer GetLayer()
+    [CreateAssetMenu(fileName = "New Surface Layer", menuName = "Voxelmetric/Layers/Surface Layer")]
+    public class SurfaceLayerConfigObject : LayerConfigObject
     {
-        return new SurfaceLayer();
+        public override TerrainLayer GetLayer()
+        {
+            return new SurfaceLayer();
+        }
     }
 }

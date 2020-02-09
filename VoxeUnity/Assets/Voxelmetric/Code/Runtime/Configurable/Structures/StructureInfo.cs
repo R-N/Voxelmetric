@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Voxelmetric.Code.Data_types;
 
-namespace Voxelmetric.Code.Configurable.Structures
+namespace Voxelmetric
 {
     public class StructureInfo : IEquatable<StructureInfo>, IEqualityComparer<StructureInfo>
     {

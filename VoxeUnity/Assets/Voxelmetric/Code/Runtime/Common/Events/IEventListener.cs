@@ -1,4 +1,4 @@
-﻿namespace Voxelmetric.Code.Common.Events
+﻿namespace Voxelmetric
 {
     public interface IEventListener<TEvent>
     {

@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using UnityEngine.Assertions;
 
-namespace Voxelmetric.Code.Common.Memory
+namespace Voxelmetric
 {
     public class MarshalMemPool
     {

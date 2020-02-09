@@ -1,4 +1,4 @@
-﻿namespace Voxelmetric.Code.Data_types
+﻿namespace Voxelmetric
 {
     /// <summary>
     /// Enum helping us to determine a direction

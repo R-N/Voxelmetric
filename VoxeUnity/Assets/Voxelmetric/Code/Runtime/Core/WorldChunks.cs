@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine.Assertions;
-using Voxelmetric.Code.Common;
-using Voxelmetric.Code.Data_types;
 
-namespace Voxelmetric.Code.Core
+namespace Voxelmetric
 {
     /// <summary>
     /// Chunk storage. All chunks in the world are stored here

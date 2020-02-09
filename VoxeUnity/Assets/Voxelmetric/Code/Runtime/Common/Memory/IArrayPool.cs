@@ -1,4 +1,4 @@
-﻿namespace Voxelmetric.Code.Common.Memory
+﻿namespace Voxelmetric
 {
     public interface IArrayPool<T>
     {

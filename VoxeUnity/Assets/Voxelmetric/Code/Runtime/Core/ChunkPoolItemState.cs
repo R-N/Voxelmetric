@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Voxelmetric.Code.Core
+namespace Voxelmetric
 {
     [Flags]
     public enum ChunkPoolItemState : ushort

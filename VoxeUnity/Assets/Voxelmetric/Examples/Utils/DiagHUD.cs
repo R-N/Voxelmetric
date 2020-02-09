@@ -2,13 +2,8 @@
 using System.Collections;
 using System.Text;
 using UnityEngine;
-using Voxelmetric.Code;
-using Voxelmetric.Code.Common.Extensions;
-using Voxelmetric.Code.Common.MemoryPooling;
-using Voxelmetric.Code.Common.Threading.Managers;
-using Voxelmetric.Code.Core;
 
-namespace Client.Scripts.Misc
+namespace Voxelmetric.Diag
 {
     [ExecuteInEditMode]
     public class DiagHUD : MonoBehaviour

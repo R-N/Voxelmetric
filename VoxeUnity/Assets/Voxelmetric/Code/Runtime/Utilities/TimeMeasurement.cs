@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 
-namespace Voxelmetric.Code.Utilities
+namespace Voxelmetric
 {
     public static class Clock
     {

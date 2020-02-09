@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Voxelmetric.Code.Data_types;
-using Vector3Int = Voxelmetric.Code.Data_types.Vector3Int;
 
-namespace Voxelmetric.Code.Core
+namespace Voxelmetric
 {
     public sealed class ChunkLogic
     {

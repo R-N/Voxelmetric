@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Voxelmetric.Code.Utilities.Noise
+namespace Voxelmetric
 {
     public static class NoiseUtils
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Voxelmetric.Code.Data_types
+namespace Voxelmetric
 {
     /*
      * A compressed representation of AABB with integer coordinates.

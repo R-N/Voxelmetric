@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Voxelmetric.Code.Common.Threading
+namespace Voxelmetric
 {
     public interface ITaskPoolItem
     {

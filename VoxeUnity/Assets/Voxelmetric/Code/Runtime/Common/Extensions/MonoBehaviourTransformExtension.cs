@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Voxelmetric.Code.Common.Extensions
+namespace Voxelmetric
 {
     public static class MethodExtensionForMonoBehaviourTransform
     {

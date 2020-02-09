@@ -1,50 +1,51 @@
-﻿using Voxelmetric.Code.Core;
-
-public class CavesLayer : TerrainLayer
+﻿namespace Voxelmetric.Examples
 {
-    protected override void SetUp(LayerConfigObject config)
+    public class CavesLayer : TerrainLayer
     {
-    }
-
-    public override float GetHeight(Chunk chunk, int layerIndex, int x, int z, float heightSoFar, float strength)
-    {
-        // Turned off for now because the generated cave resembles a code bug more than a cave :)
-        /*int caveBottom = (int)NoiseUtils.GetNoise(noise.Noise, x+chunk.pos.x, -1000f, z+chunk.pos.z, 500f, 70, 1f)+
-                           world.config.minY;
-        int caveHeight = (int)NoiseUtils.GetNoise(noise.Noise, x+chunk.pos.x, 1000f, z+chunk.pos.z, 50f, 30, 1f)+caveBottom;
-
-        caveHeight -= 10;
-
-        if (caveHeight>caveBottom)
+        protected override void SetUp(LayerConfigObject config)
         {
-            caveBottom -= (caveHeight>>1);
-            int caveTop = (caveHeight>>1);
-            if (caveTop>heightSoFar && caveBottom<heightSoFar)
-                return caveBottom;
-        }*/
+        }
 
-        return heightSoFar;
-    }
-
-    public override float GenerateLayer(Chunk chunk, int layerIndex, int x, int z, float heightSoFar, float strength)
-    {
-        // Turned off for now because the generated cave resembles a code bug more than a cave :)
-        /*int caveBottom = (int)NoiseUtils.GetNoise(noise.Noise, x+chunk.pos.x, -1000f, z+chunk.pos.z, 500f, 70, 1f)+
-                           world.config.minY;
-        int caveHeight = (int)NoiseUtils.GetNoise(noise.Noise, x+chunk.pos.x, 1000f, z+chunk.pos.z, 50f, 30, 1f)+caveBottom;
-
-        caveHeight -= 10;
-
-        if (caveHeight>caveBottom)
+        public override float GetHeight(Chunk chunk, int layerIndex, int x, int z, float heightSoFar, float strength)
         {
-            caveBottom -= (caveHeight>>1);
-            int caveTop = (caveHeight>>1);
-            SetBlocks(chunk, x, z, caveBottom, caveTop, BlockProvider.AirBlock);
+            // Turned off for now because the generated cave resembles a code bug more than a cave :)
+            /*int caveBottom = (int)NoiseUtils.GetNoise(noise.Noise, x+chunk.pos.x, -1000f, z+chunk.pos.z, 500f, 70, 1f)+
+                               world.config.minY;
+            int caveHeight = (int)NoiseUtils.GetNoise(noise.Noise, x+chunk.pos.x, 1000f, z+chunk.pos.z, 50f, 30, 1f)+caveBottom;
 
-            if (caveTop>heightSoFar && caveBottom<heightSoFar)
-                return caveBottom;
-        }*/
+            caveHeight -= 10;
 
-        return heightSoFar;
+            if (caveHeight>caveBottom)
+            {
+                caveBottom -= (caveHeight>>1);
+                int caveTop = (caveHeight>>1);
+                if (caveTop>heightSoFar && caveBottom<heightSoFar)
+                    return caveBottom;
+            }*/
+
+            return heightSoFar;
+        }
+
+        public override float GenerateLayer(Chunk chunk, int layerIndex, int x, int z, float heightSoFar, float strength)
+        {
+            // Turned off for now because the generated cave resembles a code bug more than a cave :)
+            /*int caveBottom = (int)NoiseUtils.GetNoise(noise.Noise, x+chunk.pos.x, -1000f, z+chunk.pos.z, 500f, 70, 1f)+
+                               world.config.minY;
+            int caveHeight = (int)NoiseUtils.GetNoise(noise.Noise, x+chunk.pos.x, 1000f, z+chunk.pos.z, 50f, 30, 1f)+caveBottom;
+
+            caveHeight -= 10;
+
+            if (caveHeight>caveBottom)
+            {
+                caveBottom -= (caveHeight>>1);
+                int caveTop = (caveHeight>>1);
+                SetBlocks(chunk, x, z, caveBottom, caveTop, BlockProvider.AirBlock);
+
+                if (caveTop>heightSoFar && caveBottom<heightSoFar)
+                    return caveBottom;
+            }*/
+
+            return heightSoFar;
+        }
     }
 }

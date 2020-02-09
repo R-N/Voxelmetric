@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using Voxelmetric.Code.Data_types;
 
-namespace Voxelmetric.Code.Common.Math
+namespace Voxelmetric
 {
     public static class Planes
     {

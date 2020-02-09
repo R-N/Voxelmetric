@@ -4,10 +4,8 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Voxelmetric.Code.Common.Extensions;
-using Voxelmetric.Code.Common.MemoryPooling;
 
-namespace Voxelmetric.Code.Common.Threading
+namespace Voxelmetric
 {
     public sealed class TaskPool : IDisposable
     {

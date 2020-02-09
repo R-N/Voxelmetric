@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Voxelmetric.Code.Common.Memory;
 
-namespace Voxelmetric.Code.Common.IO
+namespace Voxelmetric
 {
     public static class StructSerialization
     {

@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace Voxelmetric.Code.Common.Memory
+namespace Voxelmetric
 {
     public static class Utils
     {

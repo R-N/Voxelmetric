@@ -1,8 +1,6 @@
 ﻿using System.IO;
-using Voxelmetric.Code.Common.IO;
-using Voxelmetric.Code.Data_types;
 
-namespace Voxelmetric.Code.Core.Serialization
+namespace Voxelmetric
 {
     public static class Serialization
     {

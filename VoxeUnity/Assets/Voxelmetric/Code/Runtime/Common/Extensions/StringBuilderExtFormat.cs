@@ -13,7 +13,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 
-namespace Voxelmetric.Code.Common.Extensions
+namespace Voxelmetric
 {
     public static partial class StringBuilderExtensions
     {

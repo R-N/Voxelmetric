@@ -1,6 +1,4 @@
-﻿using Voxelmetric.Code.Data_types;
-
-namespace Voxelmetric.Code.Core.Operations
+﻿namespace Voxelmetric
 {
     /// <summary>
     /// Base class for range-based setBlock operations. Overload OnSetBlocks to create your own modify operation.

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Voxelmetric.Code.Data_types
+namespace Voxelmetric
 {
     [Serializable]
     public struct Vector3Int : IEquatable<Vector3Int>

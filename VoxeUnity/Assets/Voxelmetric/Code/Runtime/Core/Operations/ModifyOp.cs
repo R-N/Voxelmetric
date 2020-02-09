@@ -1,6 +1,4 @@
-﻿using Voxelmetric.Code.Data_types;
-
-namespace Voxelmetric.Code.Core.Operations
+﻿namespace Voxelmetric
 {
     public abstract class ModifyOp
     {

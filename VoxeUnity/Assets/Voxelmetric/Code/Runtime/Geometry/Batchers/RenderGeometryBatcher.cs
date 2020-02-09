@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Voxelmetric.Code.Common.MemoryPooling;
-using Voxelmetric.Code.Geometry.Buffers;
 
-namespace Voxelmetric.Code.Geometry.Batchers
+namespace Voxelmetric
 {
     public class RenderGeometryBatcher : IGeometryBatcher
     {
@@ -159,7 +156,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
             int leftToProcess = verts.Length;
             while (leftToProcess > 0)
             {
-                int left = Math.Min(leftToProcess, 65000);
+                int left = System.Math.Min(leftToProcess, 65000);
 
                 int leftInBuffer = 65000 - buffer.vertices.Count;
                 if (leftInBuffer <= 0)
@@ -177,7 +174,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                 }
                 else
                 {
-                    left = Math.Min(left, leftInBuffer);
+                    left = System.Math.Min(left, leftInBuffer);
                 }
 
                 int max = startOffset + left;
@@ -231,7 +228,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
             int leftToProcess = verts.Length;
             while (leftToProcess > 0)
             {
-                int left = Math.Min(leftToProcess, 65000);
+                int left = System.Math.Min(leftToProcess, 65000);
 
                 int leftInBuffer = 65000 - buffer.vertices.Count;
                 if (leftInBuffer <= 0)
@@ -249,7 +246,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                 }
                 else
                 {
-                    left = Math.Min(left, leftInBuffer);
+                    left = System.Math.Min(left, leftInBuffer);
                 }
 
                 int max = startOffset + left;
@@ -305,7 +302,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
             int leftToProcess = verts.Length;
             while (leftToProcess > 0)
             {
-                int left = Math.Min(leftToProcess, 65000);
+                int left = System.Math.Min(leftToProcess, 65000);
 
                 int leftInBuffer = 65000 - buffer.vertices.Count;
                 if (leftInBuffer <= 0)
@@ -325,7 +322,7 @@ namespace Voxelmetric.Code.Geometry.Batchers
                 }
                 else
                 {
-                    left = Math.Min(left, leftInBuffer);
+                    left = System.Math.Min(left, leftInBuffer);
                 }
 
                 int max = startOffset + left;

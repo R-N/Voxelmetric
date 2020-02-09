@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Voxelmetric.Code.VM
+namespace Voxelmetric
 {
     /// <summary>
     /// Handles recovery of information streamed over TCP back into messages of known size

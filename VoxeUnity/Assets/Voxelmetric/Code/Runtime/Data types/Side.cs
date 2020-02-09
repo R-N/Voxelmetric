@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Voxelmetric.Code.Data_types
+namespace Voxelmetric
 {
     [Flags]
     public enum Side : byte

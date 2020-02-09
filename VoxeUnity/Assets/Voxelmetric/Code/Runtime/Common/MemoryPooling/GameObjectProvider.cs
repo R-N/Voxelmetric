@@ -3,10 +3,8 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
-using Voxelmetric.Code.Common.Extensions;
-using Voxelmetric.Code.Common.Memory;
 
-namespace Voxelmetric.Code.Common.MemoryPooling
+namespace Voxelmetric
 {
     [AddComponentMenu("VoxelMetric/Singleton/GameObjectProvider")]
     public sealed class GameObjectProvider : MonoSingleton<GameObjectProvider>

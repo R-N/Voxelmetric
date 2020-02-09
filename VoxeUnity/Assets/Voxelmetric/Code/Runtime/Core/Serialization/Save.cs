@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Voxelmetric.Code.Common;
-using Voxelmetric.Code.Common.IO;
-using Voxelmetric.Code.Data_types;
 
-namespace Voxelmetric.Code.Core.Serialization
+namespace Voxelmetric
 {
     public class Save : IBinarizable
     {
@@ -199,7 +196,7 @@ namespace Voxelmetric.Code.Core.Serialization
         {
             if (Features.useDifferentialSerialization)
             {
-                Load_Resources.Blocks.BlockProvider provider = Chunk.World.blockProvider;
+                BlockProvider provider = Chunk.World.blockProvider;
                 int blockPosSize = StructSerialization.TSSize<BlockPos>.ValueSize;
                 int blockDataSize = StructSerialization.TSSize<BlockData>.ValueSize;
 
@@ -235,8 +232,8 @@ namespace Voxelmetric.Code.Core.Serialization
             }
             else
             {
-                Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(Chunk.ThreadID);
-                Load_Resources.Blocks.BlockProvider provider = Chunk.World.blockProvider;
+                LocalPools pools = Globals.WorkPool.GetPool(Chunk.ThreadID);
+                BlockProvider provider = Chunk.World.blockProvider;
 
                 int blockDataSize = StructSerialization.TSSize<BlockData>.ValueSize;
                 int requestedByteSize = Env.CHUNK_SIZE_POW_3 * blockDataSize;
@@ -298,8 +295,8 @@ namespace Voxelmetric.Code.Core.Serialization
 
         public bool DoDecompression()
         {
-            Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(Chunk.ThreadID);
-            Load_Resources.Blocks.BlockProvider provider = Chunk.World.blockProvider;
+            LocalPools pools = Globals.WorkPool.GetPool(Chunk.ThreadID);
+            BlockProvider provider = Chunk.World.blockProvider;
 
             if (IsDifferential)
             {

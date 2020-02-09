@@ -3,16 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine.Assertions;
 using UnityEngine.Profiling;
-using Voxelmetric.Code.Common;
-using Voxelmetric.Code.Common.Extensions;
-using Voxelmetric.Code.Common.Threading;
-using Voxelmetric.Code.Common.Threading.Managers;
-using Voxelmetric.Code.Core.Operations;
-using Voxelmetric.Code.Core.Serialization;
-using Voxelmetric.Code.Data_types;
-using Voxelmetric.Code.Geometry.GeometryHandler;
 
-namespace Voxelmetric.Code.Core
+namespace Voxelmetric
 {
     public partial class Chunk : ChunkEventSource
     {
@@ -990,7 +982,7 @@ namespace Voxelmetric.Code.Core
                     rebuildMaskCollider = 0;
                 }
 
-                Utilities.TimeBudgetHandler timeBudget = Globals.SetBlockBudget;
+                TimeBudgetHandler timeBudget = Globals.SetBlockBudget;
 
                 // Modify blocks
                 int j;
@@ -1148,7 +1140,7 @@ namespace Voxelmetric.Code.Core
 
         private void ReturnPoolItems()
         {
-            Common.MemoryPooling.GlobalPools pools = Globals.MemPools;
+            GlobalPools pools = Globals.MemPools;
 
             // Global.MemPools is not thread safe and were returning values to it from a different thread.
             // Therefore, each client remembers which pool it used and once the task is finished it returns
@@ -1184,7 +1176,7 @@ namespace Voxelmetric.Code.Core
 
         private static void OnLoadData(Chunk chunk)
         {
-            bool success = Serialization.Serialization.Read(chunk.save);
+            bool success = Serialization.Read(chunk.save);
             OnLoadDataDone(chunk, success);
         }
 
@@ -1426,7 +1418,7 @@ namespace Voxelmetric.Code.Core
 
         private static void OnSaveData(Chunk chunk)
         {
-            bool success = Serialization.Serialization.Write(chunk.save);
+            bool success = Serialization.Write(chunk.save);
             OnSaveDataDone(chunk, success);
         }
 

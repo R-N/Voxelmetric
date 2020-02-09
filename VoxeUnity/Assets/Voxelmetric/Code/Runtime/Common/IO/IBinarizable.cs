@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Voxelmetric.Code.Common.IO
+namespace Voxelmetric
 {
     public interface IBinarizable
     {

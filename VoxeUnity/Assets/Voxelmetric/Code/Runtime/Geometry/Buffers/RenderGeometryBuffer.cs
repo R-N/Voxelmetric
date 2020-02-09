@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace Voxelmetric.Code.Geometry.Buffers
+namespace Voxelmetric
 {
     public class RenderGeometryBuffer
     {

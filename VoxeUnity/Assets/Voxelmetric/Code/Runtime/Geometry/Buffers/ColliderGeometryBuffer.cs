@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Voxelmetric.Code.Geometry.Buffers
+namespace Voxelmetric
 {
     /// <summary>
     ///     A simple intermediate container for mesh data

@@ -1,6 +1,5 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using Voxelmetric.Code.Data_types;
 
 namespace Voxelmetric.Editor
 {

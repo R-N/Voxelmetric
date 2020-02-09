@@ -1,11 +1,7 @@
 ﻿using System;
 using UnityEngine;
-using Voxelmetric.Code.Common;
-using Voxelmetric.Code.Configurable.Blocks.Utilities;
-using Voxelmetric.Code.Core;
-using Voxelmetric.Code.Data_types;
 
-namespace Voxelmetric.Code.Builders
+namespace Voxelmetric
 {
     /// <summary>
     /// Generates a cubical collider mesh with merged faces
@@ -38,7 +34,7 @@ namespace Voxelmetric.Code.Builders
             int sizeWithPadding = sideSize + Env.CHUNK_PADDING_2;
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
 
-            Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
+            LocalPools pools = Globals.WorkPool.GetPool(chunk.ThreadID);
             ChunkBlocks blocks = chunk.Blocks;
             Chunk[] listeners = chunk.Neighbors;
 

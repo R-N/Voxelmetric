@@ -1,6 +1,4 @@
-﻿using Voxelmetric.Code.Common;
-
-namespace Voxelmetric.Code.Utilities.Noise
+﻿namespace Voxelmetric
 {
     public class NoiseInterpolator
     {

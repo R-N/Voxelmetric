@@ -1,4 +1,4 @@
-﻿namespace Voxelmetric.Code.Common.Math
+﻿namespace Voxelmetric
 {
     public static class Randomization
     {

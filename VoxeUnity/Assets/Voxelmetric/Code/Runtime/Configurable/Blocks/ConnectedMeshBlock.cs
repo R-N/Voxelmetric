@@ -1,98 +1,97 @@
 ﻿using UnityEngine;
-using Voxelmetric.Code.Configurable.Blocks;
-using Voxelmetric.Code.Core;
-using Voxelmetric.Code.Load_Resources.Blocks;
-using Vector3Int = Voxelmetric.Code.Data_types.Vector3Int;
 
-//TODO: ConnectedMeshBlock
-public class ConnectedMeshBlock : CustomMeshBlock
+namespace Voxelmetric
 {
-    public new ConnectedMeshBlockConfig MeshConfig
+    //TODO: ConnectedMeshBlock
+    public class ConnectedMeshBlock : CustomMeshBlock
     {
-        get { return (ConnectedMeshBlockConfig)config; }
-    }
-
-    public override void OnInit(BlockProvider blockProvider)
-    {
-        base.OnInit(blockProvider);
-
-        if (MeshConfig.connectsToTypes == null)
+        public new ConnectedMeshBlockConfig MeshConfig
         {
-            MeshConfig.connectsToTypes = new int[MeshConfig.connectsToNames.Length];
-            for (int i = 0; i < MeshConfig.connectsToNames.Length; i++)
+            get { return (ConnectedMeshBlockConfig)config; }
+        }
+
+        public override void OnInit(BlockProvider blockProvider)
+        {
+            base.OnInit(blockProvider);
+
+            if (MeshConfig.connectsToTypes == null)
             {
-                MeshConfig.connectsToTypes[i] = blockProvider.GetType(MeshConfig.connectsToNames[i]);
+                MeshConfig.connectsToTypes = new int[MeshConfig.connectsToNames.Length];
+                for (int i = 0; i < MeshConfig.connectsToNames.Length; i++)
+                {
+                    MeshConfig.connectsToTypes[i] = blockProvider.GetType(MeshConfig.connectsToNames[i]);
+                }
             }
         }
-    }
 
-    public override void BuildFace(Chunk chunk, Vector3[] vertices, Color32[] palette, ref BlockFace face, bool rotated)
-    {
-        //CustomMeshBlockConfig.CustomMeshBlockData d = MeshConfig.DataDir[(int)face.side];
+        public override void BuildFace(Chunk chunk, Vector3[] vertices, Color32[] palette, ref BlockFace face, bool rotated)
+        {
+            //CustomMeshBlockConfig.CustomMeshBlockData d = MeshConfig.DataDir[(int)face.side];
 
-        //int[] tris = d.tris;
-        //if (tris == null)
-        //{
-        //    return;
-        //}
+            //int[] tris = d.tris;
+            //if (tris == null)
+            //{
+            //    return;
+            //}
 
-        //Vector3[] verts = d.verts;
-        //Vector4[] uvs = d.uvs;
-        //Voxelmetric.Code.Load_Resources.Textures.TextureCollection textures = d.textures;
-        //Color32[] colors = d.colors;
+            //Vector3[] verts = d.verts;
+            //Vector4[] uvs = d.uvs;
+            //Voxelmetric.Code.Load_Resources.Textures.TextureCollection textures = d.textures;
+            //Color32[] colors = d.colors;
 
-        //Rect rect;
-        //ChunkBlocks blocks = chunk.Blocks;
+            //Rect rect;
+            //ChunkBlocks blocks = chunk.Blocks;
 
-        //RenderGeometryBatcher batcher = chunk.RenderGeometryHandler.Batcher;
+            //RenderGeometryBatcher batcher = chunk.RenderGeometryHandler.Batcher;
 
-        //Vector3Int sidePos = face.pos + face.side;
-        //if (MeshConfig.connectsToSolid && blocks.Get(ref sidePos).Solid)
-        //{
-        //    rect = textures.GetTexture(chunk, ref face.pos, face.side);
-        //    batcher.AddMeshData(face.materialID, tris, verts, colors, uvs, ref rect, face.pos);
-        //}
-        //else if (MeshConfig.connectsToTypes.Length != 0)
-        //{
-        //    int neighborType = blocks.Get(ref sidePos).Type;
-        //    for (int i = 0; i < MeshConfig.connectsToTypes.Length; i++)
-        //    {
-        //        if (neighborType == MeshConfig.connectsToTypes[i])
-        //        {
-        //            rect = textures.GetTexture(chunk, ref face.pos, face.side);
-        //            batcher.AddMeshData(face.materialID, tris, verts, colors, uvs, ref rect, face.pos);
-        //            break;
-        //        }
-        //    }
-        //}
+            //Vector3Int sidePos = face.pos + face.side;
+            //if (MeshConfig.connectsToSolid && blocks.Get(ref sidePos).Solid)
+            //{
+            //    rect = textures.GetTexture(chunk, ref face.pos, face.side);
+            //    batcher.AddMeshData(face.materialID, tris, verts, colors, uvs, ref rect, face.pos);
+            //}
+            //else if (MeshConfig.connectsToTypes.Length != 0)
+            //{
+            //    int neighborType = blocks.Get(ref sidePos).Type;
+            //    for (int i = 0; i < MeshConfig.connectsToTypes.Length; i++)
+            //    {
+            //        if (neighborType == MeshConfig.connectsToTypes[i])
+            //        {
+            //            rect = textures.GetTexture(chunk, ref face.pos, face.side);
+            //            batcher.AddMeshData(face.materialID, tris, verts, colors, uvs, ref rect, face.pos);
+            //            break;
+            //        }
+            //    }
+            //}
 
-        //CustomMeshBlockConfig.CustomMeshBlockData d2 = MeshConfig.Data;
-        //rect = d2.textures.GetTexture(chunk, ref face.pos, Direction.down);
-        //batcher.AddMeshData(face.materialID, d2.tris, d2.verts, d2.colors, d2.uvs, ref rect, face.pos);
-    }
+            //CustomMeshBlockConfig.CustomMeshBlockData d2 = MeshConfig.Data;
+            //rect = d2.textures.GetTexture(chunk, ref face.pos, Direction.down);
+            //batcher.AddMeshData(face.materialID, d2.tris, d2.verts, d2.colors, d2.uvs, ref rect, face.pos);
+        }
 
-    public override void BuildBlock(Chunk chunk, ref Vector3Int localPos, int materialID)
-    {
-        //for (int d = 0; d < 6; d++)
-        //{
-        //    Direction dir = DirectionUtils.Get(d);
+        public override void BuildBlock(Chunk chunk, ref Vector3Int localPos, int materialID)
+        {
+            //for (int d = 0; d < 6; d++)
+            //{
+            //    Direction dir = DirectionUtils.Get(d);
 
-        //    BlockFace face = new BlockFace
-        //    {
-        //        block = null,
-        //        pos = localPos,
-        //        side = dir,
-        //        light = new BlockLightData(),
-        //        materialID = materialID
-        //    };
+            //    BlockFace face = new BlockFace
+            //    {
+            //        block = null,
+            //        pos = localPos,
+            //        side = dir,
+            //        light = new BlockLightData(),
+            //        materialID = materialID
+            //    };
 
-        //    BuildFace(chunk, null, null, ref face, false);
-        //}
+            //    BuildFace(chunk, null, null, ref face, false);
+            //}
 
-        //RenderGeometryBatcher batcher = chunk.RenderGeometryHandler.Batcher;
+            //RenderGeometryBatcher batcher = chunk.RenderGeometryHandler.Batcher;
 
-        //CustomMeshBlockConfig.CustomMeshBlockData d2 = MeshConfig.Data;
-        //Rect texture = d2.textures.GetTexture(chunk, ref localPos, Direction.down);
-        //batcher.AddMeshData(materialID, d2.tris, d2.verts, d2.colors, d2.uvs, ref texture, localPos);
+            //CustomMeshBlockConfig.CustomMeshBlockData d2 = MeshConfig.Data;
+            //Rect texture = d2.textures.GetTexture(chunk, ref localPos, Direction.down);
+            //batcher.AddMeshData(materialID, d2.tris, d2.verts, d2.colors, d2.uvs, ref texture, localPos);
+        }
     }
 }

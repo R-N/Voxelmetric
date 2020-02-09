@@ -2,14 +2,8 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Voxelmetric.Code.Common;
-using Voxelmetric.Code.Common.IO;
-using Voxelmetric.Code.Common.Memory;
-using Voxelmetric.Code.Data_types;
-using Voxelmetric.Code.Load_Resources.Blocks;
-using Voxelmetric.Code.VM;
 
-namespace Voxelmetric.Code.Core
+namespace Voxelmetric
 {
     public sealed class ChunkBlocks
     {
@@ -525,7 +519,7 @@ namespace Voxelmetric.Code.Core
             int sizeWithPaddingPow2 = sizeWithPadding * sizeWithPadding;
             int sizeWithPaddingPow3 = sizeWithPaddingPow2 * sizeWithPadding;
 
-            Common.MemoryPooling.LocalPools pools = Globals.WorkPool.GetPool(Chunk.ThreadID);
+            LocalPools pools = Globals.WorkPool.GetPool(Chunk.ThreadID);
             bool[] mask = pools.boolArrayPool.PopExact(sizeWithPaddingPow3);
 
             Array.Clear(mask, 0, mask.Length);

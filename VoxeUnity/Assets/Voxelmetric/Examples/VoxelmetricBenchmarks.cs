@@ -4,16 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Voxelmetric.Code;
-using Voxelmetric.Code.Common;
-using Voxelmetric.Code.Common.IO;
-using Voxelmetric.Code.Common.Memory;
-using Voxelmetric.Code.Core;
-using Voxelmetric.Code.Data_types;
-using Voxelmetric.Code.Utilities;
-using Voxelmetric.Code.Utilities.Noise;
 using Random = System.Random;
-using Vector3Int = Voxelmetric.Code.Data_types.Vector3Int;
 
 namespace Voxelmetric.Examples
 {

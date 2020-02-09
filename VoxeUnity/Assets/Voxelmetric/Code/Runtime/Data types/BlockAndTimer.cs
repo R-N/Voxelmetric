@@ -1,4 +1,4 @@
-﻿namespace Voxelmetric.Code.Data_types
+﻿namespace Voxelmetric
 {
     public struct BlockAndTimer
     {

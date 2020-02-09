@@ -1,8 +1,7 @@
 ﻿using System.IO;
 using UnityEngine;
-using Voxelmetric.Code.Common;
 
-namespace Voxelmetric.Code.Utilities.Import
+namespace Voxelmetric
 {
     public static class MagicaVox
     {

@@ -1,5 +1,5 @@
 ﻿#if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN) && ENABLE_FASTSIMD
-namespace Voxelmetric.Code.Utilities.Noise
+namespace Voxelmetric
 {
     public class NoiseWrapperSIMD
     {

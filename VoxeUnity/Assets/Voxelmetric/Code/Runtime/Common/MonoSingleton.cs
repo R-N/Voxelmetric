@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Voxelmetric.Code.Common
+namespace Voxelmetric
 {
     public class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
     {

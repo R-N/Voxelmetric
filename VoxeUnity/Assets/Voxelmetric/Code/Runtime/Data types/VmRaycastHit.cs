@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using Voxelmetric.Code.Core;
 
-namespace Voxelmetric.Code.Data_types
+namespace Voxelmetric
 {
     public struct VmRaycastHit
     {

@@ -1,4 +1,4 @@
-﻿namespace Voxelmetric.Code.Core.Clipmap
+﻿namespace Voxelmetric
 {
     public struct ClipmapItem
     {
