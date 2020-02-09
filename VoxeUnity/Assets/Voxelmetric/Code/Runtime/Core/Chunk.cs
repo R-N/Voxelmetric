@@ -90,6 +90,7 @@ namespace Voxelmetric
         private bool removalRequested;
         //! If true, edge synchronization is in progress
         private bool isSyncingEdges;
+        private bool saveTemporary;
 
         //! Flags telling us whether pool items should be returned back to the pool
         private ChunkPoolItemState poolState;
@@ -253,6 +254,7 @@ namespace Voxelmetric
             PossiblyVisible = false;
             removalRequested = false;
             isSyncingEdges = false;
+            saveTemporary = false;
 
             needApplyStructure = true;
             maxPendingStructureListIndex = 0;
@@ -877,6 +879,7 @@ namespace Voxelmetric
                 return;
             }
 
+            saveTemporary = true;
             removalRequested = true;
             pendingStates |= ChunkState.Remove;
             if (Features.serializeChunkWhenUnloading)
@@ -892,6 +895,7 @@ namespace Voxelmetric
                 return;
             }
 
+            saveTemporary = false;
             pendingStates |= ChunkState.PrepareSaveData;
         }
 
@@ -953,10 +957,7 @@ namespace Voxelmetric
             }
 
             // Don't update during saving
-            if (
-                (pendingStates & ChunkState.PrepareSaveData) != 0 ||
-                (pendingStates & ChunkState.SaveData) != 0
-                )
+            if ((pendingStates & ChunkState.PrepareSaveData) != 0 || (pendingStates & ChunkState.SaveData) != 0)
             {
                 return;
             }
@@ -1176,7 +1177,7 @@ namespace Voxelmetric
 
         private static void OnLoadData(Chunk chunk)
         {
-            bool success = Serialization.Read(chunk.save);
+            bool success = Serialization.Read(chunk.save, true);
             OnLoadDataDone(chunk, success);
         }
 
@@ -1418,7 +1419,7 @@ namespace Voxelmetric
 
         private static void OnSaveData(Chunk chunk)
         {
-            bool success = Serialization.Write(chunk.save);
+            bool success = Serialization.Write(chunk.save, chunk.saveTemporary);
             OnSaveDataDone(chunk, success);
         }
 

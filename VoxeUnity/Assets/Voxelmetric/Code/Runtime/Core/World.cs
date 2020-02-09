@@ -47,6 +47,11 @@ namespace Voxelmetric
             StartWorld();
         }
 
+        private void OnDestroy()
+        {
+            Serialization.ClearTemporary();
+        }
+
         void OnApplicationQuit()
         {
             StopWorld();
@@ -70,6 +75,10 @@ namespace Voxelmetric
 
             textureProvider.Init(blocks, config);
             blockProvider.Init(blocks, this);
+
+            //TODO: make this configurable.
+            Serialization.Initialize(Application.persistentDataPath + "/Voxelmetric/" + worldName, Application.persistentDataPath + "/Voxelmetric/.temp/");
+            Serialization.CopyFromSaveLocationToTemp();
 
             int xSize = textureProvider.atlas.width / 128;
             int ySize = textureProvider.atlas.height / 128;

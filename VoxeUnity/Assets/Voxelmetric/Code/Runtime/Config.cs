@@ -64,9 +64,4 @@ namespace Voxelmetric
         //! If true, even if there is no difference in data, at least basic info about chunk structure is stored
         public static readonly bool useDifferentialSerialization_ForceSaveHeaders = useDifferentialSerialization && false;
     }
-
-    public static class Directories
-    {
-        public const string SAVE_FOLDER = "VoxelSaves";
-    }
 }
