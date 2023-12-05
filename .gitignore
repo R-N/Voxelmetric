@@ -229,3 +229,5 @@ $RECYCLE.BIN/
 .settings/settings.json 
 *.suo 
 *.DotSettings 
+VoxeUnity/Logs
+VoxeUnity/Logs/*

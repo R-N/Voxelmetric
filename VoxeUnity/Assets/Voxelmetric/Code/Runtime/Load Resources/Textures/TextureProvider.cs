@@ -64,7 +64,7 @@ namespace Voxelmetric
             }
 
             // Generate atlas
-            Texture2D packedTextures = new Texture2D(0, 0, TextureFormat.ARGB32, 0, false);
+            Texture2D packedTextures = new Texture2D(1, 1, TextureFormat.ARGB32, 0, false);
             Rect[] rects = packedTextures.PackTextures(individualTextures.ToArray(), 0, 8192, false);
 
             // Transfer over the pixels to another texture2d because PackTextures resets the texture format and useMipMaps settings
